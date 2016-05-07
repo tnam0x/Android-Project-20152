@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="utf-8"?>
+<TableLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    style="?android:attr/buttonBarStyle"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:shrinkColumns="*"
+    android:stretchColumns="*">
+
+    <TableRow
+        android:id="@+id/tableRow1"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <TextView
+            style="?android:attr/buttonBarButtonStyle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@android:color/holo_blue_dark"
+            android:text="Thu" />
+
+        <TextView
+            style="?android:attr/buttonBarButtonStyle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@android:color/holo_red_dark"
+            android:text="Chi" />
+
+    </TableRow>
+
+    <TableRow
+        android:id="@+id/tableRow2"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <Button
+            android:id="@+id/btn_thuCot"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Cột" />
+
+        <Button
+            android:id="@+id/btn_chiCot"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Cột" />
+    </TableRow>
+
+    <TableRow
+        android:id="@+id/tableRow3"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <Button
+            android:id="@+id/btn_thuTron"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Tròn" />
+
+        <Button
+            android:id="@+id/btn_chiTron"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Tròn" />
+    </TableRow>
+
+</TableLayout>
