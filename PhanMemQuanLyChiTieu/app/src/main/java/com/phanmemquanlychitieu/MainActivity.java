@@ -65,8 +65,8 @@ public class MainActivity extends AppCompatActivity {
         laiXuatDb = new dbLaiXuat(this);
         usersRef = root.child(getUid());
 
-        danhSachThu();
-        danhSachChi();
+        arrayThu();
+        arrayChi();
         GridView grid = (GridView) findViewById(R.id.gridView_menu);
         Menu adapter = new Menu(this, mItemTexts, mItemImgs);
         grid.setAdapter(adapter);
@@ -184,7 +184,7 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    public void danhSachChi() {
+    public void arrayChi() {
         mDbchi = dbchi.getReadableDatabase();
         String queryChi = "select * from " + dbChi.TABLE_NAME;
         mCursorchi = mDbchi.rawQuery(queryChi, null);
@@ -200,7 +200,7 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    public void danhSachThu() {
+    public void arrayThu() {
         mDbthu = dbthu.getReadableDatabase();
         String query = "select * from " + dbThu.TABLE_NAME;
         mCursorthu = mDbthu.rawQuery(query, null);

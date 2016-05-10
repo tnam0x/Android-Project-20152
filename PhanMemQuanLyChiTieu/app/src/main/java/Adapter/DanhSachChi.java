@@ -21,7 +21,7 @@ import Objects.TienThuChi;
 public class DanhSachChi extends ArrayAdapter<TienThuChi> {
     Context context;
     int layoutResourceId;
-    ArrayList<TienThuChi> listData = null;
+    ArrayList<TienThuChi> listData;
 
     public DanhSachChi(Context context, int layoutResourceId, ArrayList<TienThuChi> data) {
         super(context, layoutResourceId, data);
@@ -71,6 +71,5 @@ public class DanhSachChi extends ArrayAdapter<TienThuChi> {
         TextView nhom;
         TextView ngaythang;
         TextView tien;
-
     }
 }

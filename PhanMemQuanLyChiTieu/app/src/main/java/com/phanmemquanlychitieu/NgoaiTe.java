@@ -85,6 +85,7 @@ public class NgoaiTe extends Activity {
         dbthu = new dbThu(this);
         dbchi = new dbChi(this);
         loadTab();
+
         danhSachThu();
         danhSachChi();
 
@@ -110,7 +111,7 @@ public class NgoaiTe extends Activity {
     public boolean checkConn() {
         StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
         StrictMode.setThreadPolicy(policy);
-        ConnectivityManager managerConn = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
+        ConnectivityManager managerConn = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkInfo info = managerConn.getActiveNetworkInfo();
         if (info != null) { // connected to the internet
             if (info.getType() == ConnectivityManager.TYPE_WIFI || info.getType() == ConnectivityManager.TYPE_MOBILE) {
