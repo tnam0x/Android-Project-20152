@@ -11,6 +11,7 @@ import android.widget.TextView;
 import com.phanmemquanlychitieu.R;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import Objects.TienThuChi;
 
@@ -21,9 +22,9 @@ import Objects.TienThuChi;
 public class DanhSachChi extends ArrayAdapter<TienThuChi> {
     Context context;
     int layoutResourceId;
-    ArrayList<TienThuChi> listData;
+    List<TienThuChi> listData;
 
-    public DanhSachChi(Context context, int layoutResourceId, ArrayList<TienThuChi> data) {
+    public DanhSachChi(Context context, int layoutResourceId, List<TienThuChi> data) {
         super(context, layoutResourceId, data);
         this.context = context;
         this.layoutResourceId = layoutResourceId;

@@ -35,23 +35,23 @@
         <activity
             android:name=".TienChi"
             android:label="Ghi chép chi tiêu"
-            android:parentActivityName=".MainActivity" />
+            android:parentActivityName=".NavigationDrawer" />
         <activity
             android:name=".TienThu"
             android:label="Ghi chép thu nhập"
-            android:parentActivityName=".MainActivity" />
+            android:parentActivityName=".NavigationDrawer" />
         <activity
             android:name=".DanhSachThuChi"
             android:label="Danh sách thu chi"
-            android:parentActivityName=".MainActivity" />
+            android:parentActivityName=".NavigationDrawer" />
         <activity
             android:name=".BaoCaoThuChi"
             android:label="Thống kê - Biểu đồ"
-            android:parentActivityName=".MainActivity" />
+            android:parentActivityName=".NavigationDrawer" />
         <activity
             android:name=".NgoaiTe"
             android:label="Quy đổi tiền tệ"
-            android:parentActivityName=".MainActivity" />
+            android:parentActivityName=".NavigationDrawer" />
         <activity
             android:name="org.achartengine.GraphicalActivity"
             android:parentActivityName=".BaoCaoThuChi"
@@ -59,7 +59,7 @@
         <activity
             android:name=".LaiXuat"
             android:label="Lãi xuất ngân hàng"
-            android:parentActivityName=".MainActivity"
+            android:parentActivityName=".NavigationDrawer"
             android:windowSoftInputMode="stateHidden" />
     </application>
 

@@ -6,6 +6,7 @@ import android.app.AlertDialog;
 import android.app.DatePickerDialog;
 import android.app.Dialog;
 import android.app.DialogFragment;
+import android.app.ProgressDialog;
 import android.content.ContentValues;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -14,12 +15,14 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
+import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.StrictMode;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
 import android.support.design.widget.Snackbar;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
@@ -44,6 +47,7 @@ import com.firebase.client.Firebase;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.List;
 import java.util.Locale;
 
 import Adapter.DanhSachChi;
@@ -104,6 +108,8 @@ public class NavigationDrawer extends AppCompatActivity implements NavigationVie
     private EditText suaghichuchi;
     private ImageButton btnsavechi, btnsuangaychi;
     private String[] arrspinnerchi = {"Ăn Uống", "Quần Áo", "Cho vay", "Sinh Hoạt", "Đi Lại", "Trả Nợ", "Khác"};
+    ProgressDialog dialog;
+    FragmentTransaction fragmentTransaction;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -111,6 +117,7 @@ public class NavigationDrawer extends AppCompatActivity implements NavigationVie
         setContentView(R.layout.activity_nav);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+        //loadTab();
         Firebase.setAndroidContext(this);
         Firebase root = new Firebase("https://expenseproject.firebaseio.com/");
         userDb = new UserDatabase(this);
@@ -118,183 +125,223 @@ public class NavigationDrawer extends AppCompatActivity implements NavigationVie
         dbchi = new dbChi(this);
         laiXuatDb = new dbLaiXuat(this);
         usersRef = root.child(getUid());
-        listthu = (ListView) findViewById(R.id.listView_danhsachkhoanthu);
-        listchi = (ListView) findViewById(R.id.listView_danhsachkhoanchi);
-        loadTab();
-        danhSachThu();
-        danhSachChi();
-
-
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
-            }
-        });
+//        listthu = (ListView) findViewById(R.id.listView_danhsachkhoanthu);
+//        listchi = (ListView) findViewById(R.id.listView_danhsachkhoanchi);
+//        danhSachThu();
+//        danhSachChi();
+       // new GetData().execute();
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
                 this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
-        drawer.setDrawerListener(toggle);
+        drawer.addDrawerListener(toggle);
         toggle.syncState();
 
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
-
-        //test
+        fragmentTransaction = getSupportFragmentManager().beginTransaction();
+        fragmentTransaction.add(R.id.container, new DanhSachThuChi());
+        fragmentTransaction.commit();
 
         //su kien khi click vào listview thu
-        listthu.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-
-            @Override
-            public void onItemClick(final AdapterView<?> parent, final View view, final int position, long id) {
-                AlertDialog.Builder b = new AlertDialog.Builder(NavigationDrawer.this);
-                b.setTitle("Lựa Chọn Của Bạn");
-                b.setMessage("Bạn Muốn Gì?");
-                b.setPositiveButton("Sửa", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        final Dialog dialogthu = new Dialog(context);
-                        LayoutInflater li = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-                        View v = li.inflate(R.layout.suakhoanthu, parent, false);
-                        dialogthu.setContentView(v);
-                        dialogthu.setTitle("Sửa Khoản Thu");
-                        dialogthu.show();
-                        // link to layout
-                        suatienthu = (EditText) dialogthu.findViewById(R.id.editTextsuathu_tienkhoanthu);
-                        suanhomthu = (Spinner) dialogthu.findViewById(R.id.spinnersuathu_nhomkhoanthu);
-                        suangaythu = (TextView) dialogthu.findViewById(R.id.textViewsuathu_ngaykhoanthu);
-                        suaghichuthu = (EditText) dialogthu.findViewById(R.id.editTextsuathu_ghichukhoanthu);
-                        dexuatthu();
-                        // pick time
-                        btnsuangaythu = (ImageButton) dialogthu.findViewById(R.id.imageButtonsuathu_chonngaykhoanthu);
-                        btnsuangaythu.setOnClickListener(new View.OnClickListener() {
-
-                            @Override
-                            public void onClick(View v) {
-                                showDatePickerDialog(null);
-                            }
-                        });
-                        // set value to dialog
-                        suatienthu.setText(sapxepthu.get(position).getTien());
-                        suangaythu.setText(sapxepthu.get(position).getNgaythang());
-                        suaghichuthu.setText(sapxepthu.get(position).getGhichu());
-                        adapterthu = new ArrayAdapter<>(NavigationDrawer.this, android.R.layout.simple_spinner_dropdown_item, arrspinnerthu);
-                        suanhomthu.setAdapter(adapterthu);
-                        suanhomthu.setSelection(checkPosition(sapxepthu.get(position).getNhom(), arrspinnerthu));
-                        // save button
-                        btnsavethu = (ImageButton) dialogthu.findViewById(R.id.imageButtonsuathu_luukhoanthu);
-                        btnsavethu.setOnClickListener(new View.OnClickListener() {
-
-                            @SuppressWarnings("static-access")
-                            @Override
-                            public void onClick(View v) {
-                                mDbthu = dbthu.getWritableDatabase();
-                                ContentValues cv = new ContentValues();
-                                String cost = suatienthu.getText().toString();
-                                String date = suangaythu.getText().toString();
-                                String type = suanhomthu.getSelectedItem().toString();
-                                String note = suaghichuthu.getText().toString();
-                                cv.put(dbThu.COL_TIEN, cost);
-                                cv.put(dbThu.COL_DATE, date);
-                                cv.put(dbThu.COL_NHOM, type);
-                                cv.put(dbThu.COL_GHICHU, note);
-                                mDbthu.update(dbThu.TABLE_NAME, cv, "_id " + "=" + sapxepthu.get(position).getId(), null);
-                                danhSachThu();
-                                dialogthu.cancel();
-                            }
-                        });
-
-                    }
-                });
-                b.setNegativeButton("Xóa", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        mDbthu = dbthu.getWritableDatabase();
-                        String id = sapxepthu.get(position).getId();
-                        mDbthu.delete(dbThu.TABLE_NAME, "_id=?", new String[]{id});
-                        danhSachThu();
-                    }
-                });
-                b.create().show();
-            }
-        });
-        //su kien khi click vào listview chi
-        listchi.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(final AdapterView<?> parent, View view,
-                                    final int position, long id) {
-                AlertDialog.Builder b = new AlertDialog.Builder(NavigationDrawer.this);
-                b.setTitle("Lựa Chọn Của Bạn");
-                b.setMessage("Bạn Muốn Gì?");
-                b.setPositiveButton("Sửa", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        final Dialog dialogchi = new Dialog(context);
-                        LayoutInflater li = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-                        View v = li.inflate(R.layout.suakhoanchi, parent, false);
-                        dialogchi.setContentView(v);
-                        dialogchi.setTitle("Sửa Khoản Chi");
-                        dialogchi.show();
-                        // link to layout
-                        suatienchi = (EditText) dialogchi.findViewById(R.id.editTextsuachi_tienkhoanthu);
-                        suanhomchi = (Spinner) dialogchi.findViewById(R.id.spinnersuachi_nhomkhoanthu);
-                        suangaychi = (TextView) dialogchi.findViewById(R.id.textViewsuachi_ngaykhoanthu);
-                        suaghichuchi = (EditText) dialogchi.findViewById(R.id.editTextsuachi_ghichukhoanthu);
-                        dexuatchi();
-                        // pick time
-                        btnsuangaychi = (ImageButton) dialogchi.findViewById(R.id.imageButtonsuachi_chonngaykhoanthu);
-                        btnsuangaychi.setOnClickListener(new View.OnClickListener() {
-
-                            @Override
-                            public void onClick(View v) {
-                                showDatePickerDialogchi(null);
-                            }
-                        });
-                        // set value to dialog
-                        suatienchi.setText(sapxepchi.get(position).getTien());
-                        suangaychi.setText(sapxepchi.get(position).getNgaythang());
-                        suaghichuchi.setText(sapxepchi.get(position).getGhichu());
-                        adapterchi = new ArrayAdapter<>(NavigationDrawer.this, android.R.layout.simple_spinner_dropdown_item, arrspinnerchi);
-                        suanhomchi.setAdapter(adapterchi);
-                        suanhomchi.setSelection(checkPosition(sapxepchi.get(position).getNhom(), arrspinnerchi));
-                        // save button
-                        btnsavechi = (ImageButton) dialogchi.findViewById(R.id.imageButtonsuachi_luukhoanthu);
-                        btnsavechi.setOnClickListener(new View.OnClickListener() {
-
-                            @Override
-                            public void onClick(View v) {
-                                mDbchi = dbchi.getWritableDatabase();
-                                ContentValues cv = new ContentValues();
-                                cv.put(dbChi.COL_TIEN, suatienchi.getText().toString());
-                                cv.put(dbChi.COL_DATE, suangaychi.getText().toString());
-                                cv.put(dbChi.COL_NHOM, suanhomchi.getSelectedItem().toString());
-                                cv.put(dbChi.COL_GHICHU, suaghichuchi.getText().toString());
-                                mDbchi.update(dbChi.TABLE_NAME, cv, "_id " + "=" + sapxepchi.get(position).getId(), null);
-                                dialogchi.cancel();
-                                danhSachChi();
-                            }
-                        });
-                    }
-                });
-                b.setNegativeButton("Xóa", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        mDbchi = dbchi.getWritableDatabase();
-                        String id = sapxepchi.get(position).getId();
-                        mDbchi.delete(dbChi.TABLE_NAME, "_id=?", new String[]{id});
-                        danhSachChi();
-                    }
-                });
-                b.create().show();
-            }
-        });
-        onRestart();
+//        listthu.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+//
+//            @Override
+//            public void onItemClick(final AdapterView<?> parent, final View view, final int position, long id) {
+//                AlertDialog.Builder b = new AlertDialog.Builder(NavigationDrawer.this);
+//                b.setTitle("Lựa Chọn Của Bạn");
+//                b.setMessage("Bạn Muốn Gì?");
+//                b.setPositiveButton("Sửa", new DialogInterface.OnClickListener() {
+//                    @Override
+//                    public void onClick(DialogInterface dialog, int which) {
+//                        final Dialog dialogthu = new Dialog(context);
+//                        LayoutInflater li = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+//                        View v = li.inflate(R.layout.suakhoanthu, parent, false);
+//                        dialogthu.setContentView(v);
+//                        dialogthu.setTitle("Sửa Khoản Thu");
+//                        dialogthu.show();
+//                        // link to layout
+//                        suatienthu = (EditText) dialogthu.findViewById(R.id.editTextsuathu_tienkhoanthu);
+//                        suanhomthu = (Spinner) dialogthu.findViewById(R.id.spinnersuathu_nhomkhoanthu);
+//                        suangaythu = (TextView) dialogthu.findViewById(R.id.textViewsuathu_ngaykhoanthu);
+//                        suaghichuthu = (EditText) dialogthu.findViewById(R.id.editTextsuathu_ghichukhoanthu);
+//                        dexuatthu();
+//                        // pick time
+//                        btnsuangaythu = (ImageButton) dialogthu.findViewById(R.id.imageButtonsuathu_chonngaykhoanthu);
+//                        btnsuangaythu.setOnClickListener(new View.OnClickListener() {
+//
+//                            @Override
+//                            public void onClick(View v) {
+//                                showDatePickerDialog(null);
+//                            }
+//                        });
+//                        // set value to dialog
+//                        suatienthu.setText(sapxepthu.get(position).getTien());
+//                        suangaythu.setText(sapxepthu.get(position).getNgaythang());
+//                        suaghichuthu.setText(sapxepthu.get(position).getGhichu());
+//                        adapterthu = new ArrayAdapter<>(NavigationDrawer.this, android.R.layout.simple_spinner_dropdown_item, arrspinnerthu);
+//                        suanhomthu.setAdapter(adapterthu);
+//                        suanhomthu.setSelection(checkPosition(sapxepthu.get(position).getNhom(), arrspinnerthu));
+//                        // save button
+//                        btnsavethu = (ImageButton) dialogthu.findViewById(R.id.imageButtonsuathu_luukhoanthu);
+//                        btnsavethu.setOnClickListener(new View.OnClickListener() {
+//
+//                            @SuppressWarnings("static-access")
+//                            @Override
+//                            public void onClick(View v) {
+//                                mDbthu = dbthu.getWritableDatabase();
+//                                ContentValues cv = new ContentValues();
+//                                String cost = suatienthu.getText().toString();
+//                                String date = suangaythu.getText().toString();
+//                                String type = suanhomthu.getSelectedItem().toString();
+//                                String note = suaghichuthu.getText().toString();
+//                                cv.put(dbThu.COL_TIEN, cost);
+//                                cv.put(dbThu.COL_DATE, date);
+//                                cv.put(dbThu.COL_NHOM, type);
+//                                cv.put(dbThu.COL_GHICHU, note);
+//                                mDbthu.update(dbThu.TABLE_NAME, cv, "_id " + "=" + sapxepthu.get(position).getId(), null);
+//                                danhSachThu();
+//                                dialogthu.cancel();
+//                            }
+//                        });
+//
+//                    }
+//                });
+//                b.setNegativeButton("Xóa", new DialogInterface.OnClickListener() {
+//                    @Override
+//                    public void onClick(DialogInterface dialog, int which) {
+//                        mDbthu = dbthu.getWritableDatabase();
+//                        String id = sapxepthu.get(position).getId();
+//                        mDbthu.delete(dbThu.TABLE_NAME, "_id=?", new String[]{id});
+//                        danhSachThu();
+//                    }
+//                });
+//                b.create().show();
+//            }
+//        });
+//        //su kien khi click vào listview chi
+//        listchi.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+//            @Override
+//            public void onItemClick(final AdapterView<?> parent, View view,
+//                                    final int position, long id) {
+//                AlertDialog.Builder b = new AlertDialog.Builder(NavigationDrawer.this);
+//                b.setTitle("Lựa Chọn Của Bạn");
+//                b.setMessage("Bạn Muốn Gì?");
+//                b.setPositiveButton("Sửa", new DialogInterface.OnClickListener() {
+//                    @Override
+//                    public void onClick(DialogInterface dialog, int which) {
+//                        final Dialog dialogchi = new Dialog(context);
+//                        LayoutInflater li = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+//                        View v = li.inflate(R.layout.suakhoanchi, parent, false);
+//                        dialogchi.setContentView(v);
+//                        dialogchi.setTitle("Sửa Khoản Chi");
+//                        dialogchi.show();
+//                        // link to layout
+//                        suatienchi = (EditText) dialogchi.findViewById(R.id.editTextsuachi_tienkhoanthu);
+//                        suanhomchi = (Spinner) dialogchi.findViewById(R.id.spinnersuachi_nhomkhoanthu);
+//                        suangaychi = (TextView) dialogchi.findViewById(R.id.textViewsuachi_ngaykhoanthu);
+//                        suaghichuchi = (EditText) dialogchi.findViewById(R.id.editTextsuachi_ghichukhoanthu);
+//                        dexuatchi();
+//                        // pick time
+//                        btnsuangaychi = (ImageButton) dialogchi.findViewById(R.id.imageButtonsuachi_chonngaykhoanthu);
+//                        btnsuangaychi.setOnClickListener(new View.OnClickListener() {
+//
+//                            @Override
+//                            public void onClick(View v) {
+//                                showDatePickerDialogchi(null);
+//                            }
+//                        });
+//                        // set value to dialog
+//                        suatienchi.setText(sapxepchi.get(position).getTien());
+//                        suangaychi.setText(sapxepchi.get(position).getNgaythang());
+//                        suaghichuchi.setText(sapxepchi.get(position).getGhichu());
+//                        adapterchi = new ArrayAdapter<>(NavigationDrawer.this, android.R.layout.simple_spinner_dropdown_item, arrspinnerchi);
+//                        suanhomchi.setAdapter(adapterchi);
+//                        suanhomchi.setSelection(checkPosition(sapxepchi.get(position).getNhom(), arrspinnerchi));
+//                        // save button
+//                        btnsavechi = (ImageButton) dialogchi.findViewById(R.id.imageButtonsuachi_luukhoanthu);
+//                        btnsavechi.setOnClickListener(new View.OnClickListener() {
+//
+//                            @Override
+//                            public void onClick(View v) {
+//                                mDbchi = dbchi.getWritableDatabase();
+//                                ContentValues cv = new ContentValues();
+//                                cv.put(dbChi.COL_TIEN, suatienchi.getText().toString());
+//                                cv.put(dbChi.COL_DATE, suangaychi.getText().toString());
+//                                cv.put(dbChi.COL_NHOM, suanhomchi.getSelectedItem().toString());
+//                                cv.put(dbChi.COL_GHICHU, suaghichuchi.getText().toString());
+//                                mDbchi.update(dbChi.TABLE_NAME, cv, "_id " + "=" + sapxepchi.get(position).getId(), null);
+//                                dialogchi.cancel();
+//                                danhSachChi();
+//                            }
+//                        });
+//                    }
+//                });
+//                b.setNegativeButton("Xóa", new DialogInterface.OnClickListener() {
+//                    @Override
+//                    public void onClick(DialogInterface dialog, int which) {
+//                        mDbchi = dbchi.getWritableDatabase();
+//                        String id = sapxepchi.get(position).getId();
+//                        mDbchi.delete(dbChi.TABLE_NAME, "_id=?", new String[]{id});
+//                        danhSachChi();
+//                    }
+//                });
+//                b.create().show();
+//            }
+//        });
     }
 
-    @SuppressWarnings("StatementWithEmptyBody")
+    public class GetData extends AsyncTask<Void, Void, ArrayList<TienThuChi>> {
+        @Override
+        protected void onPreExecute() {
+            dialog = new ProgressDialog(NavigationDrawer.this);
+            dialog.setMessage("Đang tải...");
+            dialog.setCancelable(false);
+            dialog.show();
+            super.onPreExecute();
+        }
+
+        @Override
+        protected ArrayList<TienThuChi> doInBackground(Void... params) {
+            mDbthu = dbthu.getWritableDatabase();
+            String query = "select * from " + dbThu.TABLE_NAME;
+            Cursor mCursorthu = mDbthu.rawQuery(query, null);
+            ArrayList<TienThuChi> arrthu = new ArrayList<>();
+            DoiNgay doingaythu = new DoiNgay();
+            TienThuChi objectthu;
+            if (mCursorthu.moveToFirst()) {
+                do {
+                    objectthu = new TienThuChi();
+                    objectthu.setId(mCursorthu.getString(0));
+                    objectthu.setTien(mCursorthu.getString(1));
+                    objectthu.setNhom(mCursorthu.getString(2));
+                    objectthu.setNgaythang(doingaythu.doiDate(mCursorthu.getString(3)));
+                    objectthu.setGhichu(mCursorthu.getString(4));
+                    arrthu.add(objectthu);
+                } while (mCursorthu.moveToNext());
+            }
+            mCursorthu.close();
+
+            sapxepthu = new ArrayList<>();
+            sapxepthu = doingaythu.sapXep(arrthu);
+            for (int i = 0; i < sapxepthu.size(); i++) {
+                String strsapxep = doingaythu.ngay(sapxepthu.get(i).getNgaythang());
+                sapxepthu.get(i).setNgaythang(strsapxep);
+            }
+            return sapxepthu;
+        }
+
+        @Override
+        protected void onPostExecute(ArrayList<TienThuChi> result) {
+            if (dialog.isShowing())
+                dialog.dismiss();
+            DanhSachThu myadapterthu = new DanhSachThu(NavigationDrawer.this, R.layout.t_customlayout_thu, sapxepthu);
+            listthu.setAdapter(myadapterthu);
+            myadapterthu.notifyDataSetChanged();
+            super.onPostExecute(result);
+        }
+    }
+
     @Override
     public boolean onNavigationItemSelected(MenuItem item) {
         // Handle navigation view item clicks here.
@@ -560,12 +607,12 @@ public class NavigationDrawer extends AppCompatActivity implements NavigationVie
         newFragment.show(getFragmentManager(), "datePicker");
     }
 
-    @Override
-    protected void onResume() {
-        super.onResume();
-        danhSachThu();
-        danhSachChi();
-    }
+//    @Override
+//    protected void onResume() {
+//        danhSachThu();
+//        danhSachChi();
+//        super.onResume();
+//    }
 
     public void loadTab() {
         final TabHost tab = (TabHost) findViewById(android.R.id.tabhost);

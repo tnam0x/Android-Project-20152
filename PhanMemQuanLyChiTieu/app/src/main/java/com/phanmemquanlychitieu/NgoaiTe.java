@@ -1,6 +1,5 @@
 package com.phanmemquanlychitieu;
 
-import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
@@ -30,7 +29,6 @@ import Database.dbChi;
 import Database.dbThu;
 import Objects.TienThuChi;
 
-@SuppressLint("ShowToast")
 public class NgoaiTe extends Activity {
 
     private final static String[] NAME_MONEY = {"US Dollar (USD)", "Euro (EUR)",
@@ -194,8 +192,7 @@ public class NgoaiTe extends Activity {
             String strsapxep = doingaychi.ngay(sapxepchi.get(i).getNgaythang());
             sapxepchi.get(i).setNgaythang(strsapxep);
         }
-        myadapterchi = new DanhSachTienTeChi(this,
-                R.layout.t_customlayout_chi, sapxepchi);
+        myadapterchi = new DanhSachTienTeChi(this, R.layout.t_customlayout_chi, sapxepchi);
         listchi.setAdapter(myadapterchi);
     }
 

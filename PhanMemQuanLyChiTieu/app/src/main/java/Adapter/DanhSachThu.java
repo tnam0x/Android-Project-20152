@@ -11,6 +11,7 @@ import android.widget.TextView;
 import com.phanmemquanlychitieu.R;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import Objects.TienThuChi;
 
@@ -21,9 +22,9 @@ import Objects.TienThuChi;
 public class DanhSachThu extends ArrayAdapter<TienThuChi> {
     Context context;
     int layoutResourceId;
-    ArrayList<TienThuChi> listData = null;
+    List<TienThuChi> listData;
 
-    public DanhSachThu(Context context, int layoutResourceId, ArrayList<TienThuChi> data) {
+    public DanhSachThu(Context context, int layoutResourceId, List<TienThuChi> data) {
         super(context, layoutResourceId, data);
         this.context = context;
         this.layoutResourceId = layoutResourceId;
@@ -33,7 +34,7 @@ public class DanhSachThu extends ArrayAdapter<TienThuChi> {
     @Override
     public int getCount() {
 
-        return this.listData.size();
+        return listData.size();
     }
 
     @Override
@@ -51,7 +52,7 @@ public class DanhSachThu extends ArrayAdapter<TienThuChi> {
         View row = convertView;
         ItemHolder holder;
         if (row == null) {
-            LayoutInflater inflater = ((Activity) context).getLayoutInflater();
+            LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
             row = inflater.inflate(layoutResourceId, parent, false);
             holder = new ItemHolder();
             holder.nhom = (TextView) row.findViewById(R.id.textView_nhomkhoanthu_custom);
