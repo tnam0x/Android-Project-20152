@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.ContentValues;
 import android.content.Intent;
 import android.database.sqlite.SQLiteDatabase;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.view.KeyEvent;
 import android.view.View;
@@ -31,7 +32,7 @@ import Objects.Item;
 /**
  * Created by Legendary on 25/04/2016.
  */
-public class LoginActivity extends Activity {
+public class LoginActivity extends Activity{
     private EditText email, password;
     private Button btnLogin, btnSignUp;
     private ProgressBar bar;
@@ -46,6 +47,7 @@ public class LoginActivity extends Activity {
 
     private SQLiteDatabase sqLiteExpense, sqLiteIncome;
     private Item item;
+    private String uid;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -101,7 +103,7 @@ public class LoginActivity extends Activity {
                 loginForm.setVisibility(View.GONE);
                 mSQLite = userDb.getWritableDatabase();
                 StringTokenizer st = new StringTokenizer(authData.getUid(), "-");
-                String uid = "";
+                uid = "";
                 while (st.hasMoreTokens()) {
                     uid += st.nextToken();
                 }
@@ -110,10 +112,7 @@ public class LoginActivity extends Activity {
                 cv.put(UserDatabase.COL_EMAIL, email);
                 cv.put(UserDatabase.COL_KEY, "true");
                 mSQLite.insert(UserDatabase.TABLE_NAME, null, cv);
-                syncData(uid);
-                Intent intent = new Intent(LoginActivity.this, NavigationDrawer.class);
-                startActivity(intent);
-                finish();
+                new GetDataFromServer().execute();
             }
 
             @Override
@@ -132,8 +131,8 @@ public class LoginActivity extends Activity {
         loginForm = (LinearLayout) findViewById(R.id.login_form);
     }
 
-    private void syncData(String name) {
-        Firebase refExpense = root.child(name).child("Expense");
+    private void syncData() {
+        Firebase refExpense = root.child(uid).child("Expense");
         final Query expenseQuery = refExpense.orderByValue();
         expenseQuery.addValueEventListener(new ValueEventListener() {
             @Override
@@ -157,7 +156,7 @@ public class LoginActivity extends Activity {
             }
         });
 
-        Firebase refIncome = root.child(name).child("Income");
+        Firebase refIncome = root.child(uid).child("Income");
         final Query incomeQuery = refIncome.orderByValue();
         incomeQuery.addValueEventListener(new ValueEventListener() {
             @Override
@@ -180,5 +179,21 @@ public class LoginActivity extends Activity {
                 Toast.makeText(getApplicationContext(), firebaseError.getMessage(), Toast.LENGTH_SHORT).show();
             }
         });
+    }
+
+    private class GetDataFromServer extends AsyncTask<Void, Void, Void> {
+
+        @Override
+        protected Void doInBackground(Void... params) {
+            syncData();
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(Void aVoid) {
+            Intent intent = new Intent(LoginActivity.this, NavigationDrawer.class);
+            startActivity(intent);
+            LoginActivity.this.finish();
+        }
     }
 }

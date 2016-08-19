@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <group android:checkableBehavior="single">
+        <item
+            android:id="@+id/nav_home"
+            android:checked="true"
+            android:icon="@drawable/ic_home"
+            android:title="Home" />
+        <item
+            android:id="@+id/nav_diagram"
+            android:icon="@drawable/ic_diagram"
+            android:title="Biểu đồ" />
+        <item
+            android:id="@+id/nav_exchange"
+            android:icon="@drawable/ic_exchange"
+            android:title="Đổi tiền tệ" />
+        <item
+            android:id="@+id/nav_deposit"
+            android:icon="@drawable/ic_money_saving"
+            android:title="Gửi tiết kiệm" />
+
+    </group>
+
+    <item android:title="Tài khoản">
+        <menu>
+            <item
+                android:id="@+id/nav_user_info"
+                android:icon="@drawable/ic_user_info"
+                android:title="Thông tin" />
+            <item
+                android:id="@+id/nav_sync"
+                android:icon="@drawable/ic_sync"
+                android:title="Đồng bộ" />
+            <item
+                android:id="@+id/nav_logout"
+                android:icon="@drawable/ic_logout"
+                android:title="Đăng xuất" />
+        </menu>
+    </item>
+
+</menu>

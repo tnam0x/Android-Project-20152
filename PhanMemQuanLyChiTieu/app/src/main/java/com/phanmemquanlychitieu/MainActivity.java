@@ -123,11 +123,7 @@ public class MainActivity extends AppCompatActivity {
                             finish();
                         }
                     });
-                    exitDialog.setPositiveButton("Để sau", new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialog, int which) {
-                        }
-                    });
+                    exitDialog.setPositiveButton("Để sau", null);
                     exitDialog.setCancelable(false);
                     exitDialog.show();
                 }

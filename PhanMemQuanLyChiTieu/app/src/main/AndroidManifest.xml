@@ -40,10 +40,10 @@
             android:name=".TienThu"
             android:label="Ghi chép thu nhập"
             android:parentActivityName=".NavigationDrawer" />
-        <activity
-            android:name=".DanhSachThuChi"
-            android:label="Danh sách thu chi"
-            android:parentActivityName=".NavigationDrawer" />
+        <!--<activity-->
+            <!--android:name=".DanhSachThuChi"-->
+            <!--android:label="Danh sách thu chi"-->
+            <!--android:parentActivityName=".NavigationDrawer" />-->
         <activity
             android:name=".BaoCaoThuChi"
             android:label="Thống kê - Biểu đồ"

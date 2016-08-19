@@ -31,11 +31,8 @@ public class TienChi extends Activity {
     private Spinner nhomkhoanchi;
     private TextView ngaykhoanchi;
     private ImageButton luukhoanchi;
-
-    //khoi tao thuoc tinh cho db
     private dbChi dbchi;
     private SQLiteDatabase mDbchi;
-
     private String[] arrspinner = {"Ăn Uống", "Quần Áo", "Cho vay", "Sinh Hoạt", "Đi Lại", "Trả Nợ", "Khác"};
 
     @Override
@@ -49,6 +46,7 @@ public class TienChi extends Activity {
         ngaykhoanchi = (TextView) findViewById(R.id.textView_ngaykhoanchi);
         ImageButton chonngaykhoanchi = (ImageButton) findViewById(R.id.imageButton_chonngaykhoanchi);
         luukhoanchi = (ImageButton) findViewById(R.id.imageButton_luukhoanchi);
+
         ArrayAdapter<String> adapterchi = new ArrayAdapter<>(this, android.R.layout.simple_spinner_dropdown_item, arrspinner);
         nhomkhoanchi.setAdapter(adapterchi);
         dbchi = new dbChi(this);
@@ -134,7 +132,6 @@ public class TienChi extends Activity {
         }
 
         @Override
-        @SuppressWarnings("deprecation")
         public void onDateSet(DatePicker view, int year, int month, int day) {
             // Do something with the date chosen by the user
             month = month + 1;
