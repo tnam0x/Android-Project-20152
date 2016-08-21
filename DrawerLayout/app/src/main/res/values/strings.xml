@@ -1,8 +1,13 @@
 <resources>
-    <string name="app_name">Quản Lý Chi Tiêu</string>
+    <string name="app_name">The First Things</string>
 
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
 
+    <string name="title_in">"Nhập Khoản Thu"</string>
+    <string name="title_out">"Nhập Khoản Chi"</string>
     <string name="description_logo">Logo of app</string>
+    <string name="hint_in">"Tiền Thu"</string>
+    <string name="hint_out">"Tiền Chi"</string>
+    <string name="custom_today_description">calendar_description</string>
 </resources>

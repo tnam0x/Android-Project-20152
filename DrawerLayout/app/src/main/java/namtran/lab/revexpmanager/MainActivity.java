@@ -4,11 +4,13 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.res.Configuration;
 import android.database.sqlite.SQLiteDatabase;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.os.Handler;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
@@ -32,6 +34,10 @@ import namtran.lab.database.InDb;
 import namtran.lab.database.InterestDb;
 import namtran.lab.database.OutDb;
 import namtran.lab.entity.UserInfo;
+import namtran.lab.info.InfoActivity;
+import namtran.lab.statistics.StatisticsFragment;
+import namtran.lab.transaction.AddItemActivity;
+import namtran.lab.transaction.TransactionsFragment;
 
 public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
     private DrawerLayout drawer;
@@ -44,6 +50,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     private UserInfo userInfo;
     private FragmentTransaction transaction;
     private FragmentManager manager;
+    private FloatingActionButton fab;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -66,10 +73,10 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         // Home screen
         manager = getSupportFragmentManager();
         transaction = manager.beginTransaction();
-        HomeFragment home = new HomeFragment();
+        TransactionsFragment home = new TransactionsFragment();
         transaction.add(R.id.contentPanel, home);
         transaction.commit();
-        actionBar.setTitle("Home");
+        actionBar.setTitle("Sổ giao dịch");
         // Layout
         view = findViewById(R.id.clayout_main);
         drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
@@ -80,7 +87,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         TextView description = (TextView) header.findViewById(R.id.description_header);
         description.setText(userInfo.getEmail());
         // FloatingActionButton
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
+        fab = (FloatingActionButton) findViewById(R.id.fab);
+        fab.setVisibility(View.VISIBLE);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -109,6 +117,13 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         toggle.syncState();
     }
 
+    @Override
+    public void onConfigurationChanged(Configuration newConfig) {
+        super.onConfigurationChanged(newConfig);
+        // Forward the new configuration the drawer toggle component.
+        toggle.onConfigurationChanged(newConfig);
+    }
+
     boolean doubleBackToExitPressedOnce = false;
 
     @Override
@@ -133,13 +148,15 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     }
 
     @Override
-    public boolean onNavigationItemSelected(MenuItem item) {
+    public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+        fab.setVisibility(View.GONE);
         drawer.closeDrawer(GravityCompat.START);
         switch (item.getItemId()) {
             case R.id.nav_home:
                 actionBar.setTitle(item.getTitle());
                 item.setChecked(true);
                 setFragment(0);
+                fab.setVisibility(View.VISIBLE);
                 break;
             case R.id.nav_diagram:
                 actionBar.setTitle(item.getTitle());
@@ -204,15 +221,18 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     // Mở fragment tương ứng với menu được chọn
     private void setFragment(int position) {
+        manager = getSupportFragmentManager();
+        transaction = manager.beginTransaction();
         switch (position) {
             case 0:
-                manager = getSupportFragmentManager();
-                transaction = manager.beginTransaction();
-                HomeFragment home = new HomeFragment();
+                TransactionsFragment home = new TransactionsFragment();
                 transaction.replace(R.id.contentPanel, home);
                 transaction.commit();
-                actionBar.setTitle("Home");
                 break;
+            case 1:
+                StatisticsFragment stats = new StatisticsFragment();
+                transaction.replace(R.id.contentPanel, stats);
+                transaction.commit();
         }
     }
 

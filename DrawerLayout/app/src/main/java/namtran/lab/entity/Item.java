@@ -44,6 +44,6 @@ public class Item {
 
     @Override
     public String toString() {
-        return cost + note;
+        return cost + "-" + date;
     }
 }
