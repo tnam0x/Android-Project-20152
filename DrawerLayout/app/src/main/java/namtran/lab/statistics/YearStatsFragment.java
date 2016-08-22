@@ -1,15 +1,15 @@
 package namtran.lab.statistics;
 
 import android.app.DatePickerDialog;
-import android.app.Dialog;
 import android.app.ProgressDialog;
+import android.content.Context;
+import android.content.res.Resources;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.AsyncTask;
+import android.os.Build;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.v4.app.DialogFragment;
 import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -19,6 +19,7 @@ import android.widget.DatePicker;
 import android.widget.ImageButton;
 import android.widget.TextView;
 
+import java.lang.reflect.Field;
 import java.text.NumberFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -43,6 +44,7 @@ public class YearStatsFragment extends Fragment {
     private static ArrayList<Item> in;
     private static ArrayList<Item> out;
     private static NumberFormat format;
+    private Calendar calendar = Calendar.getInstance();
 
     @Nullable
     @Override
@@ -52,25 +54,31 @@ public class YearStatsFragment extends Fragment {
         btnSelectDate.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                showDatePicker();
+                showYearPicker();
             }
         });
+        // Định dạng tiền tệ
         format = NumberFormat.getCurrencyInstance();
         format.setMaximumFractionDigits(0);
+        // control
         tvYear = (TextView) rootView.findViewById(R.id.tv_year);
         tvRev = (TextView) rootView.findViewById(R.id.tv_in_year);
         tvExp = (TextView) rootView.findViewById(R.id.tv_out_year);
+        // database
         InDb inDb = new InDb(getContext());
         OutDb outDb = new OutDb(getContext());
         sqlIn = inDb.getWritableDatabase();
         sqlOut = outDb.getWritableDatabase();
+        // Tạo dialog hiển thị khi đang khởi tạo dữ liệu
         dialog = new ProgressDialog(getContext());
         dialog.setMessage("Đang tải");
         dialog.setCancelable(false);
+        // Lấy dữ liệu
         new RetrieveData().execute();
         return rootView;
     }
 
+    // Lấy thu chi theo năm đã chọn, mặc định là năm hiện tại
     private static void getItemYear(String date) {
         String year = date;
         if (date.length() != 4) {
@@ -93,6 +101,7 @@ public class YearStatsFragment extends Fragment {
         tvExp.setText(format.format(costOut));
     }
 
+    //
     private String today() {
         Calendar calendar = Calendar.getInstance();
         String dateFormat = "dd/MM/yyyy";
@@ -100,11 +109,88 @@ public class YearStatsFragment extends Fragment {
         return format.format(calendar.getTime());
     }
 
-    private void showDatePicker() {
-        DialogFragment dialog = new DatePickerFragment();
-        dialog.show(getFragmentManager(), "YearPicker");
+    private void showYearPicker() {
+        int year = calendar.get(Calendar.YEAR);
+        int month = calendar.get(Calendar.MONTH);
+        int day = calendar.get(Calendar.DAY_OF_MONTH);
+        YearPickerFragment pickerFragment = new YearPickerFragment(getContext(), callback, year, month, day);
+        pickerFragment.setCancelable(true);
+        hideDateAndMonthFields(pickerFragment.getDatePicker());
+        pickerFragment.show();
     }
 
+    private void hideDateAndMonthFields(DatePicker datePicker) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            Log.d(">LOLLIPOP", "yes");
+            int daySpinnerId = Resources.getSystem().getIdentifier("day", "id", "android");
+            Log.d(">LOLLIPOP", daySpinnerId + "");
+            if (daySpinnerId != 0) {
+                View daySpinner = datePicker.findViewById(daySpinnerId);
+                if (daySpinner != null) {
+                    Log.d(">LOLLIPOP", "day");
+                    daySpinner.setVisibility(View.GONE);
+                }
+            }
+
+            int monthSpinnerId = Resources.getSystem().getIdentifier("month", "id", "android");
+            if (monthSpinnerId != 0) {
+                View monthSpinner = datePicker.findViewById(monthSpinnerId);
+                if (monthSpinner != null) {
+                    Log.d(">LOLLIPOP", "month");
+                    monthSpinner.setVisibility(View.GONE);
+                }
+            }
+        } else { // Older SDK versions
+            Field f[] = datePicker.getClass().getDeclaredFields();
+            for (Field field : f) {
+                Log.d("Older SDK versions", field.getName());
+                if (field.getName().equals("mDayPicker") || field.getName().equals("mDaySpinner")) {
+                    field.setAccessible(true);
+                    try {
+                        Log.d("mDaySpinner", "yeah");
+                        Object dayPicker = field.get(datePicker);
+                        ((View) dayPicker).setVisibility(View.GONE);
+                    } catch (IllegalAccessException e) {
+                        Log.e("Error", e.getMessage());
+                    }
+                }
+
+                if (field.getName().equals("mMonthPicker") || field.getName().equals("mMonthSpinner")) {
+                    field.setAccessible(true);
+                    try {
+                        Log.d("mMonthSpinner", "yeah");
+                        Object monthPicker = field.get(datePicker);
+                        ((View) monthPicker).setVisibility(View.GONE);
+                    } catch (IllegalAccessException e) {
+                        Log.e("Error", e.getMessage());
+                    }
+                }
+
+            }
+        }
+    }
+
+    private DatePickerDialog.OnDateSetListener callback = new DatePickerDialog.OnDateSetListener() {
+        @Override
+        public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
+            calendar.set(year, monthOfYear, dayOfMonth);
+            getItemYear(String.valueOf(year));
+        }
+    };
+
+    private class YearPickerFragment extends DatePickerDialog {
+
+        public YearPickerFragment(Context context, OnDateSetListener callBack, int year, int monthOfYear, int dayOfMonth) {
+            super(context, callBack, year, monthOfYear, dayOfMonth);
+        }
+
+        @Override
+        public void setTitle(CharSequence title) {
+            super.setTitle("Chọn năm muốn xem");
+        }
+    }
+
+    // Lấy dữ liệu từ database lưu vào Arraylist
     private class RetrieveData extends AsyncTask<Void, Void, Void> {
         @Override
         protected void onPreExecute() {
@@ -161,47 +247,4 @@ public class YearStatsFragment extends Fragment {
         }
     }
 
-    public static class DatePickerFragment extends DialogFragment implements DatePickerDialog.OnDateSetListener {
-        @NonNull
-        @Override
-        public Dialog onCreateDialog(Bundle savedInstanceState) {
-            Calendar calendar = Calendar.getInstance();
-            int year = calendar.get(Calendar.YEAR);
-            int month = calendar.get(Calendar.MONTH);
-            int day = calendar.get(Calendar.DAY_OF_MONTH);
-            DatePickerDialog pickerDialog = new DatePickerDialog(getActivity(), this, year, month, day);
-            pickerDialog.setTitle("Chọn Năm Muốn Xem");
-            try {
-                java.lang.reflect.Field[] datePickerDialogFields = pickerDialog.getClass().getDeclaredFields();
-                for (java.lang.reflect.Field datePickerDialogField : datePickerDialogFields) {
-                    if (datePickerDialogField.getName().equals("mDatePicker")) {
-                        datePickerDialogField.setAccessible(true);
-                        DatePicker datePicker = (DatePicker) datePickerDialogField.get(pickerDialog);
-                        java.lang.reflect.Field[] datePickerFields = datePickerDialogField.getType().getDeclaredFields();
-                        for (java.lang.reflect.Field datePickerField : datePickerFields) {
-                            Log.i("datePickerField", datePickerField.getName());
-                            if ("mDaySpinner".equals(datePickerField.getName())) {
-                                datePickerField.setAccessible(true);
-                                Object dayPicker = datePickerField.get(datePicker);
-                                ((View) dayPicker).setVisibility(View.GONE);
-                            }
-                            if ("mMonthSpinner".equals(datePickerField.getName())) {
-                                datePickerField.setAccessible(true);
-                                Object monthPicker = datePickerField.get(datePicker);
-                                ((View) monthPicker).setVisibility(View.GONE);
-                            }
-                        }
-                    }
-                }
-            } catch (Exception ex) {
-                Log.d("Exception", ex.getMessage());
-            }
-            return pickerDialog;
-        }
-
-        @Override
-        public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
-            getItemYear(String.valueOf(year));
-        }
-    }
 }

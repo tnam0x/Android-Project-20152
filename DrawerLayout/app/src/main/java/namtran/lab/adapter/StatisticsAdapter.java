@@ -37,7 +37,7 @@ public class StatisticsAdapter extends FragmentPagerAdapter {
             case 0:
                 return "Hiện Tại";
             case 1:
-                return "Theo Tháng";
+                return "Theo Năm";
         }
         return null;
     }

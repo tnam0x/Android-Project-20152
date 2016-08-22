@@ -44,7 +44,7 @@ public class TodayStatsAdapter extends ArrayAdapter<StatsItem> {
         }
         StatsItem item = data.get(position);
         Log.d("Position", position + "");
-        String date = "";
+        String date;
         String cost_in = "Thu: " + holder.format(item.getCostIn());
         String cost_out = "Chi: " + holder.format(item.getCostOut());
         switch (position) {
@@ -56,6 +56,9 @@ public class TodayStatsAdapter extends ArrayAdapter<StatsItem> {
                 break;
             case 2:
                 date = "Năm nay: " + item.getDate();
+                break;
+            default:
+                date = "Thời gian: " + item.getDate();
                 break;
         }
         Log.d("Date", date);

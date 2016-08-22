@@ -25,6 +25,7 @@ import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
@@ -51,12 +52,16 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     private FragmentTransaction transaction;
     private FragmentManager manager;
     private FloatingActionButton fab;
+    private NavigationView navigationView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         init();
+        if (savedInstanceState == null) {
+            navigationView.getMenu().performIdentifierAction(R.id.nav_home, Menu.NONE);
+        }
         InDb inDb = new InDb(this);
         OutDb outDb = new OutDb(this);
         InterestDb interestDb = new InterestDb(this);
@@ -71,16 +76,16 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         setSupportActionBar(toolbar);
         actionBar = getSupportActionBar();
         // Home screen
-        manager = getSupportFragmentManager();
-        transaction = manager.beginTransaction();
-        TransactionsFragment home = new TransactionsFragment();
-        transaction.add(R.id.contentPanel, home);
-        transaction.commit();
-        actionBar.setTitle("Sổ giao dịch");
+//        manager = getSupportFragmentManager();
+//        transaction = manager.beginTransaction();
+//        TransactionsFragment home = new TransactionsFragment();
+//        transaction.add(R.id.contentPanel, home);
+//        transaction.commit();
+//        actionBar.setTitle("Sổ giao dịch");
         // Layout
         view = findViewById(R.id.clayout_main);
         drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
-        NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
+        navigationView = (NavigationView) findViewById(R.id.nav_view);
         // Lấy header view của Navigation
         View header = navigationView.getHeaderView(0);
         getUserInfo();
@@ -88,7 +93,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         description.setText(userInfo.getEmail());
         // FloatingActionButton
         fab = (FloatingActionButton) findViewById(R.id.fab);
-        fab.setVisibility(View.VISIBLE);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -149,14 +153,14 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     @Override
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-        fab.setVisibility(View.GONE);
+        fab.hide();
         drawer.closeDrawer(GravityCompat.START);
         switch (item.getItemId()) {
             case R.id.nav_home:
                 actionBar.setTitle(item.getTitle());
                 item.setChecked(true);
                 setFragment(0);
-                fab.setVisibility(View.VISIBLE);
+                fab.show();
                 break;
             case R.id.nav_diagram:
                 actionBar.setTitle(item.getTitle());

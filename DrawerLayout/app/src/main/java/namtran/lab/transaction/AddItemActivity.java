@@ -9,6 +9,7 @@ import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.DatePicker;
 import android.widget.EditText;
@@ -16,6 +17,7 @@ import android.widget.ImageButton;
 import android.widget.Spinner;
 import android.widget.TextView;
 
+import java.lang.reflect.Field;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Locale;
@@ -148,10 +150,11 @@ public class AddItemActivity extends AppCompatActivity implements View.OnClickLi
         int year = calendar.get(Calendar.YEAR);
         int month = calendar.get(Calendar.MONTH);
         int day = calendar.get(Calendar.DAY_OF_MONTH);
-        new DatePickerFragment(this, callback, year, month, day).show();
+        DatePickerFragment pickerFragment = new DatePickerFragment(this, callback, year, month, day);
+        pickerFragment.show();
     }
 
-    DatePickerDialog.OnDateSetListener callback = new DatePickerDialog.OnDateSetListener() {
+    private DatePickerDialog.OnDateSetListener callback = new DatePickerDialog.OnDateSetListener() {
         @Override
         public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
             calendar.set(year, monthOfYear, dayOfMonth);
@@ -172,7 +175,7 @@ public class AddItemActivity extends AppCompatActivity implements View.OnClickLi
         }
     };
 
-    public class DatePickerFragment extends DatePickerDialog {
+    private class DatePickerFragment extends DatePickerDialog {
 
         public DatePickerFragment(Context context, OnDateSetListener callBack, int year, int monthOfYear, int dayOfMonth) {
             super(context, callBack, year, monthOfYear, dayOfMonth);
