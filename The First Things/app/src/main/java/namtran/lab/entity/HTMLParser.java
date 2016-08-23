@@ -1,4 +1,4 @@
-package Objects;
+package namtran.lab.entity;
 
 import android.util.Log;
 
@@ -23,20 +23,21 @@ public class HTMLParser {
     }
 
     public static ArrayList<ForeignCurrency> parseHTML() {
-        ArrayList<ForeignCurrency> moneys = new ArrayList<>();
+        ArrayList<ForeignCurrency> mCurrency = new ArrayList<>();
         Document document;
         try {
             document = Jsoup.connect("https://www.vietcombank.com.vn/exchangerates/").get();
             Elements links = document.select("td");
             for (int i = 0; i < 95; i = i + 5) {
                 ForeignCurrency m = change(links.get(i), links.get(i + 1), links.get(i + 4));
-                moneys.add(m);
+                mCurrency.add(m);
+                Log.d("Currency", m.symbol + m.toString());
             }
         } catch (IOException e) {
             Log.e("HTMLParser", e.getMessage());
         } finally {
-            moneys.add(new ForeignCurrency("VND", "VietNam Dong", 1));
+            mCurrency.add(new ForeignCurrency("VND", "VietNam Dong", 1));
         }
-        return moneys;
+        return mCurrency;
     }
 }

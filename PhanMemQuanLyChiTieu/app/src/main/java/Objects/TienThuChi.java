@@ -33,16 +33,15 @@ public class TienThuChi {
 
     public String getNgoaiTe(String string) {
         String m = "";
-        HTMLParser htmlParser = new HTMLParser();
-        ArrayList<NgoaiTe> moneys = new ArrayList<>();
+        ArrayList<ForeignCurrency> moneys = new ArrayList<>();
         try {
-            moneys = htmlParser.parseHTML();
+            moneys = HTMLParser.parseHTML();
         } catch (Exception e) {
             e.printStackTrace();
         }
-        for (NgoaiTe money : moneys) {
-            if (money.kiHieu.equals(string)) {
-                m = money.fromVND(getTien());
+        for (ForeignCurrency money : moneys) {
+            if (money.symbol.equals(string)) {
+                m = money.VNDToAntoher(getTien());
             }
         }
         return m;
@@ -50,16 +49,15 @@ public class TienThuChi {
 
     public String getTyGia(String string) {
         String m = "";
-        HTMLParser htmlParser = new HTMLParser();
-        ArrayList<NgoaiTe> moneys = new ArrayList<>();
+        ArrayList<ForeignCurrency> moneys = new ArrayList<>();
         try {
-            moneys = htmlParser.parseHTML();
+            moneys = HTMLParser.parseHTML();
         } catch (Exception e) {
             e.printStackTrace();
         }
-        for (NgoaiTe money : moneys) {
-            if (money.kiHieu.equals(string)) {
-                m = money.tyGia + " (VND)";
+        for (ForeignCurrency money : moneys) {
+            if (money.symbol.equals(string)) {
+                m = money.rate + " (VND)";
             }
         }
         return m;
@@ -130,7 +128,6 @@ public class TienThuChi {
         }
         return thuthang;
     }
-
 
     public int kqquychi(String nhom, String thangdau, String thangsau, String nam, ArrayList<BaoCao> a) {
         int thuthang = 0;

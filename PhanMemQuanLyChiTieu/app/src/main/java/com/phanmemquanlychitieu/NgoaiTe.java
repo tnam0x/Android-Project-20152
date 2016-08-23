@@ -162,8 +162,7 @@ public class NgoaiTe extends Activity {
             String strsapxep = doingaythu.ngay(sapxepthu.get(i).getNgaythang());
             sapxepthu.get(i).setNgaythang(strsapxep);
         }
-        myadapterthu = new DanhSachTienTeThu(this,
-                R.layout.t_customlayout_thu, sapxepthu);
+        myadapterthu = new DanhSachTienTeThu(this, R.layout.t_customlayout_thu, sapxepthu);
         listthu.setAdapter(myadapterthu);
     }
 
