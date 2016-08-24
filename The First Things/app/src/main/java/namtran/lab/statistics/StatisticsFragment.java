@@ -34,13 +34,13 @@ public class StatisticsFragment extends Fragment {
         return rootView;
     }
 
-    public static int currentPage = 0;
+    public static int mCurrentPage = 0;
 
     private class PageListener extends ViewPager.SimpleOnPageChangeListener {
         @Override
         public void onPageSelected(int position) {
             Log.i("Page change", "page selected " + position);
-            currentPage = position;
+            mCurrentPage = position;
         }
     }
 }

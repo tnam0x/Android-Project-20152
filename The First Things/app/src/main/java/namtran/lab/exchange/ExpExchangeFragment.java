@@ -11,70 +11,65 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import java.text.DecimalFormat;
-import java.text.DecimalFormatSymbols;
 import java.util.ArrayList;
 
 import namtran.lab.adapter.ExchangeRecyclerAdapter;
+import namtran.lab.entity.CurrencyParser;
 import namtran.lab.entity.ExchangeItem;
-import namtran.lab.entity.Item;
+import namtran.lab.entity.TransactionsItem;
 import namtran.lab.revexpmanager.R;
 
 /**
  * Created by namtr on 22/08/2016.
  */
 public class ExpExchangeFragment extends Fragment {
-    private static ArrayList<ExchangeItem> mData;
-    private static ExchangeRecyclerAdapter adapter;
-    private ArrayList<Item> out;
+    private static ArrayList<ExchangeItem> mListExchange;
+    private static ExchangeRecyclerAdapter mAdapter;
+    private ArrayList<TransactionsItem> mListTrans;
 
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         RecyclerView recyclerView = (RecyclerView) inflater.inflate(R.layout.fragment_list_item, container, false);
-        mData = new ArrayList<>();
-        out = ExchangeFragment.out;
+        mListExchange = new ArrayList<>();
+        mListTrans = ExchangeFragment.mListTransOut;
         setupRecyclerView(recyclerView);
         return recyclerView;
     }
 
     private void setupRecyclerView(RecyclerView recyclerView) {
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
-        adapter = new ExchangeRecyclerAdapter(new RecyclerListener(recyclerView), mData, false);
-        recyclerView.setAdapter(adapter);
+        mAdapter = new ExchangeRecyclerAdapter(new RecyclerListener(recyclerView), mListExchange, false);
+        recyclerView.setAdapter(mAdapter);
     }
 
     public static void update(ArrayList<ExchangeItem> data) {
         Log.d("Update Exp", "doing");
-        mData.clear();
-        mData.addAll(data);
-        adapter.notifyDataSetChanged();
+        mListExchange.clear();
+        mListExchange.addAll(data);
+        mAdapter.notifyDataSetChanged();
     }
 
     private class RecyclerListener implements View.OnClickListener {
         private RecyclerView recyclerView;
-        private DecimalFormat format;
+        private CurrencyParser mParser;
 
         public RecyclerListener(RecyclerView recyclerView) {
             this.recyclerView = recyclerView;
-            DecimalFormatSymbols symbols = new DecimalFormatSymbols();
-            symbols.setGroupingSeparator(',');
-            symbols.setDecimalSeparator('.');
-            format = new DecimalFormat(",### ₫", symbols);
-            format.setMaximumFractionDigits(0);
+            mParser = new CurrencyParser();
         }
 
         @Override
         public void onClick(View view) {
             int position = recyclerView.getChildLayoutPosition(view);
-            Item item = out.get(position);
+            TransactionsItem transactionsItem = mListTrans.get(position);
             AlertDialog.Builder dialog = new AlertDialog.Builder(getContext());
             dialog.setTitle("Thông Tin Khoản Chi").setCancelable(true);
             StringBuilder msg = new StringBuilder();
-            msg.append("Tiền: ").append(format.format(Integer.parseInt(item.getCost())));
-            msg.append("\nNhóm: ").append(item.getType());
-            msg.append("\nNgày: ").append(item.getDate());
-            msg.append("\nGhi Chú: ").append(item.getNote().isEmpty() ? "Trống" : item.getNote());
+            msg.append("Tiền: ").append(mParser.format(transactionsItem.getCost()));
+            msg.append("\nNhóm: ").append(transactionsItem.getType());
+            msg.append("\nNgày: ").append(transactionsItem.getDate());
+            msg.append("\nGhi Chú: ").append(transactionsItem.getNote().isEmpty() ? "Trống" : transactionsItem.getNote());
             dialog.setMessage(msg);
             dialog.setNegativeButton("OK", null);
             dialog.show();

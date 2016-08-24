@@ -20,11 +20,7 @@ public class ForeignCurrency {
 
     public String VNDToAntoher(String moneyOnVND) {
         Float f = Float.parseFloat(moneyOnVND);
-        float money = f / this.rate;
-        DecimalFormat format = new DecimalFormat();
-        format.setMaximumFractionDigits(3);
-        Log.d("Float", format.format(money));
-        return format.format(money);
+        return String.valueOf(f / this.rate);
     }
 
     /***

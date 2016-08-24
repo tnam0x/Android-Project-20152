@@ -1,0 +1,42 @@
+{
+  "project_info": {
+    "project_number": "756982761899",
+    "firebase_url": "https://expenseproject.firebaseio.com",
+    "project_id": "project-440874320950601252",
+    "storage_bucket": "project-440874320950601252.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:756982761899:android:afc32b1238d08d6c",
+        "android_client_info": {
+          "package_name": "namtran.lab.thefirstthings"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "756982761899-fq893qr6raek63im2822qpmo0si2vlm8.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDOt5u36HVVAkatVl29sSYpbHfPC3wyg68"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

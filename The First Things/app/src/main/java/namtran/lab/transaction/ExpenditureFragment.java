@@ -25,15 +25,13 @@ import com.firebase.client.FirebaseError;
 import com.firebase.client.Query;
 import com.firebase.client.ValueEventListener;
 
-import java.text.DecimalFormat;
-import java.text.DecimalFormatSymbols;
-import java.text.NumberFormat;
 import java.util.ArrayList;
 
 import namtran.lab.adapter.TransactionsRecyclerAdapter;
 import namtran.lab.database.InDb;
 import namtran.lab.database.OutDb;
-import namtran.lab.entity.Item;
+import namtran.lab.entity.CurrencyParser;
+import namtran.lab.entity.TransactionsItem;
 import namtran.lab.entity.UserInfo;
 import namtran.lab.revexpmanager.R;
 
@@ -41,13 +39,12 @@ import namtran.lab.revexpmanager.R;
  * Created by namtr on 19/08/2016.
  */
 public class ExpenditureFragment extends Fragment {
-    private Firebase root;
-    private SQLiteDatabase sqlOut, sqlIn;
-    private Item item;
-    private ArrayList<Item> out;
-    private ProgressDialog dialog;
-    private UserInfo info;
-    private TransactionsRecyclerAdapter adapter;
+    private Firebase mFirebase;
+    private SQLiteDatabase mSQLiteIn, mSQLiteOut;
+    private ArrayList<TransactionsItem> mListItem;
+    private ProgressDialog mProDialog;
+    private UserInfo mUserInfo;
+    private TransactionsRecyclerAdapter mAdapter;
 
     @Nullable
     @Override
@@ -56,14 +53,14 @@ public class ExpenditureFragment extends Fragment {
         getUserInfo();
         // Khởi tạo firebase
         Firebase.setAndroidContext(getContext());
-        root = new Firebase("https://expenseproject.firebaseio.com");
+        mFirebase = new Firebase("https://expenseproject.firebaseio.com");
         // Khởi tạo database
         InDb inDb = new InDb(getContext());
         OutDb outDb = new OutDb(getContext());
-        sqlIn = inDb.getWritableDatabase();
-        sqlOut = outDb.getWritableDatabase();
+        mSQLiteIn = inDb.getWritableDatabase();
+        mSQLiteOut = outDb.getWritableDatabase();
         // Lưu danh sách thu
-        out = new ArrayList<>();
+        mListItem = new ArrayList<>();
         setupRecyclerView(recyclerView);
         // Lấy dữ liệu hiển thị lên listview
         initDialog();
@@ -77,8 +74,8 @@ public class ExpenditureFragment extends Fragment {
 
     private void setupRecyclerView(RecyclerView recyclerView) {
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
-        adapter = new TransactionsRecyclerAdapter(out, false, new RecyclerListener(recyclerView));
-        recyclerView.setAdapter(adapter);
+        mAdapter = new TransactionsRecyclerAdapter(mListItem, false, new RecyclerListener(recyclerView));
+        recyclerView.setAdapter(mAdapter);
     }
 
     // Lấy thông tin người dùng
@@ -86,20 +83,20 @@ public class ExpenditureFragment extends Fragment {
         SharedPreferences pref = getContext().getSharedPreferences(UserInfo.PREF_NAME, Context.MODE_PRIVATE);
         String email = pref.getString(UserInfo.KEY_EMAIL, null);
         String uid = pref.getString(UserInfo.KEY_UID, null);
-        info = new UserInfo(email, uid);
+        mUserInfo = new UserInfo(email, uid);
     }
 
     // Hiển thị dialog khi lấy dữ liệu
     private void initDialog() {
-        dialog = new ProgressDialog(getContext());
-        dialog.setMessage("Đang tải dữ liệu...");
-        dialog.setCancelable(false);
+        mProDialog = new ProgressDialog(getContext());
+        mProDialog.setMessage("Đang tải dữ liệu...");
+        mProDialog.setCancelable(false);
     }
 
     // Kiểm tra database có dữ liệu hay chưa
     private boolean isDbEmpty() {
-        Cursor cursorIn = sqlIn.rawQuery("select * from " + InDb.TABLE_NAME, null);
-        Cursor cursorOut = sqlOut.rawQuery("select * from " + OutDb.TABLE_NAME, null);
+        Cursor cursorIn = mSQLiteIn.rawQuery("select * from " + InDb.TABLE_NAME, null);
+        Cursor cursorOut = mSQLiteOut.rawQuery("select * from " + OutDb.TABLE_NAME, null);
         boolean isEmpty = cursorIn.moveToFirst() && cursorOut.moveToFirst();
         cursorIn.close();
         cursorOut.close();
@@ -108,26 +105,22 @@ public class ExpenditureFragment extends Fragment {
     }
 
     private class RecyclerListener implements View.OnClickListener {
-        private RecyclerView recyclerView;
-        private NumberFormat format;
+        private RecyclerView mRecyclerView;
+        private CurrencyParser mParser;
 
         public RecyclerListener(RecyclerView recyclerView) {
-            this.recyclerView = recyclerView;
-            DecimalFormatSymbols symbols = new DecimalFormatSymbols();
-            symbols.setGroupingSeparator(',');
-            symbols.setDecimalSeparator('.');
-            format = new DecimalFormat(",### ₫", symbols);
-            format.setMaximumFractionDigits(0);
+            this.mRecyclerView = recyclerView;
+            mParser = new CurrencyParser();
         }
 
         @Override
         public void onClick(View view) {
-            int position = recyclerView.getChildLayoutPosition(view);
-            Item item = out.get(position);
+            int position = mRecyclerView.getChildLayoutPosition(view);
+            TransactionsItem item = mListItem.get(position);
             AlertDialog.Builder dialog = new AlertDialog.Builder(getContext());
             dialog.setTitle("Thông Tin Khoản Chi").setCancelable(true);
             StringBuilder msg = new StringBuilder();
-            msg.append("Tiền: ").append(format.format(Integer.parseInt(item.getCost())));
+            msg.append("Tiền: ").append(mParser.format(item.getCost()));
             msg.append("\nNhóm: ").append(item.getType());
             msg.append("\nNgày: ").append(item.getDate());
             msg.append("\nGhi Chú: ").append(item.getNote().isEmpty() ? "Trống" : item.getNote());
@@ -143,24 +136,24 @@ public class ExpenditureFragment extends Fragment {
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
-            dialog.show();
+            mProDialog.show();
         }
 
         @Override
         protected Void doInBackground(Void... params) {
-            Item item;
-            int id;
+            TransactionsItem item;
+            String id;
             String queryOut = "select * from " + OutDb.TABLE_NAME;
-            Cursor cursorOut = sqlOut.rawQuery(queryOut, null);
+            Cursor cursorOut = mSQLiteOut.rawQuery(queryOut, null);
             if (cursorOut.moveToFirst()) {
                 do {
-                    id = Integer.parseInt(cursorOut.getString(0));
+                    id = cursorOut.getString(0);
                     String cost = cursorOut.getString(1);
                     String type = cursorOut.getString(2);
                     String note = cursorOut.getString(3);
                     String date = cursorOut.getString(4);
-                    item = new Item(cost, type, note, date, id);
-                    out.add(item);
+                    item = new TransactionsItem(cost, type, note, date, id);
+                    mListItem.add(item);
                     Log.d("OUT DATA - Local", item.toString());
                 } while (cursorOut.moveToNext());
             }
@@ -171,8 +164,8 @@ public class ExpenditureFragment extends Fragment {
         @Override
         protected void onPostExecute(Void aVoid) {
             super.onPostExecute(aVoid);
-            adapter.notifyDataSetChanged();
-            dialog.dismiss();
+            mAdapter.notifyDataSetChanged();
+            mProDialog.dismiss();
         }
     }
 
@@ -182,33 +175,34 @@ public class ExpenditureFragment extends Fragment {
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
-            dialog.show();
+            mProDialog.show();
         }
 
         @Override
         protected Void doInBackground(Void... params) {
             Log.d("Get From Server - Exp", "doing");
             // Tiền chi
-            Firebase refExpense = root.child(info.getUid()).child("Expense");
+            Firebase refExpense = mFirebase.child(mUserInfo.getUid()).child("Expense");
             final Query outQuery = refExpense.orderByValue();
             outQuery.addValueEventListener(new ValueEventListener() {
                 @Override
                 public void onDataChange(DataSnapshot dataSnapshot) {
-                    for (DataSnapshot listItem : dataSnapshot.getChildren()) {
-                        item = listItem.getValue(Item.class);
+                    TransactionsItem item;
+                    for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
+                        item = snapshot.getValue(TransactionsItem.class);
                         ContentValues cv = new ContentValues();
                         cv.put(OutDb.COL_COST, item.getCost());
                         cv.put(OutDb.COL_TYPE, item.getType());
                         cv.put(OutDb.COL_NOTE, item.getNote());
                         cv.put(OutDb.COL_DATE, item.getDate());
-                        sqlOut.insert(OutDb.TABLE_NAME, null, cv);
-                        out.add(item);
+                        mSQLiteOut.insert(OutDb.TABLE_NAME, null, cv);
+                        mListItem.add(item);
                         Log.d("OUT DATA - Server", item.toString());
                     }
-                    sqlOut.close();
+                    mSQLiteOut.close();
                     outQuery.removeEventListener(this);
-                    adapter.notifyDataSetChanged();
-                    dialog.dismiss();
+                    mAdapter.notifyDataSetChanged();
+                    mProDialog.dismiss();
                     Log.d("Get out data - Exp", "Done");
                 }
 

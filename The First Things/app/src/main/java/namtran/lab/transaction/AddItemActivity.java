@@ -9,7 +9,6 @@ import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.DatePicker;
 import android.widget.EditText;
@@ -17,7 +16,6 @@ import android.widget.ImageButton;
 import android.widget.Spinner;
 import android.widget.TextView;
 
-import java.lang.reflect.Field;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Locale;
@@ -30,15 +28,15 @@ import namtran.lab.revexpmanager.R;
  * Created by namtr on 18/08/2016.
  */
 public class AddItemActivity extends AppCompatActivity implements View.OnClickListener {
-    private EditText etCost, etNote;
-    private TextView tvDate, title;
-    private Spinner typeSpinner;
+    private EditText costField, noteField;
+    private TextView mDateTextView, mTitleTextView;
+    private Spinner mTypeSpinner;
     private static final String[] ARRAY_TYPE_IN = {"Tiền Lương", "Đòi Nợ", "Bán Đồ", "Đi Vay", "Được Tặng", "Tiền Thưởng", "Khác"};
-    private static final String[] ARRAY_TYPE_OUT = {"Ăn Uống", "Mua Sắm", "Sinh Hoạt", "Di Chuyển", "Sức Khoẻ", "Giải Trí", "Du Lịch", "Cho vay", "Trả Nợ", "Khác"};
-    private SQLiteDatabase sqlIn;
-    private SQLiteDatabase sqlOut;
-    private View rootView;
-    private Calendar calendar = Calendar.getInstance();
+    private static final String[] ARRAY_TYPE_OUT = {"Ăn Uống", "Mua Sắm", "Sinh Hoạt", "Di Chuyển", "Sức Khoẻ", "Giáo Dục", "Giải Trí", "Du Lịch", "Cho vay", "Trả Nợ", "Khác"};
+    private SQLiteDatabase mSQLiteIn;
+    private SQLiteDatabase mSQLiteOut;
+    private View mView;
+    private Calendar mCalendar = Calendar.getInstance();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -46,41 +44,41 @@ public class AddItemActivity extends AppCompatActivity implements View.OnClickLi
         setContentView(R.layout.activity_add_transaction);
         initControl();
         InDb inDb = new InDb(this);
-        sqlIn = inDb.getWritableDatabase();
+        mSQLiteIn = inDb.getWritableDatabase();
         OutDb outDb = new OutDb(this);
-        sqlOut = outDb.getWritableDatabase();
+        mSQLiteOut = outDb.getWritableDatabase();
     }
 
     private void initControl() {
-        rootView = findViewById(R.id.add_exp_layout);
-        title = (TextView) findViewById(R.id.title_add_layout);
-        etCost = (EditText) findViewById(R.id.et_cost_out);
-        etNote = (EditText) findViewById(R.id.et_note_out);
-        tvDate = (TextView) findViewById(R.id.tv_date_out);
-        ImageButton btnSelectDate = (ImageButton) findViewById(R.id.btn_select_date_out);
-        btnSelectDate.setOnClickListener(this);
-        typeSpinner = (Spinner) findViewById(R.id.spinner_type_out);
+        mView = findViewById(R.id.add_exp_layout);
+        mTitleTextView = (TextView) findViewById(R.id.title_add_layout);
+        mDateTextView = (TextView) findViewById(R.id.tv_date_out);
+        costField = (EditText) findViewById(R.id.et_cost_out);
+        noteField = (EditText) findViewById(R.id.et_note_out);
+        mTypeSpinner = (Spinner) findViewById(R.id.spinner_type_out);
+        ImageButton btnSelectDate = (ImageButton) findViewById(R.id.btn_select_date_banking);
         ImageButton btnSave = (ImageButton) findViewById(R.id.btn_save_out);
+        btnSelectDate.setOnClickListener(this);
         btnSave.setOnClickListener(this);
         showDefaultDate();
         ArrayAdapter<String> adapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_dropdown_item);
-        typeSpinner.setAdapter(adapter);
+        mTypeSpinner.setAdapter(adapter);
         initForEachType(adapter);
     }
 
-    private void initForEachType(ArrayAdapter<String> adapter) {
-        switch (TransactionsFragment.currentPage) {
+    private void initForEachType(ArrayAdapter<String> spinnerAdapter) {
+        switch (TransactionsFragment.mCurrentPage) {
             case 0:
-                title.setText(getResources().getString(R.string.title_in));
-                etCost.setHint(getResources().getString(R.string.hint_in));
-                adapter.addAll(ARRAY_TYPE_IN);
-                adapter.notifyDataSetChanged();
+                mTitleTextView.setText(getResources().getString(R.string.title_in));
+                costField.setHint(getResources().getString(R.string.hint_in));
+                spinnerAdapter.addAll(ARRAY_TYPE_IN);
+                spinnerAdapter.notifyDataSetChanged();
                 break;
             case 1:
-                title.setText(getResources().getString(R.string.title_out));
-                etCost.setHint(getResources().getString(R.string.hint_out));
-                adapter.addAll(ARRAY_TYPE_OUT);
-                adapter.notifyDataSetChanged();
+                mTitleTextView.setText(getResources().getString(R.string.title_out));
+                costField.setHint(getResources().getString(R.string.hint_out));
+                spinnerAdapter.addAll(ARRAY_TYPE_OUT);
+                spinnerAdapter.notifyDataSetChanged();
                 break;
             default:
                 break;
@@ -91,7 +89,7 @@ public class AddItemActivity extends AppCompatActivity implements View.OnClickLi
     public void onClick(View v) {
         int id = v.getId();
         switch (id) {
-            case R.id.btn_select_date_out:
+            case R.id.btn_select_date_banking:
                 showDatePicker();
                 break;
             case R.id.btn_save_out:
@@ -103,26 +101,26 @@ public class AddItemActivity extends AppCompatActivity implements View.OnClickLi
     }
 
     private void saveData() {
-        String cost = etCost.getText().toString();
+        String cost = costField.getText().toString();
         if (cost.isEmpty() || checkZero(cost)) {
-            etCost.requestFocus();
-            Snackbar.make(rootView, "Bạn chưa nhập số tiền", Snackbar.LENGTH_SHORT).show();
+            costField.requestFocus();
+            Snackbar.make(mView, "Bạn chưa nhập số tiền", Snackbar.LENGTH_SHORT).show();
         } else {
             ContentValues cv = new ContentValues();
             cv.put(OutDb.COL_COST, cost);
-            cv.put(OutDb.COL_TYPE, typeSpinner.getSelectedItem().toString());
-            cv.put(OutDb.COL_NOTE, etNote.getText().toString().trim());
-            cv.put(OutDb.COL_DATE, tvDate.getText().toString());
-            if (TransactionsFragment.currentPage == 0) {
-                sqlIn.insert(InDb.TABLE_NAME, null, cv);
+            cv.put(OutDb.COL_TYPE, mTypeSpinner.getSelectedItem().toString());
+            cv.put(OutDb.COL_NOTE, noteField.getText().toString().trim());
+            cv.put(OutDb.COL_DATE, mDateTextView.getText().toString());
+            if (TransactionsFragment.mCurrentPage == 0) {
+                mSQLiteIn.insert(InDb.TABLE_NAME, null, cv);
                 Log.d("Insert In", cv.toString());
-            } else if (TransactionsFragment.currentPage == 1) {
-                sqlOut.insert(OutDb.TABLE_NAME, null, cv);
+            } else if (TransactionsFragment.mCurrentPage == 1) {
+                mSQLiteOut.insert(OutDb.TABLE_NAME, null, cv);
                 Log.d("Insert Out", cv.toString());
             }
-            etCost.setText("");
-            etNote.setText("");
-            Snackbar.make(rootView, "Thêm giao dịch thành công", Snackbar.LENGTH_SHORT).show();
+            costField.setText("");
+            noteField.setText("");
+            Snackbar.make(mView, "Thêm giao dịch thành công", Snackbar.LENGTH_SHORT).show();
         }
     }
 
@@ -130,7 +128,7 @@ public class AddItemActivity extends AppCompatActivity implements View.OnClickLi
         Calendar calendar = Calendar.getInstance();
         String dateFormat = "dd/MM/yyyy";
         SimpleDateFormat format = new SimpleDateFormat(dateFormat, Locale.getDefault());
-        tvDate.setText(format.format(calendar.getTime()));
+        mDateTextView.setText(format.format(calendar.getTime()));
     }
 
     private boolean checkZero(String s) {
@@ -140,16 +138,16 @@ public class AddItemActivity extends AppCompatActivity implements View.OnClickLi
                 return true;
             }
         } catch (NumberFormatException e) {
-            Snackbar.make(rootView, e.getMessage(), Snackbar.LENGTH_SHORT).show();
+            Snackbar.make(mView, e.getMessage(), Snackbar.LENGTH_SHORT).show();
             return false;
         }
         return false;
     }
 
     private void showDatePicker() {
-        int year = calendar.get(Calendar.YEAR);
-        int month = calendar.get(Calendar.MONTH);
-        int day = calendar.get(Calendar.DAY_OF_MONTH);
+        int year = mCalendar.get(Calendar.YEAR);
+        int month = mCalendar.get(Calendar.MONTH);
+        int day = mCalendar.get(Calendar.DAY_OF_MONTH);
         DatePickerFragment pickerFragment = new DatePickerFragment(this, callback, year, month, day);
         pickerFragment.show();
     }
@@ -157,7 +155,7 @@ public class AddItemActivity extends AppCompatActivity implements View.OnClickLi
     private DatePickerDialog.OnDateSetListener callback = new DatePickerDialog.OnDateSetListener() {
         @Override
         public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
-            calendar.set(year, monthOfYear, dayOfMonth);
+            mCalendar.set(year, monthOfYear, dayOfMonth);
             monthOfYear = monthOfYear + 1;
             String date, day, month;
             if (dayOfMonth < 10) {
@@ -171,7 +169,7 @@ public class AddItemActivity extends AppCompatActivity implements View.OnClickLi
                 month = monthOfYear + "";
             }
             date = day + "/" + month + "/" + year;
-            tvDate.setText(date);
+            mDateTextView.setText(date);
         }
     };
 

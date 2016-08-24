@@ -15,7 +15,7 @@ import namtran.lab.revexpmanager.R;
  * Created by namtr on 15/08/2016.
  */
 public class InfoActivity extends AppCompatActivity {
-    private UserInfo userInfo;
+    private UserInfo mUserInfo;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -25,8 +25,8 @@ public class InfoActivity extends AppCompatActivity {
         TextView uid = (TextView) findViewById(R.id.uid_user);
         Button changePass = (Button) findViewById(R.id.btnChangePass_info);
         getUserInfo();
-        email.setText(userInfo.getEmail());
-        uid.setText(userInfo.getUid());
+        email.setText(mUserInfo.getEmail());
+        uid.setText(mUserInfo.getUid());
         changePass.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -39,7 +39,7 @@ public class InfoActivity extends AppCompatActivity {
         SharedPreferences pref = getSharedPreferences(UserInfo.PREF_NAME, MODE_PRIVATE);
         String email = pref.getString(UserInfo.KEY_EMAIL, null);
         String uid = pref.getString(UserInfo.KEY_UID, null);
-        userInfo = new UserInfo(email, uid);
+        mUserInfo = new UserInfo(email, uid);
     }
 
 }

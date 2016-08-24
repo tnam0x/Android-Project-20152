@@ -21,7 +21,7 @@ import java.util.Locale;
 import namtran.lab.adapter.TodayStatsAdapter;
 import namtran.lab.database.InDb;
 import namtran.lab.database.OutDb;
-import namtran.lab.entity.Item;
+import namtran.lab.entity.TransactionsItem;
 import namtran.lab.entity.DateParser;
 import namtran.lab.entity.StatsItem;
 import namtran.lab.revexpmanager.R;
@@ -30,29 +30,29 @@ import namtran.lab.revexpmanager.R;
  * Created by namtr on 20/08/2016.
  */
 public class TodayStatsFragment extends Fragment {
-    private ProgressDialog dialog;
-    private SQLiteDatabase sqlOut, sqlIn;
-    private ArrayList<Item> in, out;
-    private ArrayList<StatsItem> listItem;
-    private TodayStatsAdapter adapter;
+    private ProgressDialog mProDialog;
+    private SQLiteDatabase mSQLiteIn, mSQLiteOut;
+    private ArrayList<TransactionsItem> mListTransIn, mListTransOut;
+    private ArrayList<StatsItem> mListStats;
+    private TodayStatsAdapter mAdapter;
 
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View rootView = inflater.inflate(R.layout.fragment_today, container, false);
-        ListView listView = (ListView) rootView.findViewById(R.id.list_item_today);
-        listItem = new ArrayList<>();
-        adapter = new TodayStatsAdapter(getContext(), R.layout.custom_list_today, listItem);
-        listView.setAdapter(adapter);
+        View view = inflater.inflate(R.layout.fragment_today, container, false);
+        ListView listView = (ListView) view.findViewById(R.id.list_item_today);
+        mListStats = new ArrayList<>();
+        mAdapter = new TodayStatsAdapter(getContext(), R.layout.custom_list_today, mListStats);
+        listView.setAdapter(mAdapter);
         InDb inDb = new InDb(getContext());
         OutDb outDb = new OutDb(getContext());
-        sqlIn = inDb.getWritableDatabase();
-        sqlOut = outDb.getWritableDatabase();
-        dialog = new ProgressDialog(getContext());
-        dialog.setMessage("Đang tải");
-        dialog.setCancelable(false);
+        mSQLiteIn = inDb.getWritableDatabase();
+        mSQLiteOut = outDb.getWritableDatabase();
+        mProDialog = new ProgressDialog(getContext());
+        mProDialog.setMessage("Đang tải");
+        mProDialog.setCancelable(false);
         new RetrieveData().execute();
-        return rootView;
+        return view;
     }
 
     private void getItemAndSetupToListView() {
@@ -60,63 +60,63 @@ public class TodayStatsFragment extends Fragment {
         getItemNow();
         getItemMonth();
         getItemYear();
-        adapter.notifyDataSetChanged();
-        dialog.dismiss();
+        mAdapter.notifyDataSetChanged();
+        mProDialog.dismiss();
     }
 
     private void getItemNow() {
         String date = today();
         int costIn = 0, costOut = 0;
-        for (Item item : in) {
-            if (item.getDate().equals(date)) {
-                costIn += Integer.parseInt(item.getCost());
+        for (TransactionsItem transactionsItem : mListTransIn) {
+            if (transactionsItem.getDate().equals(date)) {
+                costIn += Integer.parseInt(transactionsItem.getCost());
                 Log.d("CostIn", costIn + "");
             }
         }
-        for (Item item : out) {
-            if (item.getDate().equals(date)) {
-                costOut += Integer.parseInt(item.getCost());
+        for (TransactionsItem transactionsItem : mListTransOut) {
+            if (transactionsItem.getDate().equals(date)) {
+                costOut += Integer.parseInt(transactionsItem.getCost());
                 Log.d("CostOut", costOut + "");
             }
         }
         StatsItem statsItem = new StatsItem(date, String.valueOf(costIn), String.valueOf(costOut));
-        listItem.add(statsItem);
+        mListStats.add(statsItem);
     }
 
     private void getItemMonth() {
         String date = DateParser.parseMonth(today());
         Log.d("Month", date);
         int costIn = 0, costOut = 0;
-        for (Item item : in) {
-            if (date.equals(DateParser.parseMonth(item.getDate()))) {
-                costIn += Integer.parseInt(item.getCost());
+        for (TransactionsItem transactionsItem : mListTransIn) {
+            if (date.equals(DateParser.parseMonth(transactionsItem.getDate()))) {
+                costIn += Integer.parseInt(transactionsItem.getCost());
             }
         }
-        for (Item item : out) {
-            if (date.equals(DateParser.parseMonth(item.getDate()))) {
-                costOut += Integer.parseInt(item.getCost());
+        for (TransactionsItem transactionsItem : mListTransOut) {
+            if (date.equals(DateParser.parseMonth(transactionsItem.getDate()))) {
+                costOut += Integer.parseInt(transactionsItem.getCost());
             }
         }
         StatsItem statsItem = new StatsItem(date, String.valueOf(costIn), String.valueOf(costOut));
-        listItem.add(statsItem);
+        mListStats.add(statsItem);
     }
 
     private void getItemYear() {
         String date = DateParser.parseYear(today());
         Log.d("Year", date);
         int costIn = 0, costOut = 0;
-        for (Item item : in) {
-            if (date.equals(DateParser.parseYear(item.getDate()))) {
-                costIn += Integer.parseInt(item.getCost());
+        for (TransactionsItem transactionsItem : mListTransIn) {
+            if (date.equals(DateParser.parseYear(transactionsItem.getDate()))) {
+                costIn += Integer.parseInt(transactionsItem.getCost());
             }
         }
-        for (Item item : out) {
-            if (date.equals(DateParser.parseYear(item.getDate()))) {
-                costOut += Integer.parseInt(item.getCost());
+        for (TransactionsItem transactionsItem : mListTransOut) {
+            if (date.equals(DateParser.parseYear(transactionsItem.getDate()))) {
+                costOut += Integer.parseInt(transactionsItem.getCost());
             }
         }
         StatsItem statsItem = new StatsItem(date, String.valueOf(costIn), String.valueOf(costOut));
-        listItem.add(statsItem);
+        mListStats.add(statsItem);
     }
 
     private String today() {
@@ -130,43 +130,43 @@ public class TodayStatsFragment extends Fragment {
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
-            dialog.show();
+            mProDialog.show();
             Log.d("TodayStats", "getting data");
-            in = new ArrayList<>();
-            out = new ArrayList<>();
+            mListTransIn = new ArrayList<>();
+            mListTransOut = new ArrayList<>();
         }
 
         @Override
         protected Void doInBackground(Void... voids) {
             Log.d("TodayStats", "doing");
-            Item item;
-            int id;
+            TransactionsItem item;
+            String id;
             String queryIn = "select * from " + InDb.TABLE_NAME;
-            Cursor cursorIn = sqlIn.rawQuery(queryIn, null);
+            Cursor cursorIn = mSQLiteIn.rawQuery(queryIn, null);
             if (cursorIn.moveToFirst()) { // Thu
                 do {
-                    id = Integer.parseInt(cursorIn.getString(0));
+                    id = cursorIn.getString(0);
                     String cost = cursorIn.getString(1);
                     String type = cursorIn.getString(2);
                     String note = cursorIn.getString(3);
                     String date = cursorIn.getString(4);
-                    item = new Item(cost, type, note, date, id);
-                    in.add(item);
+                    item = new TransactionsItem(cost, type, note, date, id);
+                    mListTransIn.add(item);
                     Log.d("IN TodayStats", item.toString());
                 } while (cursorIn.moveToNext());
             }
             cursorIn.close();
             String queryOut = "select * from " + OutDb.TABLE_NAME;
-            Cursor cursorOut = sqlOut.rawQuery(queryOut, null);
+            Cursor cursorOut = mSQLiteOut.rawQuery(queryOut, null);
             if (cursorOut.moveToFirst()) { // Thu
                 do {
-                    id = Integer.parseInt(cursorOut.getString(0));
+                    id = cursorOut.getString(0);
                     String cost = cursorOut.getString(1);
                     String type = cursorOut.getString(2);
                     String note = cursorOut.getString(3);
                     String date = cursorOut.getString(4);
-                    item = new Item(cost, type, note, date, id);
-                    out.add(item);
+                    item = new TransactionsItem(cost, type, note, date, id);
+                    mListTransOut.add(item);
                     Log.d("OUT TodayStats", item.toString());
                 } while (cursorOut.moveToNext());
             }

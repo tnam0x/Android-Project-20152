@@ -9,15 +9,15 @@ import android.database.sqlite.SQLiteOpenHelper;
  */
 public class InterestDb extends SQLiteOpenHelper {
 
-    public static final String TABLE_NAME = "tblaixuat";
-    public static final String COL_NAME = "tennganhang";
-    public static final String COL_TIEN = "tienlaixuat";
-    public static final String COL_LAIXUAT = "laixuat";
-    public static final String COL_DATE = "ngaythanglaixuat";
-    private static final String DB_NAME = "tienlaixuat";
+    public static final String TABLE_NAME = "account";
+    public static final String COL_NAME = "name";
+    public static final String COL_MONEY = "money";
+    public static final String COL_RATE = "interest_rate";
+    public static final String COL_DATE = "date";
+    private static final String DB_NAME = "banking_account";
     private static final int DB_VERSION = 1;
     private static final String STRING_CREATE = "CREATE TABLE " + TABLE_NAME + " (_id INTEGER PRIMARY KEY AUTOINCREMENT,"
-            + COL_NAME + " TEXT," + COL_TIEN + " TEXT," + COL_LAIXUAT + " TEXT," + COL_DATE + " TEXT);";
+            + COL_NAME + " TEXT," + COL_MONEY + " TEXT," + COL_RATE + " TEXT," + COL_DATE + " TEXT);";
 
     public InterestDb(Context context) {
         super(context, DB_NAME, null, DB_VERSION);
@@ -26,8 +26,6 @@ public class InterestDb extends SQLiteOpenHelper {
     @Override
     public void onCreate(SQLiteDatabase db) {
         db.execSQL(STRING_CREATE);
-//        ContentValues cv = new ContentValues();
-//        db.insert(TABLE_NAME, null, cv);
     }
 
     @Override

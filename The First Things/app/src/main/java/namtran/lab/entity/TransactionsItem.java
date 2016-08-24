@@ -3,18 +3,18 @@ package namtran.lab.entity;
 /**
  * Created by Legendary on 27/04/2016.
  */
-public class Item {
+public class TransactionsItem {
     private String cost;
     private String type;
     private String note;
     private String date;
-    private int id;
+    private String id;
 
-    public Item() {
+    public TransactionsItem() {
         // Cần constructor này để Firebase đồng bộ
     }
 
-    public Item(String cost, String type, String note, String date, int id) {
+    public TransactionsItem(String cost, String type, String note, String date, String id) {
         this.cost = cost;
         this.type = type;
         this.note = note;
@@ -38,7 +38,7 @@ public class Item {
         return date;
     }
 
-    public int getId() {
+    public String getId() {
         return id;
     }
 

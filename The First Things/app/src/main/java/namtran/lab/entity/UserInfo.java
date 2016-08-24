@@ -9,13 +9,12 @@ public class UserInfo {
     public static final String KEY_UID = "uid";
     public static final String KEY_AVATAR = "avatar";
     private String email;
+    private String uid;
 
     public UserInfo(String email, String uid) {
         this.email = email;
         this.uid = uid;
     }
-
-    private String uid;
 
     public String getEmail() {
         return email;

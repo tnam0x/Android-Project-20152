@@ -7,6 +7,7 @@ import android.widget.TextView;
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
 
+import namtran.lab.entity.CurrencyParser;
 import namtran.lab.revexpmanager.R;
 
 /**
@@ -14,25 +15,14 @@ import namtran.lab.revexpmanager.R;
  */
 public class ExchangeItemViewHolder extends RecyclerView.ViewHolder {
     TextView type, cost, date;
-    private DecimalFormat format;
-
+    CurrencyParser mParser;
 
     public ExchangeItemViewHolder(View parent) {
         super(parent);
         type = (TextView) parent.findViewById(R.id.tv_type);
         cost = (TextView) parent.findViewById(R.id.tv_cost);
         date = (TextView) parent.findViewById(R.id.tv_note);
-        DecimalFormatSymbols symbols = new DecimalFormatSymbols();
-        symbols.setGroupingSeparator(',');
-        symbols.setDecimalSeparator('.');
-        format = new DecimalFormat();
-        format.setDecimalFormatSymbols(symbols);
-        format.setMaximumFractionDigits(3);
-    }
-
-    String format(String value) {
-        float money = Float.parseFloat(value);
-        return format.format(money);
+        mParser = new CurrencyParser(3);
     }
 
 }

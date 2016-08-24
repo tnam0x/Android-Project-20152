@@ -51,7 +51,7 @@ public class LaiXuat extends Activity {
     private TextView suangaythang, ngaythang;
     private ImageButton img_suangay;
     private ImageButton img_savesua;
-    private String[] bankName = {"VietinBank", "CBBANK", "OceanBank", "GPBank", "AgriBank", "ACBank", "TPBank", "DongABank",
+    private String[] BANK_NAME = {"VietinBank", "CBBANK", "OceanBank", "GPBank", "AgriBank", "ACBank", "TPBank", "DongABank",
             "SeABank", "ABBank", "Techcom bank", "VPBank", "SHBank", "VietABank", "PGBank", "VCBank", "BIDV", "HSBC", "CitiBank"};
     //khai bao thuoc tinh xem
     private TextView xemnganhang;
@@ -76,7 +76,7 @@ public class LaiXuat extends Activity {
         laixuat = (EditText) findViewById(R.id.editLaiXuat);
         listlaixuat = (ListView) findViewById(R.id.lvHienThi1);
 
-        adapterBank = new ArrayAdapter<>(this, android.R.layout.simple_spinner_dropdown_item, bankName);
+        adapterBank = new ArrayAdapter<>(this, android.R.layout.simple_spinner_dropdown_item, BANK_NAME);
         tennganhang.setAdapter(adapterBank);
         ngaythang.setOnClickListener(new OnClickListener() {
 
@@ -121,7 +121,7 @@ public class LaiXuat extends Activity {
         });
         listlaixuat.setOnItemClickListener(new OnItemClickListener() {
             @Override
-            public void onItemClick(AdapterView<?> parent, View view,
+            public void onItemClick(final AdapterView<?> parent, View view,
                                     final int position, long id) {
                 AlertDialog.Builder b = new AlertDialog.Builder(LaiXuat.this);
                 b.setTitle("Lựa Chọn Của Bạn");
@@ -132,7 +132,7 @@ public class LaiXuat extends Activity {
                         mDblaixuat = dblaixuat.getReadableDatabase();
                         final Dialog dialogthu = new Dialog(context);
                         LayoutInflater li = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-                        View v = li.inflate(R.layout.t_sualaixuat, null, false);
+                        View v = li.inflate(R.layout.t_sualaixuat, parent, false);
                         dialogthu.setContentView(v);
                         dialogthu.setTitle("Sửa Lãi Xuất");
                         suatennganhang = (Spinner) dialogthu.findViewById(R.id.editText_suatenlaixuat);
@@ -268,8 +268,8 @@ public class LaiXuat extends Activity {
 
     public int checkPosition(String name) {
         int i = 0;
-        for (; i < bankName.length; i++)
-            if (bankName[i].equals(name))
+        for (; i < BANK_NAME.length; i++)
+            if (BANK_NAME[i].equals(name))
                 break;
         return i;
     }

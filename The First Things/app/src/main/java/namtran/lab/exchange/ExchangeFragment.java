@@ -31,18 +31,18 @@ import namtran.lab.database.OutDb;
 import namtran.lab.entity.ExchangeItem;
 import namtran.lab.entity.ForeignCurrency;
 import namtran.lab.entity.HTMLParser;
-import namtran.lab.entity.Item;
+import namtran.lab.entity.TransactionsItem;
 import namtran.lab.revexpmanager.R;
 
 /**
  * Created by namtr on 22/08/2016.
  */
 public class ExchangeFragment extends Fragment {
-    private Spinner exchageRateSpinner;
-    private TextView tvRate;
-    private SQLiteDatabase sqlIn, sqlOut;
-    public static ArrayList<Item> in, out;
-    private ProgressDialog dialog;
+    private Spinner mSpinner;
+    private TextView mRateTextView;
+    private SQLiteDatabase mSQLiteIn, mSQLiteOut;
+    public static ArrayList<TransactionsItem> mListTransIn, mListTransOut;
+    private ProgressDialog mProDialog;
     private ArrayList<ForeignCurrency> mFCurrency;
     private final static String[] NAME_MONEY = {"US Dollar (USD)", "Euro (EUR)",
             "British Pound (GBD)", "HongKong Dollar (HKD)", "Japan Yen (JPY)",
@@ -52,19 +52,18 @@ public class ExchangeFragment extends Fragment {
             "Russian Ruble (RUB)", "Singapore Dollar (SGD)", "Thai Baht (THB)",
             "Canadian Dollar (CAD)", "Saudi Rial (SAR)"};
     private final static String[] KH_MONEY = {"USD", "EUR", "GBP", "HKD", "JPY",
-            "KRW", "INR", "KWD", "CHF", "AUD", "MYR", "RUB", "SGD", "THB",
-            "CAD", "SAR"};
+            "KRW", "INR", "KWD", "CHF", "AUD", "MYR", "RUB", "SGD", "THB", "CAD", "SAR"};
 
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View rootView = inflater.inflate(R.layout.fragment_transactions_statistics, container, false);
-        TableLayout tableLayout = (TableLayout) rootView.findViewById(R.id.layout_exchange);
+        View view = inflater.inflate(R.layout.fragment_transactions_statistics, container, false);
+        TableLayout tableLayout = (TableLayout) view.findViewById(R.id.layout_exchange);
         tableLayout.setVisibility(View.VISIBLE);
-        exchageRateSpinner = (Spinner) rootView.findViewById(R.id.spinner_exchange);
-        tvRate = (TextView) rootView.findViewById(R.id.tv_rate_exchange);
-        final TabLayout tabLayout = (TabLayout) rootView.findViewById(R.id.tab_layout);
-        final ViewPager pager = (ViewPager) rootView.findViewById(R.id.pager);
+        mSpinner = (Spinner) view.findViewById(R.id.spinner_exchange);
+        mRateTextView = (TextView) view.findViewById(R.id.tv_rate_exchange);
+        final TabLayout tabLayout = (TabLayout) view.findViewById(R.id.tab_layout);
+        final ViewPager pager = (ViewPager) view.findViewById(R.id.pager);
         pager.setAdapter(new ExchangeViewPagerAdapter(getChildFragmentManager()));
         tabLayout.post(new Runnable() {
             @Override
@@ -72,25 +71,26 @@ public class ExchangeFragment extends Fragment {
                 tabLayout.setupWithViewPager(pager, true);
             }
         });
+        // Custom the spinner
         ArrayAdapter<String> adapter = new ArrayAdapter<>(getContext(), R.layout.spinner_item, NAME_MONEY);
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        exchageRateSpinner.setAdapter(adapter);
+        mSpinner.setAdapter(adapter);
         init();
-        return rootView;
+        return view;
     }
 
     private void init() {
         InDb inDb = new InDb(getContext());
         OutDb outDb = new OutDb(getContext());
-        sqlIn = inDb.getWritableDatabase();
-        sqlOut = outDb.getWritableDatabase();
-        out = new ArrayList<>();
-        in = new ArrayList<>();
+        mSQLiteIn = inDb.getWritableDatabase();
+        mSQLiteOut = outDb.getWritableDatabase();
+        mListTransOut = new ArrayList<>();
+        mListTransIn = new ArrayList<>();
         mFCurrency = new ArrayList<>();
-        dialog = new ProgressDialog(getContext());
-        dialog.setMessage("Đang tải...");
-        dialog.setCancelable(false);
-        if (isInternetAvailable() && out.isEmpty()) {
+        mProDialog = new ProgressDialog(getContext());
+        mProDialog.setMessage("Đang tải...");
+        mProDialog.setCancelable(false);
+        if (isInternetAvailable() && mListTransOut.isEmpty()) {
             new GetDataFromDb().execute();
         } else {
             Toast.makeText(getContext(), "Không có kết nối mạng", Toast.LENGTH_SHORT).show();
@@ -103,7 +103,7 @@ public class ExchangeFragment extends Fragment {
             public void run() {
                 for (ForeignCurrency currency : mFCurrency) {
                     if (currency.symbol.equals(KH_MONEY[position])) {
-                        tvRate.setText(currency.toString());
+                        mRateTextView.setText(currency.toString());
                         updateListExp(currency);
                     }
                 }
@@ -116,14 +116,14 @@ public class ExchangeFragment extends Fragment {
         ArrayList<ExchangeItem> expData = new ArrayList<>();
         ExchangeItem mItem;
         String cost, type, date;
-        for (Item item : in) {
+        for (TransactionsItem item : mListTransIn) {
             cost = currency.VNDToAntoher(item.getCost());
             type = item.getType();
             date = item.getDate();
             mItem = new ExchangeItem(cost, type, date);
             revData.add(mItem);
         }
-        for (Item item : out) {
+        for (TransactionsItem item : mListTransOut) {
             cost = currency.VNDToAntoher(item.getCost());
             type = item.getType();
             date = item.getDate();
@@ -160,41 +160,41 @@ public class ExchangeFragment extends Fragment {
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
-            dialog.show();
+            mProDialog.show();
         }
 
         @Override
         protected Void doInBackground(Void... params) {
             mFCurrency = HTMLParser.parseHTML();
-            Item item;
-            int id;
+            TransactionsItem item;
+            String id;
             String queryIn = "select * from " + InDb.TABLE_NAME;
-            Cursor cursorIn = sqlIn.rawQuery(queryIn, null);
+            Cursor cursorIn = mSQLiteIn.rawQuery(queryIn, null);
             if (cursorIn.moveToFirst()) {
                 do {
-                    id = Integer.parseInt(cursorIn.getString(0));
+                    id = cursorIn.getString(0);
                     String cost = cursorIn.getString(1);
                     String type = cursorIn.getString(2);
                     String note = cursorIn.getString(3);
                     String date = cursorIn.getString(4);
-                    item = new Item(cost, type, note, date, id);
-                    in.add(item);
+                    item = new TransactionsItem(cost, type, note, date, id);
+                    mListTransIn.add(item);
                     Log.d("IN DATA - Exchange", item.toString());
                 } while (cursorIn.moveToNext());
             }
             cursorIn.close();
 
             String queryOut = "select * from " + OutDb.TABLE_NAME;
-            Cursor cursorOut = sqlOut.rawQuery(queryOut, null);
+            Cursor cursorOut = mSQLiteOut.rawQuery(queryOut, null);
             if (cursorOut.moveToFirst()) {
                 do {
-                    id = Integer.parseInt(cursorOut.getString(0));
+                    id = cursorOut.getString(0);
                     String cost = cursorOut.getString(1);
                     String type = cursorOut.getString(2);
                     String note = cursorOut.getString(3);
                     String date = cursorOut.getString(4);
-                    item = new Item(cost, type, note, date, id);
-                    out.add(item);
+                    item = new TransactionsItem(cost, type, note, date, id);
+                    mListTransOut.add(item);
                     Log.d("OUT DATA - Exchange", item.toString());
                 } while (cursorOut.moveToNext());
             }
@@ -205,9 +205,9 @@ public class ExchangeFragment extends Fragment {
         @Override
         protected void onPostExecute(Void aVoid) {
             super.onPostExecute(aVoid);
-            exchageRateSpinner.setOnItemSelectedListener(spinnerListener);
+            mSpinner.setOnItemSelectedListener(spinnerListener);
             loadChange(0);
-            dialog.dismiss();
+            mProDialog.dismiss();
         }
     }
 

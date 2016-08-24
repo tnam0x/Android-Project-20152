@@ -10,19 +10,19 @@ import android.view.ViewGroup;
 
 import java.util.ArrayList;
 
-import namtran.lab.entity.Item;
+import namtran.lab.entity.TransactionsItem;
 import namtran.lab.revexpmanager.R;
 
 /**
  * Created by namtr on 20/08/2016.
  */
 public class TransactionsRecyclerAdapter extends RecyclerView.Adapter<TransactionsViewHolder> {
-    private ArrayList<Item> data;
+    private ArrayList<TransactionsItem> mListTrans;
     private boolean isReveneus;
     private final View.OnClickListener mOnClickListener;
 
-    public TransactionsRecyclerAdapter(ArrayList<Item> data, boolean isReveneus, View.OnClickListener mOnClickListener) {
-        this.data = data;
+    public TransactionsRecyclerAdapter(ArrayList<TransactionsItem> data, boolean isReveneus, View.OnClickListener mOnClickListener) {
+        this.mListTrans = data;
         this.isReveneus = isReveneus;
         this.mOnClickListener = mOnClickListener;
     }
@@ -37,24 +37,24 @@ public class TransactionsRecyclerAdapter extends RecyclerView.Adapter<Transactio
 
     @Override
     public void onBindViewHolder(TransactionsViewHolder holder, int position) {
-        Item item = data.get(position);
-        setItemText(item, holder);
+        TransactionsItem transactionsItem = mListTrans.get(position);
+        setItemText(transactionsItem, holder);
     }
 
-    public void setItemText(Item item, TransactionsViewHolder holder) {
+    public void setItemText(TransactionsItem transactionsItem, TransactionsViewHolder holder) {
         Log.d("Reveneus", isReveneus + "");
+        String money;
         if (isReveneus) {
-            String money = "+" + holder.format(item.getCost());
-            holder.cost.setText(money);
+            money = "+" + holder.mParser.format(transactionsItem.getCost());
             holder.cost.setTextColor(Color.BLUE);
         } else {
-            String money = "-" + holder.format(item.getCost());
-            holder.cost.setText(money);
+            money = "-" + holder.mParser.format(transactionsItem.getCost());
             holder.cost.setTextColor(Color.RED);
         }
-        holder.type.setText(item.getType());
-        holder.note.setVisibility(View.INVISIBLE); // Đảm báo item nào có dữ liệu thì mới cho hiển thị
-        String notes = item.getNote();
+        holder.cost.setText(money);
+        holder.type.setText(transactionsItem.getType());
+        holder.note.setVisibility(View.INVISIBLE); // Đảm báo Item nào có dữ liệu thì mới cho hiển thị
+        String notes = transactionsItem.getNote();
         if (!notes.isEmpty()) {
             holder.note.setVisibility(View.VISIBLE);
             holder.note.setText(notes);
@@ -63,7 +63,7 @@ public class TransactionsRecyclerAdapter extends RecyclerView.Adapter<Transactio
 
     @Override
     public int getItemCount() {
-        return data == null ? 0 : data.size();
+        return mListTrans == null ? 0 : mListTrans.size();
     }
 
 }

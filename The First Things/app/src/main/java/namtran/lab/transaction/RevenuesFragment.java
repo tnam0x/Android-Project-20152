@@ -4,7 +4,6 @@ import android.app.ProgressDialog;
 import android.content.ContentValues;
 import android.content.Context;
 import android.content.SharedPreferences;
-import android.content.res.Resources;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.AsyncTask;
@@ -14,7 +13,6 @@ import android.support.v4.app.Fragment;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -27,16 +25,15 @@ import com.firebase.client.FirebaseError;
 import com.firebase.client.Query;
 import com.firebase.client.ValueEventListener;
 
-import java.text.DecimalFormat;
-import java.text.DecimalFormatSymbols;
-import java.text.NumberFormat;
 import java.util.ArrayList;
-import java.util.Locale;
 
 import namtran.lab.adapter.TransactionsRecyclerAdapter;
 import namtran.lab.database.InDb;
+import namtran.lab.database.InterestDb;
 import namtran.lab.database.OutDb;
-import namtran.lab.entity.Item;
+import namtran.lab.entity.BankingItem;
+import namtran.lab.entity.CurrencyParser;
+import namtran.lab.entity.TransactionsItem;
 import namtran.lab.entity.UserInfo;
 import namtran.lab.revexpmanager.R;
 
@@ -44,13 +41,12 @@ import namtran.lab.revexpmanager.R;
  * Created by namtr on 15/08/2016.
  */
 public class RevenuesFragment extends Fragment {
-    private Firebase root;
-    private SQLiteDatabase sqlOut, sqlIn;
-    private Item item;
-    private ArrayList<Item> in;
-    private TransactionsRecyclerAdapter adapter;
-    private ProgressDialog dialog;
-    private UserInfo info;
+    private Firebase mFirebase;
+    private SQLiteDatabase mSQLiteIn, mSQLiteOut, mSQLiteRate;
+    private ArrayList<TransactionsItem> mListItem;
+    private TransactionsRecyclerAdapter mAdapter;
+    private ProgressDialog mProDialog;
+    private UserInfo mUserInfo;
 
     @Nullable
     @Override
@@ -59,14 +55,16 @@ public class RevenuesFragment extends Fragment {
         getUserInfo();
         // Khởi tạo firebase
         Firebase.setAndroidContext(getContext());
-        root = new Firebase("https://expenseproject.firebaseio.com");
+        mFirebase = new Firebase("https://expenseproject.firebaseio.com");
         // Khởi tạo databse
         InDb inDb = new InDb(getContext());
         OutDb outDb = new OutDb(getContext());
-        sqlIn = inDb.getWritableDatabase();
-        sqlOut = outDb.getWritableDatabase();
+        InterestDb interestDb = new InterestDb(getContext());
+        mSQLiteIn = inDb.getWritableDatabase();
+        mSQLiteOut = outDb.getWritableDatabase();
+        mSQLiteRate = interestDb.getWritableDatabase();
         // Lưu danh sách thu
-        in = new ArrayList<>();
+        mListItem = new ArrayList<>();
         setupRecyclerView(recyclerView);
         // Lấy dữ liệu đổ lên listview
         initDialog();
@@ -80,8 +78,8 @@ public class RevenuesFragment extends Fragment {
 
     private void setupRecyclerView(RecyclerView recyclerView) {
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
-        adapter = new TransactionsRecyclerAdapter(in, true, new RecyclerListener(recyclerView));
-        recyclerView.setAdapter(adapter);
+        mAdapter = new TransactionsRecyclerAdapter(mListItem, true, new RecyclerListener(recyclerView));
+        recyclerView.setAdapter(mAdapter);
     }
 
     // Lấy thông tin người dùng
@@ -89,20 +87,20 @@ public class RevenuesFragment extends Fragment {
         SharedPreferences pref = getContext().getSharedPreferences(UserInfo.PREF_NAME, Context.MODE_PRIVATE);
         String email = pref.getString(UserInfo.KEY_EMAIL, null);
         String uid = pref.getString(UserInfo.KEY_UID, null);
-        info = new UserInfo(email, uid);
+        mUserInfo = new UserInfo(email, uid);
     }
 
     // Hiển thị dialog khi lấy dữ liệu
     private void initDialog() {
-        dialog = new ProgressDialog(getContext());
-        dialog.setMessage("Đang tải dữ liệu...");
-        dialog.setCancelable(false);
+        mProDialog = new ProgressDialog(getContext());
+        mProDialog.setMessage("Đang tải dữ liệu...");
+        mProDialog.setCancelable(false);
     }
 
     // Kiểm tra xem databse có dữ liệu hay chưa
     private boolean isDbEmpty() {
-        Cursor cursorIn = sqlIn.rawQuery("select * from " + InDb.TABLE_NAME, null);
-        Cursor cursorOut = sqlOut.rawQuery("select * from " + OutDb.TABLE_NAME, null);
+        Cursor cursorIn = mSQLiteIn.rawQuery("select * from " + InDb.TABLE_NAME, null);
+        Cursor cursorOut = mSQLiteOut.rawQuery("select * from " + OutDb.TABLE_NAME, null);
         boolean isEmpty = cursorIn.moveToFirst() && cursorOut.moveToFirst();
         cursorIn.close();
         cursorOut.close();
@@ -111,26 +109,22 @@ public class RevenuesFragment extends Fragment {
     }
 
     private class RecyclerListener implements View.OnClickListener {
-        private RecyclerView recyclerView;
-        private DecimalFormat format;
+        private RecyclerView mRecyclerView;
+        private CurrencyParser mParser;
 
         public RecyclerListener(RecyclerView recyclerView) {
-            this.recyclerView = recyclerView;
-            DecimalFormatSymbols symbols = new DecimalFormatSymbols();
-            symbols.setGroupingSeparator(',');
-            symbols.setDecimalSeparator('.');
-            format = new DecimalFormat(",### ₫", symbols);
-            format.setMaximumFractionDigits(0);
+            this.mRecyclerView = recyclerView;
+            mParser = new CurrencyParser();
         }
 
         @Override
         public void onClick(View view) {
-            int position = recyclerView.getChildLayoutPosition(view);
-            Item item = in.get(position);
+            int position = mRecyclerView.getChildLayoutPosition(view);
+            TransactionsItem item = mListItem.get(position);
             AlertDialog.Builder dialog = new AlertDialog.Builder(getContext());
             dialog.setTitle("Thông Tin Khoản Thu").setCancelable(true);
             StringBuilder msg = new StringBuilder();
-            msg.append("Tiền: ").append(format.format(Integer.parseInt(item.getCost())));
+            msg.append("Tiền: ").append(mParser.format(item.getCost()));
             msg.append("\nNhóm: ").append(item.getType());
             msg.append("\nNgày: ").append(item.getDate());
             msg.append("\nGhi Chú: ").append(item.getNote().isEmpty() ? "Trống" : item.getNote());
@@ -146,24 +140,24 @@ public class RevenuesFragment extends Fragment {
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
-            dialog.show();
+            mProDialog.show();
         }
 
         @Override
         protected Void doInBackground(Void... params) {
-            Item item;
-            int id;
+            TransactionsItem item;
+            String id;
             String queryIn = "select * from " + InDb.TABLE_NAME;
-            Cursor cursorIn = sqlIn.rawQuery(queryIn, null);
+            Cursor cursorIn = mSQLiteIn.rawQuery(queryIn, null);
             if (cursorIn.moveToFirst()) { // Thu
                 do {
-                    id = Integer.parseInt(cursorIn.getString(0));
+                    id = cursorIn.getString(0);
                     String cost = cursorIn.getString(1);
                     String type = cursorIn.getString(2);
                     String note = cursorIn.getString(3);
                     String date = cursorIn.getString(4);
-                    item = new Item(cost, type, note, date, id);
-                    in.add(item);
+                    item = new TransactionsItem(cost, type, note, date, id);
+                    mListItem.add(item);
                     Log.d("IN DATA - Local", item.toString());
                 } while (cursorIn.moveToNext());
             }
@@ -174,8 +168,8 @@ public class RevenuesFragment extends Fragment {
         @Override
         protected void onPostExecute(Void aVoid) {
             super.onPostExecute(aVoid);
-            adapter.notifyDataSetChanged();
-            dialog.dismiss();
+            mAdapter.notifyDataSetChanged();
+            mProDialog.dismiss();
         }
     }
 
@@ -185,34 +179,60 @@ public class RevenuesFragment extends Fragment {
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
-            dialog.show();
+            mProDialog.show();
         }
 
         @Override
         protected Void doInBackground(Void... params) {
             Log.d("Get From Server - Rev", "doing");
             // Tiền thu
-            Firebase refIncome = root.child(info.getUid()).child("Income");
+            Firebase refIncome = mFirebase.child(mUserInfo.getUid()).child("Income");
             final Query inQuery = refIncome.orderByValue();
             inQuery.addValueEventListener(new ValueEventListener() {
                 @Override
                 public void onDataChange(DataSnapshot dataSnapshot) {
-                    for (DataSnapshot listItem : dataSnapshot.getChildren()) {
-                        item = listItem.getValue(Item.class);
-                        ContentValues cv = new ContentValues();
-                        cv.put(InDb.COL_COST, item.getCost());
-                        cv.put(InDb.COL_TYPE, item.getType());
-                        cv.put(InDb.COL_NOTE, item.getNote());
-                        cv.put(InDb.COL_DATE, item.getDate());
-                        sqlIn.insert(InDb.TABLE_NAME, null, cv);
-                        in.add(item);
+                    TransactionsItem item;
+                    for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
+                        item = snapshot.getValue(TransactionsItem.class);
+                        ContentValues values = new ContentValues();
+                        values.put(InDb.COL_COST, item.getCost());
+                        values.put(InDb.COL_TYPE, item.getType());
+                        values.put(InDb.COL_NOTE, item.getNote());
+                        values.put(InDb.COL_DATE, item.getDate());
+                        mSQLiteIn.insert(InDb.TABLE_NAME, null, values);
+                        mListItem.add(item);
                         Log.d("IN DATA - Server", item.toString());
                     }
-                    sqlIn.close();
+                    mSQLiteIn.close();
                     inQuery.removeEventListener(this);
-                    adapter.notifyDataSetChanged();
-                    dialog.dismiss();
+                    mAdapter.notifyDataSetChanged();
                     Log.d("Get in data - Rev", "Done");
+                }
+
+                @Override
+                public void onCancelled(FirebaseError firebaseError) {
+                    Toast.makeText(getContext(), firebaseError.getMessage(), Toast.LENGTH_SHORT).show();
+                }
+            });
+
+            Firebase interestRef = mFirebase.child(mUserInfo.getUid()).child("Interest Rate");
+            final Query intsQuery = interestRef.orderByValue();
+            intsQuery.addValueEventListener(new ValueEventListener() {
+                @Override
+                public void onDataChange(DataSnapshot dataSnapshot) {
+                    BankingItem item;
+                    for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
+                        item = snapshot.getValue(BankingItem.class);
+                        ContentValues values = new ContentValues();
+                        values.put(InterestDb.COL_NAME, item.getName());
+                        values.put(InterestDb.COL_MONEY, item.getMoney());
+                        values.put(InterestDb.COL_RATE, item.getRate());
+                        values.put(InterestDb.COL_DATE, item.getDate());
+                        mSQLiteRate.insert(InterestDb.TABLE_NAME, null, values);
+                    }
+                    mSQLiteRate.close();
+                    intsQuery.removeEventListener(this);
+                    mProDialog.dismiss();
                 }
 
                 @Override

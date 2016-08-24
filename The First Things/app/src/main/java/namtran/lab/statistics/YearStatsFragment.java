@@ -20,9 +20,6 @@ import android.widget.ImageButton;
 import android.widget.TextView;
 
 import java.lang.reflect.Field;
-import java.text.DecimalFormat;
-import java.text.DecimalFormatSymbols;
-import java.text.NumberFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -30,29 +27,30 @@ import java.util.Locale;
 
 import namtran.lab.database.InDb;
 import namtran.lab.database.OutDb;
-import namtran.lab.entity.Item;
+import namtran.lab.entity.CurrencyParser;
 import namtran.lab.entity.DateParser;
+import namtran.lab.entity.TransactionsItem;
 import namtran.lab.revexpmanager.R;
 
 /**
  * Created by namtr on 20/08/2016.
  */
 public class YearStatsFragment extends Fragment {
-    private static TextView tvYear;
-    private static TextView tvRev;
-    private static TextView tvExp;
-    private ProgressDialog dialog;
-    private SQLiteDatabase sqlOut, sqlIn;
-    private static ArrayList<Item> in;
-    private static ArrayList<Item> out;
-    private static DecimalFormat format;
-    private Calendar calendar = Calendar.getInstance();
+    private static TextView mYearTextView;
+    private static TextView mRevTextView;
+    private static TextView mExpTextView;
+    private ProgressDialog mProDialog;
+    private SQLiteDatabase  mSQLiteIn, mSQLiteOut;
+    private static ArrayList<TransactionsItem> mListTransIn;
+    private static ArrayList<TransactionsItem> mListTransOut;
+    private static CurrencyParser mParser;
+    private Calendar mCalendar = Calendar.getInstance();
 
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View rootView = inflater.inflate(R.layout.fragment_year, container, false);
-        ImageButton btnSelectDate = (ImageButton) rootView.findViewById(R.id.btn_select_date_year);
+        View view = inflater.inflate(R.layout.fragment_year, container, false);
+        ImageButton btnSelectDate = (ImageButton) view.findViewById(R.id.btn_select_date_year);
         btnSelectDate.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -60,27 +58,23 @@ public class YearStatsFragment extends Fragment {
             }
         });
         // Định dạng tiền tệ
-        DecimalFormatSymbols symbols = new DecimalFormatSymbols();
-        symbols.setGroupingSeparator(',');
-        symbols.setDecimalSeparator('.');
-        format = new DecimalFormat(",### ₫", symbols);
-        format.setMaximumFractionDigits(0);
+        mParser = new CurrencyParser();
         // control
-        tvYear = (TextView) rootView.findViewById(R.id.tv_year);
-        tvRev = (TextView) rootView.findViewById(R.id.tv_in_year);
-        tvExp = (TextView) rootView.findViewById(R.id.tv_out_year);
+        mYearTextView = (TextView) view.findViewById(R.id.tv_year);
+        mRevTextView = (TextView) view.findViewById(R.id.tv_in_year);
+        mExpTextView = (TextView) view.findViewById(R.id.tv_out_year);
         // database
         InDb inDb = new InDb(getContext());
         OutDb outDb = new OutDb(getContext());
-        sqlIn = inDb.getWritableDatabase();
-        sqlOut = outDb.getWritableDatabase();
+        mSQLiteIn = inDb.getWritableDatabase();
+        mSQLiteOut = outDb.getWritableDatabase();
         // Tạo dialog hiển thị khi đang khởi tạo dữ liệu
-        dialog = new ProgressDialog(getContext());
-        dialog.setMessage("Đang tải");
-        dialog.setCancelable(false);
+        mProDialog = new ProgressDialog(getContext());
+        mProDialog.setMessage("Đang tải");
+        mProDialog.setCancelable(false);
         // Lấy dữ liệu
         new RetrieveData().execute();
-        return rootView;
+        return view;
     }
 
     // Lấy thu chi theo năm đã chọn, mặc định là năm hiện tại
@@ -91,19 +85,19 @@ public class YearStatsFragment extends Fragment {
         }
         Log.d("Year", year);
         int costIn = 0, costOut = 0;
-        for (Item item : in) {
-            if (year.equals(DateParser.parseYear(item.getDate()))) {
-                costIn += Integer.parseInt(item.getCost());
+        for (TransactionsItem transactionsItem : mListTransIn) {
+            if (year.equals(DateParser.parseYear(transactionsItem.getDate()))) {
+                costIn += Integer.parseInt(transactionsItem.getCost());
             }
         }
-        for (Item item : out) {
-            if (year.equals(DateParser.parseYear(item.getDate()))) {
-                costOut += Integer.parseInt(item.getCost());
+        for (TransactionsItem transactionsItem : mListTransOut) {
+            if (year.equals(DateParser.parseYear(transactionsItem.getDate()))) {
+                costOut += Integer.parseInt(transactionsItem.getCost());
             }
         }
-        tvYear.setText(year);
-        tvRev.setText(format.format(costIn));
-        tvExp.setText(format.format(costOut));
+        mYearTextView.setText(year);
+        mRevTextView.setText(mParser.format(costIn));
+        mExpTextView.setText(mParser.format(costOut));
     }
 
     //
@@ -115,9 +109,9 @@ public class YearStatsFragment extends Fragment {
     }
 
     private void showYearPicker() {
-        int year = calendar.get(Calendar.YEAR);
-        int month = calendar.get(Calendar.MONTH);
-        int day = calendar.get(Calendar.DAY_OF_MONTH);
+        int year = mCalendar.get(Calendar.YEAR);
+        int month = mCalendar.get(Calendar.MONTH);
+        int day = mCalendar.get(Calendar.DAY_OF_MONTH);
         YearPickerFragment pickerFragment = new YearPickerFragment(getContext(), callback, year, month, day);
         pickerFragment.setCancelable(true);
         hideDateAndMonthFields(pickerFragment.getDatePicker());
@@ -178,7 +172,7 @@ public class YearStatsFragment extends Fragment {
     private DatePickerDialog.OnDateSetListener callback = new DatePickerDialog.OnDateSetListener() {
         @Override
         public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
-            calendar.set(year, monthOfYear, dayOfMonth);
+            mCalendar.set(year, monthOfYear, dayOfMonth);
             getItemYear(String.valueOf(year));
         }
     };
@@ -200,41 +194,41 @@ public class YearStatsFragment extends Fragment {
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
-            dialog.show();
+            mProDialog.show();
             Log.d("YearStats", "getting data");
-            in = new ArrayList<>();
-            out = new ArrayList<>();
+            mListTransIn = new ArrayList<>();
+            mListTransOut = new ArrayList<>();
         }
 
         @Override
         protected Void doInBackground(Void... voids) {
-            Item item;
-            int id;
+            TransactionsItem item;
+            String id;
             String queryIn = "select * from " + InDb.TABLE_NAME;
-            Cursor cursorIn = sqlIn.rawQuery(queryIn, null);
+            Cursor cursorIn = mSQLiteIn.rawQuery(queryIn, null);
             if (cursorIn.moveToFirst()) { // Thu
                 do {
-                    id = Integer.parseInt(cursorIn.getString(0));
+                    id = cursorIn.getString(0);
                     String cost = cursorIn.getString(1);
                     String type = cursorIn.getString(2);
                     String note = cursorIn.getString(3);
                     String date = cursorIn.getString(4);
-                    item = new Item(cost, type, note, date, id);
-                    in.add(item);
+                    item = new TransactionsItem(cost, type, note, date, id);
+                    mListTransIn.add(item);
                 } while (cursorIn.moveToNext());
             }
             cursorIn.close();
             String queryOut = "select * from " + OutDb.TABLE_NAME;
-            Cursor cursorOut = sqlOut.rawQuery(queryOut, null);
+            Cursor cursorOut = mSQLiteOut.rawQuery(queryOut, null);
             if (cursorOut.moveToFirst()) { // Thu
                 do {
-                    id = Integer.parseInt(cursorOut.getString(0));
+                    id = cursorOut.getString(0);
                     String cost = cursorOut.getString(1);
                     String type = cursorOut.getString(2);
                     String note = cursorOut.getString(3);
                     String date = cursorOut.getString(4);
-                    item = new Item(cost, type, note, date, id);
-                    out.add(item);
+                    item = new TransactionsItem(cost, type, note, date, id);
+                    mListTransOut.add(item);
                 } while (cursorOut.moveToNext());
             }
             cursorOut.close();
@@ -246,8 +240,8 @@ public class YearStatsFragment extends Fragment {
         protected void onPostExecute(Void aVoid) {
             super.onPostExecute(aVoid);
             Log.d("YearStats", "done");
-            if (dialog.isShowing()) {
-                dialog.dismiss();
+            if (mProDialog.isShowing()) {
+                mProDialog.dismiss();
             }
         }
     }

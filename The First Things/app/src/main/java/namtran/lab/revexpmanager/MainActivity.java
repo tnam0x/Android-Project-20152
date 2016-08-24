@@ -12,6 +12,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
 import android.support.design.widget.Snackbar;
@@ -31,6 +32,7 @@ import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import namtran.lab.banking_account.BankingAccountFragment;
 import namtran.lab.database.InDb;
 import namtran.lab.database.InterestDb;
 import namtran.lab.database.OutDb;
@@ -42,16 +44,15 @@ import namtran.lab.transaction.AddItemActivity;
 import namtran.lab.transaction.TransactionsFragment;
 
 public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
-    private DrawerLayout drawer;
-    private ActionBarDrawerToggle toggle;
-    private View view;
-    private ActionBar actionBar;
-    private SQLiteDatabase sqlInterest;
-    private SQLiteDatabase sqlIn;
-    private SQLiteDatabase sqlOut;
-    private UserInfo userInfo;
-    private FloatingActionButton fab;
-    private NavigationView navigationView;
+    private DrawerLayout mDrawerLayout;
+    private ActionBarDrawerToggle mToggle;
+    private View mView;
+    private ActionBar mActionBar;
+    private SQLiteDatabase mSQLiteIn, mSQLiteOut, mSQLiteRate;
+    private UserInfo mUserInfo;
+    private FloatingActionButton mFAB;
+    private NavigationView mNavView;
+    private Toolbar mToolbar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -59,40 +60,32 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         setContentView(R.layout.activity_main);
         init();
         if (savedInstanceState == null) {
-            navigationView.getMenu().performIdentifierAction(R.id.nav_home, Menu.NONE);
+            mNavView.getMenu().performIdentifierAction(R.id.nav_home, Menu.NONE);
         }
         InDb inDb = new InDb(this);
         OutDb outDb = new OutDb(this);
         InterestDb interestDb = new InterestDb(this);
-        sqlIn = inDb.getWritableDatabase();
-        sqlOut = outDb.getWritableDatabase();
-        sqlInterest = interestDb.getWritableDatabase();
+        mSQLiteIn = inDb.getWritableDatabase();
+        mSQLiteOut = outDb.getWritableDatabase();
+        mSQLiteRate = interestDb.getWritableDatabase();
     }
 
     private void init() {
         // Toolbar
-        Toolbar toolbar = (Toolbar) findViewById(R.id.main_toolbar);
-        setSupportActionBar(toolbar);
-        actionBar = getSupportActionBar();
-        // Home screen
-//        manager = getSupportFragmentManager();
-//        transaction = manager.beginTransaction();
-//        TransactionsFragment home = new TransactionsFragment();
-//        transaction.add(R.id.contentPanel, home);
-//        transaction.commit();
-//        actionBar.setTitle("Sổ giao dịch");
-        // Layout
-        view = findViewById(R.id.clayout_main);
-        drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
-        navigationView = (NavigationView) findViewById(R.id.nav_view);
+        mToolbar = (Toolbar) findViewById(R.id.main_toolbar);
+        setSupportActionBar(mToolbar);
+        mActionBar = getSupportActionBar();
+        mView = findViewById(R.id.clayout_main);
+        mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
+        mNavView = (NavigationView) findViewById(R.id.nav_view);
         // Lấy header view của Navigation
-        View header = navigationView.getHeaderView(0);
+        View header = mNavView.getHeaderView(0);
         getUserInfo();
         TextView description = (TextView) header.findViewById(R.id.description_header);
-        description.setText(userInfo.getEmail());
+        description.setText(mUserInfo.getEmail());
         // FloatingActionButton
-        fab = (FloatingActionButton) findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
+        mFAB = (FloatingActionButton) findViewById(R.id.fab);
+        mFAB.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(MainActivity.this, AddItemActivity.class);
@@ -101,9 +94,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             }
         });
         // Toggle cho Navigation
-        toggle = new ActionBarDrawerToggle(this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
-        drawer.addDrawerListener(toggle);
-        navigationView.setNavigationItemSelectedListener(this);
+        mToggle = new ActionBarDrawerToggle(this, mDrawerLayout, mToolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
+        mDrawerLayout.addDrawerListener(mToggle);
+        mNavView.setNavigationItemSelectedListener(this);
     }
 
     // Lấy thông tin người dùng
@@ -111,28 +104,28 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         SharedPreferences pref = getSharedPreferences(UserInfo.PREF_NAME, MODE_PRIVATE);
         String email = pref.getString(UserInfo.KEY_EMAIL, null);
         String uid = pref.getString(UserInfo.KEY_UID, null);
-        userInfo = new UserInfo(email, uid);
+        mUserInfo = new UserInfo(email, uid);
     }
 
     @Override
     protected void onPostCreate(@Nullable Bundle savedInstanceState) {
         super.onPostCreate(savedInstanceState);
-        toggle.syncState();
+        mToggle.syncState();
     }
 
     @Override
     public void onConfigurationChanged(Configuration newConfig) {
         super.onConfigurationChanged(newConfig);
         // Forward the new configuration the drawer toggle component.
-        toggle.onConfigurationChanged(newConfig);
+        mToggle.onConfigurationChanged(newConfig);
     }
 
     boolean doubleBackToExitPressedOnce = false;
 
     @Override
     public void onBackPressed() {
-        if (drawer.isDrawerOpen(GravityCompat.START)) {
-            drawer.closeDrawer(GravityCompat.START);
+        if (mDrawerLayout.isDrawerOpen(GravityCompat.START)) {
+            mDrawerLayout.closeDrawer(GravityCompat.START);
             return;
         }
         if (doubleBackToExitPressedOnce) {
@@ -152,34 +145,37 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     @Override
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-        fab.setVisibility(View.INVISIBLE);
-        drawer.closeDrawer(GravityCompat.START);
+        AppBarLayout.LayoutParams params = (AppBarLayout.LayoutParams) mToolbar.getLayoutParams();
+        params.setScrollFlags(AppBarLayout.LayoutParams.SCROLL_FLAG_SCROLL | AppBarLayout.LayoutParams.SCROLL_FLAG_ENTER_ALWAYS);
+        mFAB.setVisibility(View.INVISIBLE);
+        mDrawerLayout.closeDrawer(GravityCompat.START);
         switch (item.getItemId()) {
             case R.id.nav_home:
-                actionBar.setTitle(item.getTitle());
+                mActionBar.setTitle(item.getTitle());
                 item.setChecked(true);
                 setFragment(0);
-                fab.setVisibility(View.VISIBLE);
+                mFAB.setVisibility(View.VISIBLE);
                 break;
             case R.id.nav_diagram:
-                actionBar.setTitle(item.getTitle());
+                mActionBar.setTitle(item.getTitle());
                 item.setChecked(true);
                 setFragment(1);
                 break;
             case R.id.nav_exchange:
-                actionBar.setTitle(item.getTitle());
+                mActionBar.setTitle(item.getTitle());
                 item.setChecked(true);
                 setFragment(2);
                 break;
             case R.id.nav_deposit:
-                actionBar.setTitle(item.getTitle());
+                params.setScrollFlags(-1);
+                mActionBar.setTitle(item.getTitle());
                 item.setChecked(true);
                 setFragment(3);
                 break;
             case R.id.nav_sync:
                 if (isInternetAvailable()) {
                     Log.d("Sync", "begin");
-                    SyncDataToServer sync = new SyncDataToServer(this, view);
+                    SyncDataToServer sync = new SyncDataToServer(this, mView);
                     sync.execute();
                 } else {
                     notification("Không có kết nối mạng");
@@ -212,16 +208,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         return false;
     }
 
-    // Xoá tất cả dữ liệu đã lưu khi đăng xuất
-    private void removeAllInfoOfUser() {
-        sqlIn.execSQL("delete from " + InDb.TABLE_NAME);
-        sqlOut.execSQL("delete from " + OutDb.TABLE_NAME);
-        sqlInterest.execSQL("delete from " + InterestDb.TABLE_NAME);
-        SharedPreferences pref = getSharedPreferences(UserInfo.PREF_NAME, MODE_PRIVATE);
-        SharedPreferences.Editor editor = pref.edit();
-        editor.clear().apply();
-    }
-
     // Mở fragment tương ứng với menu được chọn
     private void setFragment(int position) {
         FragmentManager manager = getSupportFragmentManager();
@@ -239,8 +225,22 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 ExchangeFragment exchange = new ExchangeFragment();
                 transaction.replace(R.id.contentPanel, exchange);
                 break;
+            case 3:
+                BankingAccountFragment banking = new BankingAccountFragment();
+                transaction.replace(R.id.contentPanel, banking);
+                break;
         }
         transaction.commit();
+    }
+
+    // Xoá tất cả dữ liệu đã lưu khi đăng xuất
+    private void removeAllInfoOfUser() {
+        mSQLiteIn.execSQL("delete from " + InDb.TABLE_NAME);
+        mSQLiteOut.execSQL("delete from " + OutDb.TABLE_NAME);
+        mSQLiteRate.execSQL("delete from " + InterestDb.TABLE_NAME);
+        SharedPreferences pref = getSharedPreferences(UserInfo.PREF_NAME, MODE_PRIVATE);
+        SharedPreferences.Editor editor = pref.edit();
+        editor.clear().apply();
     }
 
     // Kiểm tra mạng
@@ -252,6 +252,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     // Hiển thị thông báo dạng snackbar
     private void notification(String msg) {
-        Snackbar.make(view, msg, Snackbar.LENGTH_SHORT).show();
+        Snackbar.make(mView, msg, Snackbar.LENGTH_SHORT).show();
     }
 }

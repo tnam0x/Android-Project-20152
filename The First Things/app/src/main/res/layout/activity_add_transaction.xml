@@ -90,7 +90,7 @@
                 android:textAppearance="?android:attr/textAppearanceMedium" />
 
             <ImageButton
-                android:id="@+id/btn_select_date_out"
+                android:id="@+id/btn_select_date_banking"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:background="@color/colorPrimaryDark"

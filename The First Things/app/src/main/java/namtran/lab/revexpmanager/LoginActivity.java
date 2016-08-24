@@ -29,13 +29,13 @@ import namtran.lab.entity.UserInfo;
  * Created by namtr on 15/08/2016.
  */
 public class LoginActivity extends Activity {
-    private TextInputEditText email, password;
-    private ProgressBar bar;
-    private LinearLayout loginForm;
-    private Firebase root;
-    private String uid;
+    private TextInputEditText mEmailField, mPasswordField;
+    private ProgressBar mProBar;
+    private LinearLayout mLoginForm;
+    private Firebase mFirebase;
+    private String mUid;
     private static final String EMAIL_PATTERN = "^[a-zA-Z0-9#_~!$&'()*+,;=:.\"<>@\\[\\]\\\\]+@[a-zA-Z0-9-]+(\\.[a-zA-Z0-9-]+)*$";
-    private Pattern pattern = Pattern.compile(EMAIL_PATTERN);
+    private Pattern mPattern = Pattern.compile(EMAIL_PATTERN);
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -44,23 +44,23 @@ public class LoginActivity extends Activity {
         getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_HIDDEN);
 
         Firebase.setAndroidContext(this);
-        root = new Firebase("https://expenseproject.firebaseio.com");
+        mFirebase = new Firebase("https://expenseproject.firebaseio.com");
         loadControl();
     }
 
     private void loadControl() {
-        email = (TextInputEditText) findViewById(R.id.et_email_login);
-        password = (TextInputEditText) findViewById(R.id.et_pass_login);
+        mEmailField = (TextInputEditText) findViewById(R.id.et_email_login);
+        mPasswordField = (TextInputEditText) findViewById(R.id.et_pass_login);
         Button btnLogin = (Button) findViewById(R.id.btnLogin);
         Button btnSignUp = (Button) findViewById(R.id.btnSignUp);
-        bar = (ProgressBar) findViewById(R.id.login_progress);
-        loginForm = (LinearLayout) findViewById(R.id.login_form);
+        mProBar = (ProgressBar) findViewById(R.id.login_progress);
+        mLoginForm = (LinearLayout) findViewById(R.id.login_form);
         // login
         btnLogin.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                String mail = email.getText().toString();
-                String pass = password.getText().toString();
+                String mail = mEmailField.getText().toString();
+                String pass = mPasswordField.getText().toString();
                 Log.d("Login", "Button");
                 validate(mail, pass);
             }
@@ -74,12 +74,12 @@ public class LoginActivity extends Activity {
 //                overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
             }
         });
-        password.setOnKeyListener(new View.OnKeyListener() {
+        mPasswordField.setOnKeyListener(new View.OnKeyListener() {
             @Override
             public boolean onKey(View v, int keyCode, KeyEvent event) {
                 if (event.getAction() == KeyEvent.ACTION_DOWN && keyCode == KeyEvent.KEYCODE_ENTER) {
-                    String mail = email.getText().toString();
-                    String pass = password.getText().toString();
+                    String mail = mEmailField.getText().toString();
+                    String pass = mPasswordField.getText().toString();
                     Log.d("Login", "Enter");
                     validate(mail, pass);
                 }
@@ -91,19 +91,19 @@ public class LoginActivity extends Activity {
     private void validate(String mail, String pass) {
         hideKeyboard();
         if (!validateEmail(mail)) {
-            email.requestFocus();
-            email.setError("Email không hợp lệ");
+            mEmailField.requestFocus();
+            mEmailField.setError("Email không hợp lệ");
         } else if (!validatePassword(pass)) {
-            password.requestFocus();
-            password.setError("Mật khẩu tối thiểu phải chứa 6 kí tự");
+            mPasswordField.requestFocus();
+            mPasswordField.setError("Mật khẩu tối thiểu phải chứa 6 kí tự");
         } else {
             hideControl();
-            authLogin(mail, pass);
+            signIn(mail, pass);
         }
     }
 
     private boolean validateEmail(String email) {
-        Matcher matcher = pattern.matcher(email);
+        Matcher matcher = mPattern.matcher(email);
         return matcher.matches();
     }
 
@@ -123,8 +123,8 @@ public class LoginActivity extends Activity {
         runOnUiThread(new Runnable() {
             @Override
             public void run() {
-                bar.setVisibility(View.VISIBLE);
-                loginForm.setVisibility(View.GONE);
+                mProBar.setVisibility(View.VISIBLE);
+                mLoginForm.setVisibility(View.GONE);
             }
         });
     }
@@ -133,25 +133,26 @@ public class LoginActivity extends Activity {
         runOnUiThread(new Runnable() {
             @Override
             public void run() {
-                bar.setVisibility(View.GONE);
-                loginForm.setVisibility(View.VISIBLE);
+                mProBar.setVisibility(View.GONE);
+                mLoginForm.setVisibility(View.VISIBLE);
             }
         });
     }
 
-    private void authLogin(final String email, String pass) {
-        root.authWithPassword(email, pass, new Firebase.AuthResultHandler() {
+    private void signIn(final String email, String pass) {
+        mFirebase.authWithPassword(email, pass, new Firebase.AuthResultHandler() {
             @Override
             public void onAuthenticated(AuthData authData) {
+                Log.d("Firebase", authData.getProvider());
                 StringTokenizer st = new StringTokenizer(authData.getUid(), "-");
-                uid = "";
+                mUid = "";
                 while (st.hasMoreTokens()) {
-                    uid += st.nextToken();
+                    mUid += st.nextToken();
                 }
                 SharedPreferences pref = getSharedPreferences(UserInfo.PREF_NAME, MODE_PRIVATE);
                 SharedPreferences.Editor editor = pref.edit();
                 editor.putString(UserInfo.KEY_EMAIL, email);
-                editor.putString(UserInfo.KEY_UID, uid);
+                editor.putString(UserInfo.KEY_UID, mUid);
                 editor.putString(UserInfo.KEY_AVATAR, null);
                 editor.apply();
                 Intent intent = new Intent(LoginActivity.this, MainActivity.class);

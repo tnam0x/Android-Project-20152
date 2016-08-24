@@ -7,27 +7,18 @@ import android.widget.TextView;
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
 
+import namtran.lab.entity.CurrencyParser;
 import namtran.lab.revexpmanager.R;
 
 public class TransactionsViewHolder extends RecyclerView.ViewHolder {
     TextView type, cost, note;
-    private DecimalFormat format;
+    CurrencyParser mParser;
 
     public TransactionsViewHolder(View parent) {
         super(parent);
         type = (TextView) parent.findViewById(R.id.tv_type);
         cost = (TextView) parent.findViewById(R.id.tv_cost);
         note = (TextView) parent.findViewById(R.id.tv_note);
-        DecimalFormatSymbols symbols = new DecimalFormatSymbols();
-        symbols.setGroupingSeparator(',');
-        symbols.setDecimalSeparator('.');
-        format = new DecimalFormat(",### ₫", symbols);
-        format.setMaximumFractionDigits(0);
+        mParser = new CurrencyParser();
     }
-
-    String format(String value) {
-        int money = Integer.parseInt(value);
-        return format.format(money);
-    }
-
 }

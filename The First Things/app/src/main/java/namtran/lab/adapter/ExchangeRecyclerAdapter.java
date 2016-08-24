@@ -17,13 +17,13 @@ import namtran.lab.revexpmanager.R;
  * Created by namtr on 22/08/2016.
  */
 public class ExchangeRecyclerAdapter extends RecyclerView.Adapter<ExchangeItemViewHolder> {
-    private ArrayList<ExchangeItem> data;
+    private ArrayList<ExchangeItem> mListExchange;
     private boolean isReveneus;
     private final View.OnClickListener mOnClickListener;
 
     public ExchangeRecyclerAdapter(View.OnClickListener mOnClickListener, ArrayList<ExchangeItem> data, boolean isReveneus) {
         this.mOnClickListener = mOnClickListener;
-        this.data = data;
+        this.mListExchange = data;
         this.isReveneus = isReveneus;
     }
 
@@ -37,27 +37,28 @@ public class ExchangeRecyclerAdapter extends RecyclerView.Adapter<ExchangeItemVi
 
     @Override
     public void onBindViewHolder(ExchangeItemViewHolder holder, int position) {
-        ExchangeItem item = data.get(position);
+        ExchangeItem item = mListExchange.get(position);
         setItemText(item, holder);
     }
 
     private void setItemText(ExchangeItem item, ExchangeItemViewHolder holder) {
         Log.d("Exchange Adapter", "updated");
+        String money;
         if (isReveneus) {
-            String money = "+" + item.getCost();
-            holder.cost.setText(money);
+            money = "+" + holder.mParser.format(item.getCost());
             holder.cost.setTextColor(Color.BLUE);
         } else {
-            String money = "-" + item.getCost();
-            holder.cost.setText(money);
+            money = "-" + holder.mParser.format(item.getCost());
             holder.cost.setTextColor(Color.RED);
         }
+        money = money.substring(0, money.length() - 2);
+        holder.cost.setText(money);
         holder.type.setText(item.getType());
         holder.date.setText(item.getDate());
     }
 
     @Override
     public int getItemCount() {
-        return data == null ? 0 : data.size();
+        return mListExchange == null ? 0 : mListExchange.size();
     }
 }
