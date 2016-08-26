@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="namtran.lab.revexpmanager" >
+    package="com.namtran.main" >
 
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
@@ -12,7 +12,7 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme" >
         <activity
-            android:name=".SplashActivity"
+            android:name="com.namtran.main.SplashActivity"
             android:screenOrientation="portrait"
             android:theme="@style/SplashTheme" >
             <intent-filter>
@@ -22,22 +22,22 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".LoginActivity"
+            android:name="com.namtran.main.LoginActivity"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".MainActivity"
+            android:name="com.namtran.main.MainActivity"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
-            android:name="namtran.lab.info.InfoActivity"
+            android:name="com.namtran.info.InfoActivity"
             android:label="Thông Tin"
-            android:parentActivityName=".MainActivity"
+            android:parentActivityName="com.namtran.main.MainActivity"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme" />
         <activity
-            android:name="namtran.lab.transaction.AddItemActivity"
+            android:name="com.namtran.transaction.AddItemActivity"
             android:label="Thêm Giao Dịch"
-            android:parentActivityName=".MainActivity"
+            android:parentActivityName="com.namtran.main.MainActivity"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme" />
     </application>

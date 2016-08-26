@@ -15,7 +15,8 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Email: "
-                android:textAppearance="?android:attr/textAppearanceMedium" />
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:textStyle="bold" />
 
             <TextView
                 android:id="@+id/email_user"
@@ -31,13 +32,14 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="UID: "
-                android:textAppearance="?android:attr/textAppearanceMedium" />
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:textStyle="bold" />
 
             <TextView
                 android:id="@+id/uid_user"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:maxEms="14"
+                android:ems="14"
                 android:textAppearance="?android:attr/textAppearanceMedium"
                 android:textColor="@android:color/holo_red_light" />
         </TableRow>
@@ -52,4 +54,5 @@
         android:background="@drawable/btn_selector"
         android:padding="16dp"
         android:text="Đổi Mật Khẩu" />
+
 </LinearLayout>

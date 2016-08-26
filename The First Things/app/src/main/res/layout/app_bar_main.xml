@@ -32,5 +32,5 @@
         android:visibility="gone"
         app:borderWidth="0dp"
         app:fabSize="auto"
-        app:layout_behavior="namtran.lab.entity.ScrollingFABBehavior" />
+        app:layout_behavior="com.namtran.entity.ScrollingFABBehavior" />
 </android.support.design.widget.CoordinatorLayout>
