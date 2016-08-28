@@ -8,7 +8,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
-        android:contentDescription="@string/custom_today_description"
+        android:contentDescription="@string/desc_calendar"
         android:src="@android:drawable/ic_menu_my_calendar" />
 
     <LinearLayout
@@ -19,19 +19,16 @@
         <TextView
             android:id="@+id/tv_date_stats"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="aaaaaaaaaaaaaa" />
+            android:layout_height="wrap_content" />
 
         <TextView
             android:id="@+id/tv_cost_in"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="aaaaaaaaaaa" />
+            android:layout_height="wrap_content" />
 
         <TextView
             android:id="@+id/tv_cost_out"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="aaaaaaaaaaaaa" />
+            android:layout_height="wrap_content" />
     </LinearLayout>
 </LinearLayout>

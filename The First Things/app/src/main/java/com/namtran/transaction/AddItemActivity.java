@@ -70,13 +70,13 @@ public class AddItemActivity extends AppCompatActivity implements View.OnClickLi
         switch (TransactionsFragment.mCurrentPage) {
             case 0:
                 mTitleTextView.setText(getResources().getString(R.string.title_in));
-                costField.setHint(getResources().getString(R.string.hint_in));
+                costField.setHint(getResources().getString(R.string.et_hint_in));
                 spinnerAdapter.addAll(ARRAY_TYPE_IN);
                 spinnerAdapter.notifyDataSetChanged();
                 break;
             case 1:
                 mTitleTextView.setText(getResources().getString(R.string.title_out));
-                costField.setHint(getResources().getString(R.string.hint_out));
+                costField.setHint(getResources().getString(R.string.et_hint_out));
                 spinnerAdapter.addAll(ARRAY_TYPE_OUT);
                 spinnerAdapter.notifyDataSetChanged();
                 break;

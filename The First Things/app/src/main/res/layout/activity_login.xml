@@ -2,12 +2,12 @@
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#FFB800"
-    android:gravity="center"
+    android:background="@color/colorPrimary"
     android:paddingBottom="@dimen/activity_vertical_margin"
     android:paddingLeft="@dimen/activity_horizontal_margin"
     android:paddingRight="@dimen/activity_horizontal_margin"
-    android:paddingTop="@dimen/activity_vertical_margin">
+    android:paddingTop="@dimen/activity_vertical_margin"
+    android:scrollbarStyle="outsideOverlay">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -19,7 +19,7 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:layout_marginBottom="16dp"
-            android:contentDescription="@string/description_logo"
+            android:contentDescription="@string/desc_logo"
             android:src="@drawable/app_logo" />
 
         <TextView
@@ -28,9 +28,9 @@
             android:layout_marginBottom="64dp"
             android:fontFamily="sans-serif-condensed"
             android:gravity="center_horizontal"
-            android:text="Quản Lý Chi Tiêu"
+            android:text="@string/tv_title"
             android:textAppearance="?android:attr/textAppearanceLarge"
-            android:textColor="#FFFF"
+            android:textColor="@color/red"
             android:textSize="30sp" />
 
         <ProgressBar
@@ -50,7 +50,7 @@
             <android.support.design.widget.TextInputLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="Email">
+                android:hint="@string/hint_email">
 
                 <android.support.design.widget.TextInputEditText
                     android:id="@+id/et_email_login"
@@ -63,7 +63,7 @@
             <android.support.design.widget.TextInputLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="Password">
+                android:hint="@string/hint_password">
 
                 <android.support.design.widget.TextInputEditText
                     android:id="@+id/et_pass_login"
@@ -79,13 +79,15 @@
                 android:orientation="horizontal">
 
                 <Button
-                    android:id="@+id/btnSignUp"
+                    android:id="@+id/btnSignUp_signup"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
+                    android:layout_marginEnd="6dp"
+                    android:layout_marginRight="6dp"
                     android:layout_marginTop="16dp"
                     android:layout_weight="1"
                     android:background="@drawable/btn_selector"
-                    android:text="Đăng Kí"
+                    android:text="@string/btn_sign_up"
                     android:textColor="@android:color/holo_red_light"
                     android:textStyle="bold" />
 
@@ -96,7 +98,7 @@
                     android:layout_marginTop="16dp"
                     android:layout_weight="1"
                     android:background="@drawable/btn_selector"
-                    android:text="Đăng Nhập"
+                    android:text="@string/btn_sign_in"
                     android:textColor="@android:color/holo_red_light"
                     android:textStyle="bold" />
 

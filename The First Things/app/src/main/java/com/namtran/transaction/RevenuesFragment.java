@@ -19,14 +19,12 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
 
-import com.firebase.client.DataSnapshot;
-import com.firebase.client.Firebase;
-import com.firebase.client.FirebaseError;
-import com.firebase.client.Query;
-import com.firebase.client.ValueEventListener;
-
-import java.util.ArrayList;
-
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.Query;
+import com.google.firebase.database.ValueEventListener;
 import com.namtran.adapter.TransactionsRecyclerAdapter;
 import com.namtran.database.InDb;
 import com.namtran.database.InterestDb;
@@ -37,11 +35,13 @@ import com.namtran.entity.TransactionsItem;
 import com.namtran.entity.UserInfo;
 import com.namtran.main.R;
 
+import java.util.ArrayList;
+
 /**
  * Created by namtr on 15/08/2016.
  */
 public class RevenuesFragment extends Fragment {
-    private Firebase mFirebase;
+    private DatabaseReference mFirebase;
     private SQLiteDatabase mSQLiteIn, mSQLiteOut, mSQLiteRate;
     private ArrayList<TransactionsItem> mListItem;
     private TransactionsRecyclerAdapter mAdapter;
@@ -54,8 +54,7 @@ public class RevenuesFragment extends Fragment {
         final RecyclerView recyclerView = (RecyclerView) inflater.inflate(R.layout.fragment_list_item, container, false);
         getUserInfo();
         // Khởi tạo firebase
-        Firebase.setAndroidContext(getContext());
-        mFirebase = new Firebase("https://expenseproject.firebaseio.com");
+        mFirebase = FirebaseDatabase.getInstance().getReference();
         // Khởi tạo databse
         InDb inDb = new InDb(getContext());
         OutDb outDb = new OutDb(getContext());
@@ -85,9 +84,10 @@ public class RevenuesFragment extends Fragment {
     // Lấy thông tin người dùng
     private void getUserInfo() {
         SharedPreferences pref = getContext().getSharedPreferences(UserInfo.PREF_NAME, Context.MODE_PRIVATE);
+        String name = pref.getString(UserInfo.KEY_NAME, "User name");
         String email = pref.getString(UserInfo.KEY_EMAIL, null);
         String uid = pref.getString(UserInfo.KEY_UID, null);
-        mUserInfo = new UserInfo(email, uid);
+        mUserInfo = new UserInfo(name, email, uid);
     }
 
     // Hiển thị dialog khi lấy dữ liệu
@@ -186,9 +186,10 @@ public class RevenuesFragment extends Fragment {
         protected Void doInBackground(Void... params) {
             Log.d("Get From Server - Rev", "doing");
             // Tiền thu
-            Firebase refIncome = mFirebase.child(mUserInfo.getUid()).child("Income");
+            DatabaseReference refIncome = mFirebase.child(mUserInfo.getUid()).child("Income");
             final Query inQuery = refIncome.orderByValue();
             inQuery.addValueEventListener(new ValueEventListener() {
+
                 @Override
                 public void onDataChange(DataSnapshot dataSnapshot) {
                     TransactionsItem item;
@@ -210,12 +211,12 @@ public class RevenuesFragment extends Fragment {
                 }
 
                 @Override
-                public void onCancelled(FirebaseError firebaseError) {
-                    Toast.makeText(getContext(), firebaseError.getMessage(), Toast.LENGTH_SHORT).show();
+                public void onCancelled(DatabaseError databaseError) {
+                    Toast.makeText(getContext(), databaseError.getMessage(), Toast.LENGTH_SHORT).show();
                 }
             });
 
-            Firebase interestRef = mFirebase.child(mUserInfo.getUid()).child("Interest Rate");
+            DatabaseReference interestRef = mFirebase.child(mUserInfo.getUid()).child("Interest Rate");
             final Query intsQuery = interestRef.orderByValue();
             intsQuery.addValueEventListener(new ValueEventListener() {
                 @Override
@@ -236,8 +237,8 @@ public class RevenuesFragment extends Fragment {
                 }
 
                 @Override
-                public void onCancelled(FirebaseError firebaseError) {
-                    Toast.makeText(getContext(), firebaseError.getMessage(), Toast.LENGTH_SHORT).show();
+                public void onCancelled(DatabaseError databaseError) {
+                    Toast.makeText(getContext(), databaseError.getMessage(), Toast.LENGTH_SHORT).show();
                 }
             });
             return null;

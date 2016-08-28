@@ -12,7 +12,7 @@
             android:layout_gravity="center"
             android:layout_marginEnd="6dp"
             android:layout_marginRight="6dp"
-            android:text="Chọn năm muốn xem" />
+            android:text="@string/tv_select_year" />
 
         <ImageButton
             android:id="@+id/btn_select_date_year"
@@ -27,7 +27,7 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Năm:" />
+            android:text="@string/tv_year" />
 
         <TextView
             android:id="@+id/tv_year"
@@ -41,7 +41,7 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Thu:" />
+            android:text="@string/tv_money_in" />
 
         <TextView
             android:id="@+id/tv_in_year"
@@ -55,7 +55,7 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Chi:" />
+            android:text="@string/tv_money_out" />
 
         <TextView
             android:id="@+id/tv_out_year"

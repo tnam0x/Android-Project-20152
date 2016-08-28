@@ -8,9 +8,9 @@
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:756982761899:android:afc32b1238d08d6c",
+        "mobilesdk_app_id": "1:756982761899:android:6c6e8b2cb178d6e8",
         "android_client_info": {
-          "package_name": "namtran.lab.thefirstthings"
+          "package_name": "com.namtran.main"
         }
       },
       "oauth_client": [

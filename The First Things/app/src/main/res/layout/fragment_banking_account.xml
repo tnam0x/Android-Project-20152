@@ -9,7 +9,7 @@
         android:background="@color/colorPrimary"
         android:gravity="center"
         android:padding="5dp"
-        android:text="Tài Khoản Ngân Hàng"
+        android:text="@string/tv_title_banking_account"
         android:textColor="@color/white"
         android:textStyle="bold" />
 
@@ -22,7 +22,7 @@
         android:background="@color/colorPrimary"
         android:gravity="center"
         android:padding="5dp"
-        android:text="Danh Sách Tài Khoản"
+        android:text="@string/tv_title_list_account"
         android:textColor="@color/white"
         android:textStyle="bold" />
 

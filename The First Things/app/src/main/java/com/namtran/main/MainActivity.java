@@ -81,8 +81,10 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         // Lấy header view của Navigation
         View header = mNavView.getHeaderView(0);
         getUserInfo();
+        TextView title = (TextView) header.findViewById(R.id.title_header);
         TextView description = (TextView) header.findViewById(R.id.description_header);
-        description.setText(mUserInfo.getEmail());
+        title.setText(mUserInfo.getEmail());
+        description.setText(mUserInfo.getName());
         // FloatingActionButton
         mFAB = (FloatingActionButton) findViewById(R.id.fab);
         mFAB.setOnClickListener(new View.OnClickListener() {
@@ -102,9 +104,10 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     // Lấy thông tin người dùng
     private void getUserInfo() {
         SharedPreferences pref = getSharedPreferences(UserInfo.PREF_NAME, MODE_PRIVATE);
+        String name = pref.getString(UserInfo.KEY_NAME, "User name");
         String email = pref.getString(UserInfo.KEY_EMAIL, null);
         String uid = pref.getString(UserInfo.KEY_UID, null);
-        mUserInfo = new UserInfo(email, uid);
+        mUserInfo = new UserInfo(name, email, uid);
     }
 
     @Override

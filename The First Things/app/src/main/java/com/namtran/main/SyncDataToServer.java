@@ -11,8 +11,8 @@ import android.support.design.widget.Snackbar;
 import android.util.Log;
 import android.view.View;
 
-import com.firebase.client.Firebase;
-
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 import com.namtran.database.InDb;
 import com.namtran.database.InterestDb;
 import com.namtran.database.OutDb;
@@ -27,7 +27,7 @@ public class SyncDataToServer extends AsyncTask<Void, Void, Void> {
     private Context mContext;
     private ProgressDialog mProDialog;
     private SQLiteDatabase mSQLiteIn, mSQLiteOut, mSQLiteRate;
-    private Firebase mUserRef;
+    private DatabaseReference mUserRef;
     private UserInfo mUserInfo;
     private View mView;
 
@@ -35,23 +35,23 @@ public class SyncDataToServer extends AsyncTask<Void, Void, Void> {
         this.mContext = context;
         this.mView = view;
         getUserInfo();
-        Firebase.setAndroidContext(context);
-        Firebase root = new Firebase("https://expenseproject.firebaseio.com/");
+        mUserRef = FirebaseDatabase.getInstance().getReference();
         InDb inDb = new InDb(context);
         OutDb outDb = new OutDb(context);
         InterestDb interestDb = new InterestDb(context);
         mSQLiteIn = inDb.getWritableDatabase();
         mSQLiteOut = outDb.getWritableDatabase();
         mSQLiteRate = interestDb.getWritableDatabase();
-        mUserRef = root.child(mUserInfo.getUid());
+        mUserRef = mUserRef.child(mUserInfo.getUid());
     }
 
     // Lấy thông tin người dùng
     private void getUserInfo() {
         SharedPreferences pref = mContext.getSharedPreferences(UserInfo.PREF_NAME, Context.MODE_PRIVATE);
+        String name = pref.getString(UserInfo.KEY_NAME, "User name");
         String email = pref.getString(UserInfo.KEY_EMAIL, null);
         String uid = pref.getString(UserInfo.KEY_UID, null);
-        mUserInfo = new UserInfo(email, uid);
+        mUserInfo = new UserInfo(name, email, uid);
     }
 
     @Override
@@ -69,9 +69,9 @@ public class SyncDataToServer extends AsyncTask<Void, Void, Void> {
         Log.d("Sync", "doing");
         TransactionsItem transItem;
         String id;
-        Firebase expenseRef = mUserRef.child("Expense");
-        Firebase incomeRef = mUserRef.child("Income");
-        Firebase rateRef = mUserRef.child("Interest Rate");
+        DatabaseReference expenseRef = mUserRef.child("Expense");
+        DatabaseReference incomeRef = mUserRef.child("Income");
+        DatabaseReference rateRef = mUserRef.child("Interest Rate");
         expenseRef.setValue(null);
         incomeRef.setValue(null);
         rateRef.setValue(null);

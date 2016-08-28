@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.namtran.main" >
+    package="com.namtran.main">
 
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
@@ -10,11 +10,11 @@
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:supportsRtl="true"
-        android:theme="@style/AppTheme" >
+        android:theme="@style/AppTheme">
         <activity
-            android:name="com.namtran.main.SplashActivity"
+            android:name=".SplashActivity"
             android:screenOrientation="portrait"
-            android:theme="@style/SplashTheme" >
+            android:theme="@style/SplashTheme">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -22,22 +22,32 @@
             </intent-filter>
         </activity>
         <activity
-            android:name="com.namtran.main.LoginActivity"
+            android:name=".LoginActivity"
             android:screenOrientation="portrait" />
         <activity
-            android:name="com.namtran.main.MainActivity"
+            android:name=".SignUpActivity"
+            android:label="Đăng kí tài khoản"
+            android:parentActivityName=".LoginActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".MainActivity"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name="com.namtran.info.InfoActivity"
             android:label="Thông Tin"
-            android:parentActivityName="com.namtran.main.MainActivity"
+            android:parentActivityName=".MainActivity"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme" />
         <activity
+            android:name="com.namtran.info.ChangePasswordActivity"
+            android:label="Đổi mật khẩu"
+            android:parentActivityName="com.namtran.info.InfoActivity"
+            android:screenOrientation="portrait" />
+        <activity
             android:name="com.namtran.transaction.AddItemActivity"
             android:label="Thêm Giao Dịch"
-            android:parentActivityName="com.namtran.main.MainActivity"
+            android:parentActivityName=".MainActivity"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme" />
     </application>

@@ -12,7 +12,7 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Chọn Ngoại Tệ: "
+            android:text="@string/tv_select_fcurrency"
             android:textAppearance="?android:attr/textAppearanceMedium"
             android:textColor="@color/orange" />
 
@@ -29,7 +29,7 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Tỉ Giá:"
+            android:text="@string/tv_exchange_rate"
             android:textAppearance="?android:attr/textAppearanceMedium"
             android:textColor="@color/orange" />
 

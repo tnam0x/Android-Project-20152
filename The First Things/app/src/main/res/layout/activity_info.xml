@@ -14,14 +14,15 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Email: "
+                android:text="@string/tv_email"
                 android:textAppearance="?android:attr/textAppearanceMedium"
                 android:textStyle="bold" />
 
             <TextView
                 android:id="@+id/email_user"
-                android:layout_width="wrap_content"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
+                android:layout_weight="1"
                 android:textAppearance="?android:attr/textAppearanceMedium"
                 android:textColor="@android:color/holo_red_light" />
         </TableRow>
@@ -31,28 +32,36 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="UID: "
+                android:text="@string/tv_name"
                 android:textAppearance="?android:attr/textAppearanceMedium"
                 android:textStyle="bold" />
 
             <TextView
-                android:id="@+id/uid_user"
-                android:layout_width="wrap_content"
+                android:id="@+id/name_user"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:ems="14"
+                android:layout_weight="1"
                 android:textAppearance="?android:attr/textAppearanceMedium"
                 android:textColor="@android:color/holo_red_light" />
         </TableRow>
     </TableLayout>
 
     <Button
-        android:id="@+id/btnChangePass_info"
+        android:id="@+id/btn_change_password_info"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
         android:layout_marginTop="16dp"
         android:background="@drawable/btn_selector"
         android:padding="16dp"
-        android:text="Đổi Mật Khẩu" />
+        android:text="@string/btn_change_password" />
+
+    <CheckedTextView
+        android:id="@+id/ctv_forgot_password_info"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:text="@string/checktv_forgot_password"
+        android:textColor="@android:color/holo_blue_dark" />
 
 </LinearLayout>
