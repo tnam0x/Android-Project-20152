@@ -12,18 +12,16 @@ import android.support.annotation.Nullable;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;
+import android.support.v7.widget.AppCompatSpinner;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
-import android.widget.Spinner;
-import android.widget.TableLayout;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
-
-import java.util.ArrayList;
 
 import com.namtran.adapter.ExchangeViewPagerAdapter;
 import com.namtran.database.InDb;
@@ -34,11 +32,13 @@ import com.namtran.entity.HTMLParser;
 import com.namtran.entity.TransactionsItem;
 import com.namtran.main.R;
 
+import java.util.ArrayList;
+
 /**
  * Created by namtr on 22/08/2016.
  */
 public class ExchangeFragment extends Fragment {
-    private Spinner mSpinner;
+    private AppCompatSpinner mSpinner;
     private TextView mRateTextView;
     private SQLiteDatabase mSQLiteIn, mSQLiteOut;
     public static ArrayList<TransactionsItem> mListTransIn, mListTransOut;
@@ -58,9 +58,9 @@ public class ExchangeFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_transactions_statistics, container, false);
-        TableLayout tableLayout = (TableLayout) view.findViewById(R.id.layout_exchange);
+        LinearLayout tableLayout = (LinearLayout) view.findViewById(R.id.layout_exchange);
         tableLayout.setVisibility(View.VISIBLE);
-        mSpinner = (Spinner) view.findViewById(R.id.spinner_exchange);
+        mSpinner = (AppCompatSpinner) view.findViewById(R.id.spinner_exchange);
         mRateTextView = (TextView) view.findViewById(R.id.tv_rate_exchange);
         final TabLayout tabLayout = (TabLayout) view.findViewById(R.id.tab_layout);
         final ViewPager pager = (ViewPager) view.findViewById(R.id.pager);
@@ -72,7 +72,7 @@ public class ExchangeFragment extends Fragment {
             }
         });
         // Custom the spinner
-        ArrayAdapter<String> adapter = new ArrayAdapter<>(getContext(), R.layout.spinner_item, NAME_MONEY);
+        ArrayAdapter<String> adapter = new ArrayAdapter<>(getContext(), R.layout.item_spinner, NAME_MONEY);
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         mSpinner.setAdapter(adapter);
         init();

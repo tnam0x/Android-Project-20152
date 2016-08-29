@@ -121,6 +121,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         super.onConfigurationChanged(newConfig);
         // Forward the new configuration the drawer toggle component.
         mToggle.onConfigurationChanged(newConfig);
+        Log.d("onConfigurationChanged", "changed");
     }
 
     boolean doubleBackToExitPressedOnce = false;
@@ -146,12 +147,15 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         }, 2000);
     }
 
+    int id;
+
     @Override
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
         AppBarLayout.LayoutParams params = (AppBarLayout.LayoutParams) mToolbar.getLayoutParams();
         params.setScrollFlags(AppBarLayout.LayoutParams.SCROLL_FLAG_SCROLL | AppBarLayout.LayoutParams.SCROLL_FLAG_ENTER_ALWAYS);
         mFAB.setVisibility(View.INVISIBLE);
         mDrawerLayout.closeDrawer(GravityCompat.START);
+        id = item.getItemId();
         switch (item.getItemId()) {
             case R.id.nav_home:
                 mActionBar.setTitle(item.getTitle());

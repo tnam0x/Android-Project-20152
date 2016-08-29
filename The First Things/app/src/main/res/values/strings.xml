@@ -41,7 +41,7 @@
     <string name="desc_division">Đường viền ngang ngăn cách các view</string>
     <string name="tv_title_banking_account">Tài Khoản Ngân Hàng</string>
     <string name="tv_title_list_account">Danh Sách Tài Khoản</string>
-    <string name="tv_select_fcurrency">Chọn Ngoại Tệ:</string>
+    <string name="tv_select_fcurrency">Ngoại Tệ:</string>
     <string name="tv_exchange_rate">Tỉ Giá:</string>
     <string name="tv_select_year">Chọn năm muốn xem</string>
     <string name="tv_year">Năm:</string>

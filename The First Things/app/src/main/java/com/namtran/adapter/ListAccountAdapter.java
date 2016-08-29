@@ -7,11 +7,11 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.TextView;
 
-import java.util.ArrayList;
-
 import com.namtran.entity.BankingItem;
 import com.namtran.entity.CurrencyParser;
 import com.namtran.main.R;
+
+import java.util.ArrayList;
 
 /**
  * Created by namtr on 23/08/2016.

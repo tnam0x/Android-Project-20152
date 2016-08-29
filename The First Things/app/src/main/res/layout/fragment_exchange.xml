@@ -1,45 +1,54 @@
 <?xml version="1.0" encoding="utf-8"?>
-<TableLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/layout_exchange"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="@android:color/white"
+    android:background="@color/colorPrimary"
+    android:orientation="vertical"
     android:padding="6dp"
     android:visibility="gone">
 
-    <TableRow>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginEnd="2sp"
-            android:layout_marginRight="2sp"
+            android:layout_marginEnd="5sp"
+            android:layout_marginRight="5sp"
             android:text="@string/tv_select_fcurrency"
             android:textAppearance="?android:attr/textAppearanceMedium"
-            android:textColor="@color/colorPrimary" />
+            android:textColor="@color/white" />
 
-        <Spinner
+        <android.support.v7.widget.AppCompatSpinner
             android:id="@+id/spinner_exchange"
-            android:layout_width="0dp"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
             android:textAppearance="?android:attr/textAppearanceMedium" />
-    </TableRow>
+    </LinearLayout>
 
-    <TableRow>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="6dp"
+        android:orientation="horizontal">
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginEnd="5sp"
+            android:layout_marginRight="5sp"
             android:text="@string/tv_exchange_rate"
             android:textAppearance="?android:attr/textAppearanceMedium"
-            android:textColor="@color/colorPrimary" />
+            android:textColor="@color/white" />
 
         <TextView
             android:id="@+id/tv_rate_exchange"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textAppearance="?android:attr/textAppearanceMedium"
-            android:textColor="@android:color/holo_red_dark" />
-    </TableRow>
-</TableLayout>
+            android:textColor="@color/orange" />
+    </LinearLayout>
+</LinearLayout>

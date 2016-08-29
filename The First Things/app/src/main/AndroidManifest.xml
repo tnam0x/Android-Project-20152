@@ -13,7 +13,6 @@
         android:theme="@style/AppTheme">
         <activity
             android:name=".SplashActivity"
-            android:screenOrientation="portrait"
             android:theme="@style/SplashTheme">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -21,34 +20,28 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity
-            android:name=".LoginActivity"
-            android:screenOrientation="portrait" />
+        <activity android:name=".LoginActivity" />
         <activity
             android:name=".SignUpActivity"
             android:label="Đăng kí tài khoản"
-            android:parentActivityName=".LoginActivity"
-            android:screenOrientation="portrait" />
+            android:parentActivityName=".LoginActivity" />
         <activity
             android:name=".MainActivity"
-            android:screenOrientation="portrait"
+            android:configChanges="orientation|screenSize"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name="com.namtran.info.InfoActivity"
             android:label="Thông Tin"
             android:parentActivityName=".MainActivity"
-            android:screenOrientation="portrait"
             android:theme="@style/AppTheme" />
         <activity
             android:name="com.namtran.info.ChangePasswordActivity"
             android:label="Đổi mật khẩu"
-            android:parentActivityName="com.namtran.info.InfoActivity"
-            android:screenOrientation="portrait" />
+            android:parentActivityName="com.namtran.info.InfoActivity" />
         <activity
             android:name="com.namtran.transaction.AddItemActivity"
             android:label="Thêm Giao Dịch"
             android:parentActivityName=".MainActivity"
-            android:screenOrientation="portrait"
             android:theme="@style/AppTheme" />
     </application>
 
