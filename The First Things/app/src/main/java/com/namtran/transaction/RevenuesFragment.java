@@ -105,7 +105,6 @@ public class RevenuesFragment extends Fragment {
         boolean isEmpty = cursorIn.moveToFirst() && cursorOut.moveToFirst();
         cursorIn.close();
         cursorOut.close();
-        Log.d("Is database empty", !isEmpty + "");
         return !isEmpty;
     }
 

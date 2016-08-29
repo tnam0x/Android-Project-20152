@@ -6,14 +6,15 @@
     android:layout_marginBottom="5dp"
     android:layout_marginLeft="5dp"
     android:layout_marginRight="5dp"
+    android:background="@color/transactions_bg"
     android:foreground="?android:attr/selectableItemBackground"
-    card_view:cardCornerRadius="2dp"
-    card_view:cardElevation="3dp">
+    card_view:cardElevation="0dp">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
+        android:background="@drawable/bg_parent_rounded_corner"
         android:padding="6dp">
 
         <LinearLayout
@@ -43,7 +44,7 @@
             android:id="@+id/tv_note"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:textColor="@android:color/darker_gray" />
+            android:textColor="@color/timestamp" />
 
     </LinearLayout>
 </android.support.v7.widget.CardView>

@@ -3,6 +3,7 @@ package com.namtran.adapter;
 import android.content.Context;
 import android.graphics.Color;
 import android.support.v7.widget.RecyclerView;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -41,23 +42,23 @@ public class TransactionsRecyclerAdapter extends RecyclerView.Adapter<Transactio
         setItemText(transactionsItem, holder);
     }
 
-    public void setItemText(TransactionsItem transactionsItem, TransactionsViewHolder holder) {
-        Log.d("Reveneus", isReveneus + "");
+    public void setItemText(TransactionsItem item, TransactionsViewHolder holder) {
         String money;
         if (isReveneus) {
-            money = "+" + holder.mParser.format(transactionsItem.getCost());
+            money = "+" + holder.mParser.format(item.getCost());
             holder.cost.setTextColor(Color.BLUE);
         } else {
-            money = "-" + holder.mParser.format(transactionsItem.getCost());
+            money = "-" + holder.mParser.format(item.getCost());
             holder.cost.setTextColor(Color.RED);
         }
         holder.cost.setText(money);
-        holder.type.setText(transactionsItem.getType());
-        holder.note.setVisibility(View.INVISIBLE); // Đảm báo Item nào có dữ liệu thì mới cho hiển thị
-        String notes = transactionsItem.getNote();
-        if (!notes.isEmpty()) {
+        holder.type.setText(item.getType());
+        String notes = item.getNote();
+        if (!TextUtils.isEmpty(notes)) {
             holder.note.setVisibility(View.VISIBLE);
             holder.note.setText(notes);
+        } else {
+            holder.note.setVisibility(View.INVISIBLE);
         }
     }
 

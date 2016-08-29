@@ -53,7 +53,7 @@
         android:layout_gravity="center"
         android:layout_marginTop="16dp"
         android:background="@drawable/btn_selector"
-        android:padding="16dp"
+        android:padding="6dp"
         android:text="@string/btn_change_password"
         android:textColor="@color/white" />
 
@@ -63,6 +63,6 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
         android:text="@string/checktv_forgot_password"
-        android:textColor="@android:color/holo_blue_dark" />
+        android:textColor="@color/link" />
 
 </LinearLayout>

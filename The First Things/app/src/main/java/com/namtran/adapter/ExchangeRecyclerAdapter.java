@@ -3,17 +3,15 @@ package com.namtran.adapter;
 import android.content.Context;
 import android.graphics.Color;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import java.util.ArrayList;
-
-import com.namtran.exchange.ExchangeFragment;
-
 import com.namtran.entity.ExchangeItem;
+import com.namtran.exchange.ExchangeFragment;
 import com.namtran.main.R;
+
+import java.util.ArrayList;
 
 /**
  * Created by namtr on 22/08/2016.
@@ -46,7 +44,6 @@ public class ExchangeRecyclerAdapter extends RecyclerView.Adapter<ExchangeItemVi
     }
 
     private void setItemText(ExchangeItem item, ExchangeItemViewHolder holder) {
-        Log.d("Exchange Adapter", "updated");
         String money;
         if (isReveneus) {
             money = "+" + holder.mParser.format(item.getCost());

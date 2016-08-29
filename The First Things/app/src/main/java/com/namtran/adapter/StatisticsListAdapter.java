@@ -1,7 +1,6 @@
 package com.namtran.adapter;
 
 import android.content.Context;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -39,17 +38,16 @@ public class StatisticsListAdapter extends ArrayAdapter<StatsItem> {
             holder = new ViewHolder();
             convertView = mInflater.inflate(mResId, parent, false);
             holder.date = (TextView) convertView.findViewById(R.id.tv_date_stats);
-            holder.cost_in = (TextView) convertView.findViewById(R.id.tv_cost_in);
-            holder.cost_out = (TextView) convertView.findViewById(R.id.tv_cost_out);
+            holder.costIn = (TextView) convertView.findViewById(R.id.tv_cost_in);
+            holder.costOut = (TextView) convertView.findViewById(R.id.tv_cost_out);
             convertView.setTag(holder);
         } else {
             holder = (ViewHolder) convertView.getTag();
         }
         StatsItem item = mListStats.get(position);
-        Log.d("Position", position + "");
         String date;
-        String cost_in = "Thu: " + holder.mParser.format(item.getCostIn());
-        String cost_out = "Chi: " + holder.mParser.format(item.getCostOut());
+        String costIn = "Thu: " + holder.mParser.format(item.getCostIn());
+        String costOut = "Chi: " + holder.mParser.format(item.getCostOut());
         switch (position) {
             case 0:
                 date = "Hôm nay: " + item.getDate();
@@ -65,13 +63,13 @@ public class StatisticsListAdapter extends ArrayAdapter<StatsItem> {
                 break;
         }
         holder.date.setText(date);
-        holder.cost_in.setText(cost_in);
-        holder.cost_out.setText(cost_out);
+        holder.costIn.setText(costIn);
+        holder.costOut.setText(costOut);
         return convertView;
     }
 
     static class ViewHolder {
-        TextView date, cost_in, cost_out;
+        TextView date, costIn, costOut;
         CurrencyParser mParser;
 
         public ViewHolder() {
