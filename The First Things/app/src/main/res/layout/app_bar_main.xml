@@ -15,7 +15,7 @@
             android:id="@+id/main_toolbar"
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize"
-            android:background="@color/orange"
+            android:background="@color/colorPrimary"
             app:popupTheme="@style/AppTheme.PopupOverlay" />
 
     </android.support.design.widget.AppBarLayout>
@@ -29,7 +29,9 @@
         android:layout_gravity="bottom|center"
         android:layout_margin="16dp"
         android:src="@android:drawable/ic_input_add"
+        android:tint="@color/white"
         android:visibility="gone"
+        app:backgroundTint="@color/colorPrimary"
         app:borderWidth="0dp"
         app:fabSize="auto"
         app:layout_behavior="com.namtran.entity.ScrollingFABBehavior" />

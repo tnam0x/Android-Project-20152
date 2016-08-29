@@ -30,7 +30,7 @@
             android:gravity="center_horizontal"
             android:text="@string/tv_title"
             android:textAppearance="?android:attr/textAppearanceLarge"
-            android:textColor="@color/red"
+            android:textColor="@color/white"
             android:textSize="30sp" />
 
         <ProgressBar
@@ -50,27 +50,31 @@
             <android.support.design.widget.TextInputLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="@string/hint_email">
+                android:hint="@string/hint_email"
+                android:textColorHint="@color/white">
 
                 <android.support.design.widget.TextInputEditText
                     android:id="@+id/et_email_login"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:inputType="textEmailAddress"
-                    android:textAppearance="?android:attr/textAppearanceLarge" />
+                    android:textAppearance="?android:attr/textAppearanceLarge"
+                    android:textColor="@color/white" />
             </android.support.design.widget.TextInputLayout>
 
             <android.support.design.widget.TextInputLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="@string/hint_password">
+                android:hint="@string/hint_password"
+                android:textColorHint="@color/white">
 
                 <android.support.design.widget.TextInputEditText
                     android:id="@+id/et_pass_login"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:inputType="textPassword"
-                    android:textAppearance="?android:attr/textAppearanceLarge" />
+                    android:textAppearance="?android:attr/textAppearanceLarge"
+                    android:textColor="@color/white" />
             </android.support.design.widget.TextInputLayout>
 
             <LinearLayout
@@ -88,7 +92,7 @@
                     android:layout_weight="1"
                     android:background="@drawable/btn_selector"
                     android:text="@string/btn_sign_up"
-                    android:textColor="@android:color/holo_red_light"
+                    android:textColor="@android:color/white"
                     android:textStyle="bold" />
 
                 <Button
@@ -99,7 +103,7 @@
                     android:layout_weight="1"
                     android:background="@drawable/btn_selector"
                     android:text="@string/btn_sign_in"
-                    android:textColor="@android:color/holo_red_light"
+                    android:textColor="@android:color/white"
                     android:textStyle="bold" />
 
             </LinearLayout>

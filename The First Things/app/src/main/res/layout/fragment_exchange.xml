@@ -3,7 +3,7 @@
     android:id="@+id/layout_exchange"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="@android:color/holo_green_dark"
+    android:background="@android:color/white"
     android:padding="6dp"
     android:visibility="gone">
 
@@ -12,9 +12,11 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginEnd="2sp"
+            android:layout_marginRight="2sp"
             android:text="@string/tv_select_fcurrency"
             android:textAppearance="?android:attr/textAppearanceMedium"
-            android:textColor="@color/orange" />
+            android:textColor="@color/colorPrimary" />
 
         <Spinner
             android:id="@+id/spinner_exchange"
@@ -31,7 +33,7 @@
             android:layout_height="wrap_content"
             android:text="@string/tv_exchange_rate"
             android:textAppearance="?android:attr/textAppearanceMedium"
-            android:textColor="@color/orange" />
+            android:textColor="@color/colorPrimary" />
 
         <TextView
             android:id="@+id/tv_rate_exchange"

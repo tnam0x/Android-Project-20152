@@ -3,5 +3,5 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:textAppearance="?android:attr/textAppearanceMedium"
-    android:background="@android:color/holo_green_dark"
+    android:background="@android:color/white"
     android:textColor="@android:color/holo_red_dark" />

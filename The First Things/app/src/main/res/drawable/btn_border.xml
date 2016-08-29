@@ -2,9 +2,9 @@
 <selector xmlns:android="http://schemas.android.com/apk/res/android">
     <item>
         <shape>
-            <gradient android:angle="270" android:endColor="@color/cardview_dark_background" android:startColor="@color/colorPrimaryDark" />
+            <gradient android:angle="270" android:endColor="@android:color/darker_gray" android:startColor="@android:color/darker_gray" />
             <corners android:radius="3dp" />
-            <stroke android:width="3px" android:color="@color/colorPrimary" />
+            <stroke android:width="0px" android:color="@color/colorPrimary" />
         </shape>
     </item>
 </selector>

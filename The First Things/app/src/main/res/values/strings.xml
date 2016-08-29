@@ -19,7 +19,8 @@
     <string name="img_btn_save">Phím để lưu giao dịch</string>
     <string name="et_hint_old_password">Mật khẩu hiện tại</string>
     <string name="et_hint_new_password">Mật khẩu mới</string>
-    <string name="et_hint_retype_password">Nhập lại mật khẩu mới</string>
+    <string name="et_hint_retype_new_password">Nhập lại mật khẩu mới</string>
+    <string name="et_hint_retype_password">Nhập lại mật khẩu</string>
     <string name="btn_change_password">Đổi mật khẩu</string>
     <string name="btn_cancel">Huỷ</string>
     <string name="checktv_forgot_password">Quên mật khẩu?</string>
