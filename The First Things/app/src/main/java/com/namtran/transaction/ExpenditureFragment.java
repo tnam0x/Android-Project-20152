@@ -164,6 +164,10 @@ public class ExpenditureFragment extends Fragment {
         @Override
         protected void onPostExecute(Void aVoid) {
             super.onPostExecute(aVoid);
+            // Nếu UI is dead thì không làm gì cả
+            if (getActivity() == null) {
+                return;
+            }
             mAdapter.notifyDataSetChanged();
             mProDialog.dismiss();
         }
@@ -198,6 +202,10 @@ public class ExpenditureFragment extends Fragment {
                         mSQLiteOut.insert(OutDb.TABLE_NAME, null, cv);
                         mListItem.add(item);
                         Log.d("OUT DATA - Server", item.toString());
+                    }
+                    // Nếu UI is dead thì không làm gì cả
+                    if (getActivity() == null) {
+                        return;
                     }
                     mSQLiteOut.close();
                     outQuery.removeEventListener(this);

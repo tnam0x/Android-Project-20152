@@ -158,7 +158,6 @@ public class RevenuesFragment extends Fragment {
                     String date = cursorIn.getString(4);
                     item = new TransactionsItem(cost, type, note, date, id);
                     mListItem.add(item);
-                    Log.d("IN DATA - Local", item.toString());
                 } while (cursorIn.moveToNext());
             }
             cursorIn.close();
@@ -168,6 +167,10 @@ public class RevenuesFragment extends Fragment {
         @Override
         protected void onPostExecute(Void aVoid) {
             super.onPostExecute(aVoid);
+            // Nếu UI is dead thì không làm gì cả
+            if (getActivity() == null) {
+                return;
+            }
             mAdapter.notifyDataSetChanged();
             mProDialog.dismiss();
         }
@@ -184,7 +187,6 @@ public class RevenuesFragment extends Fragment {
 
         @Override
         protected Void doInBackground(Void... params) {
-            Log.d("Get From Server - Rev", "doing");
             // Tiền thu
             DatabaseReference refIncome = mFirebase.child(mUserInfo.getUid()).child("Income");
             final Query inQuery = refIncome.orderByValue();
@@ -202,12 +204,14 @@ public class RevenuesFragment extends Fragment {
                         values.put(InDb.COL_DATE, item.getDate());
                         mSQLiteIn.insert(InDb.TABLE_NAME, null, values);
                         mListItem.add(item);
-                        Log.d("IN DATA - Server", item.toString());
+                    }
+                    // Nếu UI is dead thì không làm gì cả
+                    if (getActivity() == null) {
+                        return;
                     }
                     mSQLiteIn.close();
                     inQuery.removeEventListener(this);
                     mAdapter.notifyDataSetChanged();
-                    Log.d("Get in data - Rev", "Done");
                 }
 
                 @Override
@@ -230,6 +234,10 @@ public class RevenuesFragment extends Fragment {
                         values.put(BankAccountDb.COL_RATE, item.getRate());
                         values.put(BankAccountDb.COL_DATE, item.getDate());
                         mSQLiteRate.insert(BankAccountDb.TABLE_NAME, null, values);
+                    }
+                    // Nếu UI is dead thì không làm gì cả
+                    if (getActivity() == null) {
+                        return;
                     }
                     mSQLiteRate.close();
                     intsQuery.removeEventListener(this);

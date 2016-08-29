@@ -41,7 +41,7 @@ public class YearStatsFragment extends Fragment {
     private static TextView mRevTextView;
     private static TextView mExpTextView;
     private ProgressDialog mProDialog;
-    private SQLiteDatabase  mSQLiteIn, mSQLiteOut;
+    private SQLiteDatabase mSQLiteIn, mSQLiteOut;
     private static ArrayList<TransactionsItem> mListTransIn;
     private static ArrayList<TransactionsItem> mListTransOut;
     private static CurrencyParser mParser;
@@ -84,7 +84,6 @@ public class YearStatsFragment extends Fragment {
         if (date.length() != 4) {
             year = DateParser.parseYear(date);
         }
-        Log.d("Year", year);
         int costIn = 0, costOut = 0;
         for (TransactionsItem transactionsItem : mListTransIn) {
             if (year.equals(DateParser.parseYear(transactionsItem.getDate()))) {
@@ -196,7 +195,6 @@ public class YearStatsFragment extends Fragment {
         protected void onPreExecute() {
             super.onPreExecute();
             mProDialog.show();
-            Log.d("YearStats", "getting data");
             mListTransIn = new ArrayList<>();
             mListTransOut = new ArrayList<>();
         }
@@ -233,6 +231,10 @@ public class YearStatsFragment extends Fragment {
                 } while (cursorOut.moveToNext());
             }
             cursorOut.close();
+            // Nếu UI is dead thì không làm gì cả
+            if (getActivity() == null) {
+                return null;
+            }
             getItemYear(today());
             return null;
         }
@@ -240,7 +242,6 @@ public class YearStatsFragment extends Fragment {
         @Override
         protected void onPostExecute(Void aVoid) {
             super.onPostExecute(aVoid);
-            Log.d("YearStats", "done");
             if (mProDialog.isShowing()) {
                 mProDialog.dismiss();
             }

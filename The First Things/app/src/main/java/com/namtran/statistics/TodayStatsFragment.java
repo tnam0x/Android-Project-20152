@@ -57,12 +57,13 @@ public class TodayStatsFragment extends Fragment {
     }
 
     private void getItemAndSetupToListView() {
-        Log.d("TodayStats", "setup");
         getItemNow();
         getItemMonth();
         getItemYear();
         mAdapter.notifyDataSetChanged();
-        mProDialog.dismiss();
+        if (mProDialog != null && mProDialog.isShowing()) {
+            mProDialog.dismiss();
+        }
     }
 
     private void getItemNow() {
@@ -71,13 +72,11 @@ public class TodayStatsFragment extends Fragment {
         for (TransactionsItem transactionsItem : mListTransIn) {
             if (transactionsItem.getDate().equals(date)) {
                 costIn += Integer.parseInt(transactionsItem.getCost());
-                Log.d("CostIn", costIn + "");
             }
         }
         for (TransactionsItem transactionsItem : mListTransOut) {
             if (transactionsItem.getDate().equals(date)) {
                 costOut += Integer.parseInt(transactionsItem.getCost());
-                Log.d("CostOut", costOut + "");
             }
         }
         StatsItem statsItem = new StatsItem(date, String.valueOf(costIn), String.valueOf(costOut));
@@ -86,7 +85,6 @@ public class TodayStatsFragment extends Fragment {
 
     private void getItemMonth() {
         String date = DateParser.parseMonth(today());
-        Log.d("Month", date);
         int costIn = 0, costOut = 0;
         for (TransactionsItem transactionsItem : mListTransIn) {
             if (date.equals(DateParser.parseMonth(transactionsItem.getDate()))) {
@@ -104,7 +102,6 @@ public class TodayStatsFragment extends Fragment {
 
     private void getItemYear() {
         String date = DateParser.parseYear(today());
-        Log.d("Year", date);
         int costIn = 0, costOut = 0;
         for (TransactionsItem transactionsItem : mListTransIn) {
             if (date.equals(DateParser.parseYear(transactionsItem.getDate()))) {
@@ -132,14 +129,12 @@ public class TodayStatsFragment extends Fragment {
         protected void onPreExecute() {
             super.onPreExecute();
             mProDialog.show();
-            Log.d("TodayStats", "getting data");
             mListTransIn = new ArrayList<>();
             mListTransOut = new ArrayList<>();
         }
 
         @Override
         protected Void doInBackground(Void... voids) {
-            Log.d("TodayStats", "doing");
             TransactionsItem item;
             String id;
             String queryIn = "select * from " + InDb.TABLE_NAME;
@@ -153,7 +148,6 @@ public class TodayStatsFragment extends Fragment {
                     String date = cursorIn.getString(4);
                     item = new TransactionsItem(cost, type, note, date, id);
                     mListTransIn.add(item);
-                    Log.d("IN TodayStats", item.toString());
                 } while (cursorIn.moveToNext());
             }
             cursorIn.close();
@@ -168,7 +162,6 @@ public class TodayStatsFragment extends Fragment {
                     String date = cursorOut.getString(4);
                     item = new TransactionsItem(cost, type, note, date, id);
                     mListTransOut.add(item);
-                    Log.d("OUT TodayStats", item.toString());
                 } while (cursorOut.moveToNext());
             }
             cursorOut.close();
@@ -178,7 +171,10 @@ public class TodayStatsFragment extends Fragment {
         @Override
         protected void onPostExecute(Void aVoid) {
             super.onPostExecute(aVoid);
-            Log.d("TodayStats", "done");
+            // Nếu UI is dead thì không làm gì cả
+            if (getActivity() == null) {
+                return;
+            }
             getItemAndSetupToListView();
         }
     }

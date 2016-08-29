@@ -34,6 +34,10 @@ public class SplashActivity extends Activity {
 
         @Override
         protected void onPostExecute(final Boolean result) {
+            // Nếu UI is dead thì không làm gì cả
+            if (getApplicationContext() == null) {
+                return;
+            }
             Handler handler = new Handler();
             handler.postDelayed(new Runnable() {
                 @Override

@@ -38,7 +38,6 @@ import java.util.Locale;
 
 /**
  * Created by namtr on 23/08/2016.
- *
  */
 public class BankAccountFragment extends Fragment implements View.OnClickListener, AdapterView.OnItemLongClickListener {
     private Spinner mSpinner;
@@ -160,6 +159,14 @@ public class BankAccountFragment extends Fragment implements View.OnClickListene
         mDateTextView.setText(format.format(calendar.getTime()));
     }
 
+    @Override
+    public void onStop() {
+        super.onStop();
+        if (mProDialog != null && mProDialog.isShowing()) {
+            mProDialog.dismiss();
+        }
+    }
+
     private void showDatePicker() {
         int year = mCalendar.get(Calendar.YEAR);
         int month = mCalendar.get(Calendar.MONTH);
@@ -221,6 +228,10 @@ public class BankAccountFragment extends Fragment implements View.OnClickListene
         @Override
         protected void onPostExecute(Void aVoid) {
             super.onPostExecute(aVoid);
+            // Nếu UI is dead thì không làm gì cả
+            if (getActivity() == null) {
+                return;
+            }
             view.setEnabled(true);
             mMoneyField.setText("");
             mRateField.setText("");
@@ -261,6 +272,10 @@ public class BankAccountFragment extends Fragment implements View.OnClickListene
         @Override
         protected void onPostExecute(Void aVoid) {
             super.onPostExecute(aVoid);
+            // Nếu UI is dead thì không làm gì cả
+            if (getActivity() == null) {
+                return;
+            }
             mAdapter.notifyDataSetChanged();
             if (mProDialog.isShowing()) {
                 mProDialog.dismiss();
