@@ -10,11 +10,15 @@ import android.view.ViewGroup;
 
 import java.util.ArrayList;
 
+import com.namtran.exchange.ExchangeFragment;
+
 import com.namtran.entity.ExchangeItem;
 import com.namtran.main.R;
 
 /**
  * Created by namtr on 22/08/2016.
+ * Adapter cho danh sách thu chi khi qui đổi sang tiền tệ khác.
+ * Dùng trong: {@link ExchangeFragment}
  */
 public class ExchangeRecyclerAdapter extends RecyclerView.Adapter<ExchangeItemViewHolder> {
     private ArrayList<ExchangeItem> mListExchange;

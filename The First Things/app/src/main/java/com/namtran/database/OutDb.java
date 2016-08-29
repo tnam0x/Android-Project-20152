@@ -3,7 +3,9 @@ package com.namtran.database;
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
-
+/**
+ * Cơ sở dữ liệu cho danh sách chi.
+ * */
 public class OutDb extends SQLiteOpenHelper {
 
     public static final String TABLE_NAME = "expense";

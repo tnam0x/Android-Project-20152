@@ -2,6 +2,8 @@ package com.namtran.entity;
 
 /**
  * Created by namtr on 15/08/2016.
+ * Lưu thông tin của người dùng
+ * Gồm tên, email, uid, ảnh đại diện
  */
 public class UserInfo {
     public static final String PREF_NAME = "user_info";

@@ -27,7 +27,7 @@ import com.namtran.adapter.ExchangeViewPagerAdapter;
 import com.namtran.database.InDb;
 import com.namtran.database.OutDb;
 import com.namtran.entity.ExchangeItem;
-import com.namtran.entity.ForeignCurrency;
+import com.namtran.entity.ForeignCurrencyItem;
 import com.namtran.entity.HTMLParser;
 import com.namtran.entity.TransactionsItem;
 import com.namtran.main.R;
@@ -43,7 +43,7 @@ public class ExchangeFragment extends Fragment {
     private SQLiteDatabase mSQLiteIn, mSQLiteOut;
     public static ArrayList<TransactionsItem> mListTransIn, mListTransOut;
     private ProgressDialog mProDialog;
-    private ArrayList<ForeignCurrency> mFCurrency;
+    private ArrayList<ForeignCurrencyItem> mFCurrency;
     private final static String[] NAME_MONEY = {"US Dollar (USD)", "Euro (EUR)",
             "British Pound (GBD)", "HongKong Dollar (HKD)", "Japan Yen (JPY)",
             "South Korean Won (KRW)", "Indian RUPEE (INR)",
@@ -101,7 +101,7 @@ public class ExchangeFragment extends Fragment {
         getActivity().runOnUiThread(new Runnable() {
             @Override
             public void run() {
-                for (ForeignCurrency currency : mFCurrency) {
+                for (ForeignCurrencyItem currency : mFCurrency) {
                     if (currency.symbol.equals(KH_MONEY[position])) {
                         mRateTextView.setText(currency.toString());
                         updateListExp(currency);
@@ -111,7 +111,7 @@ public class ExchangeFragment extends Fragment {
         });
     }
 
-    private void updateListExp(ForeignCurrency currency) {
+    private void updateListExp(ForeignCurrencyItem currency) {
         ArrayList<ExchangeItem> revData = new ArrayList<>();
         ArrayList<ExchangeItem> expData = new ArrayList<>();
         ExchangeItem mItem;

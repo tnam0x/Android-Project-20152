@@ -26,9 +26,9 @@ import android.widget.ListView;
 import android.widget.Spinner;
 import android.widget.TextView;
 
-import com.namtran.adapter.ListAccountAdapter;
-import com.namtran.database.InterestDb;
-import com.namtran.entity.BankingItem;
+import com.namtran.adapter.AccountListAdapter;
+import com.namtran.database.BankAccountDb;
+import com.namtran.entity.BankItem;
 import com.namtran.main.R;
 
 import java.text.SimpleDateFormat;
@@ -38,14 +38,15 @@ import java.util.Locale;
 
 /**
  * Created by namtr on 23/08/2016.
+ *
  */
-public class BankingAccountFragment extends Fragment implements View.OnClickListener, AdapterView.OnItemLongClickListener {
+public class BankAccountFragment extends Fragment implements View.OnClickListener, AdapterView.OnItemLongClickListener {
     private Spinner mSpinner;
     private EditText mMoneyField, mRateField;
     private TextView mDateTextView;
     private SQLiteDatabase mSQLiteRate;
-    private ListAccountAdapter mAdapter;
-    private ArrayList<BankingItem> mListAccount = new ArrayList<>();
+    private AccountListAdapter mAdapter;
+    private ArrayList<BankItem> mListAccount = new ArrayList<>();
     private Calendar mCalendar = Calendar.getInstance();
     private View view;
     private ProgressDialog mProDialog;
@@ -61,7 +62,7 @@ public class BankingAccountFragment extends Fragment implements View.OnClickList
     }
 
     private void initControl(View rootView) {
-        InterestDb interestDb = new InterestDb(getContext());
+        BankAccountDb interestDb = new BankAccountDb(getContext());
         mSQLiteRate = interestDb.getWritableDatabase();
         mProDialog = new ProgressDialog(getContext());
         mSpinner = (Spinner) rootView.findViewById(R.id.spinner_banking);
@@ -74,7 +75,7 @@ public class BankingAccountFragment extends Fragment implements View.OnClickList
         btnSave.setOnClickListener(this);
         ListView listAccount = (ListView) rootView.findViewById(R.id.list_account);
         listAccount.setOnItemLongClickListener(this);
-        mAdapter = new ListAccountAdapter(getContext(), R.layout.custom_list_account, mListAccount);
+        mAdapter = new AccountListAdapter(getContext(), R.layout.custom_list_account, mListAccount);
         listAccount.setAdapter(mAdapter);
         ArrayAdapter<String> adapter = new ArrayAdapter<>(getContext(), android.R.layout.simple_spinner_dropdown_item, BANK_NAME);
         mSpinner.setAdapter(adapter);
@@ -123,17 +124,17 @@ public class BankingAccountFragment extends Fragment implements View.OnClickList
             Snackbar.make(view, "Bạn chưa nhập lãi xuất", Snackbar.LENGTH_SHORT).show();
         } else {
             view.setEnabled(false);
-            BankingItem item = new BankingItem(bankName, money, rate, date);
+            BankItem item = new BankItem(bankName, money, rate, date);
             new SaveToDatabase().execute(item);
         }
     }
 
     private void deleteAccount(int position) {
-        String query = "select * from " + InterestDb.TABLE_NAME;
+        String query = "select * from " + BankAccountDb.TABLE_NAME;
         Cursor cursor = mSQLiteRate.rawQuery(query, null);
         cursor.moveToPosition(position);
         String rowId = cursor.getString(0);
-        mSQLiteRate.delete(InterestDb.TABLE_NAME, "_id=?", new String[]{rowId});
+        mSQLiteRate.delete(BankAccountDb.TABLE_NAME, "_id=?", new String[]{rowId});
         cursor.requery();
         cursor.close();
         mListAccount.remove(position);
@@ -147,7 +148,7 @@ public class BankingAccountFragment extends Fragment implements View.OnClickList
                 return true;
             }
         } catch (Exception e) {
-            Log.e("BankingAccountFragment", e.getMessage());
+            Log.e("BankAccountFragment", e.getMessage());
         }
         return false;
     }
@@ -201,17 +202,17 @@ public class BankingAccountFragment extends Fragment implements View.OnClickList
         }
     }
 
-    private class SaveToDatabase extends AsyncTask<BankingItem, Void, Void> {
+    private class SaveToDatabase extends AsyncTask<BankItem, Void, Void> {
 
         @Override
-        protected Void doInBackground(BankingItem... params) {
-            BankingItem item = params[0];
+        protected Void doInBackground(BankItem... params) {
+            BankItem item = params[0];
             ContentValues values = new ContentValues();
-            values.put(InterestDb.COL_NAME, item.getName());
-            values.put(InterestDb.COL_MONEY, item.getMoney());
-            values.put(InterestDb.COL_RATE, item.getRate());
-            values.put(InterestDb.COL_DATE, item.getDate());
-            long id = mSQLiteRate.insert(InterestDb.TABLE_NAME, null, values);
+            values.put(BankAccountDb.COL_NAME, item.getName());
+            values.put(BankAccountDb.COL_MONEY, item.getMoney());
+            values.put(BankAccountDb.COL_RATE, item.getRate());
+            values.put(BankAccountDb.COL_DATE, item.getDate());
+            long id = mSQLiteRate.insert(BankAccountDb.TABLE_NAME, null, values);
             item.setId(String.valueOf(id));
             mListAccount.add(item);
             return null;
@@ -239,8 +240,8 @@ public class BankingAccountFragment extends Fragment implements View.OnClickList
 
         @Override
         protected Void doInBackground(Void... params) {
-            BankingItem item;
-            String query = "select * from " + InterestDb.TABLE_NAME;
+            BankItem item;
+            String query = "select * from " + BankAccountDb.TABLE_NAME;
             Cursor cursor = mSQLiteRate.rawQuery(query, null);
             if (cursor.moveToFirst()) {
                 do {
@@ -249,7 +250,7 @@ public class BankingAccountFragment extends Fragment implements View.OnClickList
                     String money = cursor.getString(2);
                     String rate = cursor.getString(3);
                     String date = cursor.getString(4);
-                    item = new BankingItem(name, money, rate, date, id);
+                    item = new BankItem(name, money, rate, date, id);
                     mListAccount.add(item);
                 } while (cursor.moveToNext());
             }

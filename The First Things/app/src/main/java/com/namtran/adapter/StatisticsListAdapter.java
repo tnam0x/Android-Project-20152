@@ -10,19 +10,22 @@ import android.widget.TextView;
 
 import java.util.ArrayList;
 
+import com.namtran.exchange.ExchangeFragment;
 import com.namtran.entity.CurrencyParser;
 import com.namtran.entity.StatsItem;
 import com.namtran.main.R;
 
 /**
  * Created by namtr on 20/08/2016.
+ * Adapter cho danh sách thu chi được thống kê.
+ * Dùng trong: {@link ExchangeFragment}
  */
-public class TodayStatsAdapter extends ArrayAdapter<StatsItem> {
+public class StatisticsListAdapter extends ArrayAdapter<StatsItem> {
     private LayoutInflater mInflater;
     private int mResId;
     private ArrayList<StatsItem> mListStats;
 
-    public TodayStatsAdapter(Context context, int resource, ArrayList<StatsItem> data) {
+    public StatisticsListAdapter(Context context, int resource, ArrayList<StatsItem> data) {
         super(context, resource, data);
         this.mInflater = LayoutInflater.from(context);
         this.mResId = resource;

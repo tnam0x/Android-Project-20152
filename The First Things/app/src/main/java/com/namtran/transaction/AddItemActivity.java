@@ -26,6 +26,7 @@ import com.namtran.main.R;
 
 /**
  * Created by namtr on 18/08/2016.
+ * Thêm khoản thu hoặc chi.
  */
 public class AddItemActivity extends AppCompatActivity implements View.OnClickListener {
     private EditText costField, noteField;

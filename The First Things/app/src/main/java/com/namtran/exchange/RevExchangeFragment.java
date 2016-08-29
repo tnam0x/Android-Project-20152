@@ -21,6 +21,7 @@ import com.namtran.main.R;
 
 /**
  * Created by namtr on 22/08/2016.
+ * Danh sách thu khi đổi tiền tệ.
  */
 public class RevExchangeFragment extends Fragment {
     private static ArrayList<ExchangeItem> mListExchange;

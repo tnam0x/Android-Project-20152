@@ -30,7 +30,7 @@ import com.google.firebase.auth.EmailAuthProvider;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.namtran.database.InDb;
-import com.namtran.database.InterestDb;
+import com.namtran.database.BankAccountDb;
 import com.namtran.database.OutDb;
 import com.namtran.entity.UserInfo;
 import com.namtran.main.LoginActivity;
@@ -55,7 +55,7 @@ public class ChangePasswordActivity extends AppCompatActivity implements View.On
         init();
         InDb inDb = new InDb(this);
         OutDb outDb = new OutDb(this);
-        InterestDb interestDb = new InterestDb(this);
+        BankAccountDb interestDb = new BankAccountDb(this);
         mSQLiteIn = inDb.getWritableDatabase();
         mSQLiteOut = outDb.getWritableDatabase();
         mSQLiteRate = interestDb.getWritableDatabase();
@@ -120,7 +120,7 @@ public class ChangePasswordActivity extends AppCompatActivity implements View.On
                             Log.d("validate", "signout");
                             mSQLiteIn.execSQL("delete from " + InDb.TABLE_NAME);
                             mSQLiteOut.execSQL("delete from " + OutDb.TABLE_NAME);
-                            mSQLiteRate.execSQL("delete from " + InterestDb.TABLE_NAME);
+                            mSQLiteRate.execSQL("delete from " + BankAccountDb.TABLE_NAME);
                             SharedPreferences pref = getSharedPreferences(UserInfo.PREF_NAME, MODE_PRIVATE);
                             SharedPreferences.Editor editor = pref.edit();
                             editor.clear().apply();

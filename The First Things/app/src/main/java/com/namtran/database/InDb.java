@@ -4,6 +4,11 @@ import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
+import com.namtran.transaction.RevenuesFragment;
+
+/**
+ * Cơ sở dữ liệu cho danh sách thu: {@link RevenuesFragment}
+ */
 public class InDb extends SQLiteOpenHelper {
 
     public static final String TABLE_NAME = "income";

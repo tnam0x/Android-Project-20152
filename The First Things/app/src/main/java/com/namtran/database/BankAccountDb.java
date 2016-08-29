@@ -6,8 +6,9 @@ import android.database.sqlite.SQLiteOpenHelper;
 
 /**
  * Created by Legendary on 04/05/2016.
+ * Cơ sở dữ liệu cho Tài khoản ngân hàng.
  */
-public class InterestDb extends SQLiteOpenHelper {
+public class BankAccountDb extends SQLiteOpenHelper {
 
     public static final String TABLE_NAME = "account";
     public static final String COL_NAME = "name";
@@ -19,7 +20,7 @@ public class InterestDb extends SQLiteOpenHelper {
     private static final String STRING_CREATE = "CREATE TABLE " + TABLE_NAME + " (_id INTEGER PRIMARY KEY AUTOINCREMENT,"
             + COL_NAME + " TEXT," + COL_MONEY + " TEXT," + COL_RATE + " TEXT," + COL_DATE + " TEXT);";
 
-    public InterestDb(Context context) {
+    public BankAccountDb(Context context) {
         super(context, DB_NAME, null, DB_VERSION);
     }
 

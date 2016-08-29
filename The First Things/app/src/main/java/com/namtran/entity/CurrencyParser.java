@@ -5,6 +5,7 @@ import java.text.DecimalFormatSymbols;
 
 /**
  * Created by namtr on 23/08/2016.
+ * Định dạng số bất kì thành định dạng tiền tệ của VN
  */
 public class CurrencyParser {
     private DecimalFormat format;

@@ -37,6 +37,7 @@ import java.util.ArrayList;
 
 /**
  * Created by namtr on 19/08/2016.
+ * Danh sách chi.
  */
 public class ExpenditureFragment extends Fragment {
     private DatabaseReference mFirebase;

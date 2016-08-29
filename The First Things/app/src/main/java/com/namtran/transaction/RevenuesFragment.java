@@ -27,9 +27,9 @@ import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 import com.namtran.adapter.TransactionsRecyclerAdapter;
 import com.namtran.database.InDb;
-import com.namtran.database.InterestDb;
+import com.namtran.database.BankAccountDb;
 import com.namtran.database.OutDb;
-import com.namtran.entity.BankingItem;
+import com.namtran.entity.BankItem;
 import com.namtran.entity.CurrencyParser;
 import com.namtran.entity.TransactionsItem;
 import com.namtran.entity.UserInfo;
@@ -39,6 +39,7 @@ import java.util.ArrayList;
 
 /**
  * Created by namtr on 15/08/2016.
+ * Danh sách thu.
  */
 public class RevenuesFragment extends Fragment {
     private DatabaseReference mFirebase;
@@ -58,7 +59,7 @@ public class RevenuesFragment extends Fragment {
         // Khởi tạo databse
         InDb inDb = new InDb(getContext());
         OutDb outDb = new OutDb(getContext());
-        InterestDb interestDb = new InterestDb(getContext());
+        BankAccountDb interestDb = new BankAccountDb(getContext());
         mSQLiteIn = inDb.getWritableDatabase();
         mSQLiteOut = outDb.getWritableDatabase();
         mSQLiteRate = interestDb.getWritableDatabase();
@@ -221,15 +222,15 @@ public class RevenuesFragment extends Fragment {
             intsQuery.addValueEventListener(new ValueEventListener() {
                 @Override
                 public void onDataChange(DataSnapshot dataSnapshot) {
-                    BankingItem item;
+                    BankItem item;
                     for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
-                        item = snapshot.getValue(BankingItem.class);
+                        item = snapshot.getValue(BankItem.class);
                         ContentValues values = new ContentValues();
-                        values.put(InterestDb.COL_NAME, item.getName());
-                        values.put(InterestDb.COL_MONEY, item.getMoney());
-                        values.put(InterestDb.COL_RATE, item.getRate());
-                        values.put(InterestDb.COL_DATE, item.getDate());
-                        mSQLiteRate.insert(InterestDb.TABLE_NAME, null, values);
+                        values.put(BankAccountDb.COL_NAME, item.getName());
+                        values.put(BankAccountDb.COL_MONEY, item.getMoney());
+                        values.put(BankAccountDb.COL_RATE, item.getRate());
+                        values.put(BankAccountDb.COL_DATE, item.getDate());
+                        mSQLiteRate.insert(BankAccountDb.TABLE_NAME, null, values);
                     }
                     mSQLiteRate.close();
                     intsQuery.removeEventListener(this);

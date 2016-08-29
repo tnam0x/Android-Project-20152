@@ -2,19 +2,22 @@ package com.namtran.entity;
 
 /**
  * Created by namtr on 23/08/2016.
+ * Lưu thông tin của tài khoản ngân hàng
+ * Gồm tên ngân hàng, số tiền trong tài khoản, tỉ giá, ngày, id
+ * Dùng cho chức năng tài khoản ngân hàng
  */
-public class BankingItem {
+public class BankItem {
     private String name;
     private String money;
     private String rate;
     private String date;
     private String id;
 
-    public BankingItem() {
+    public BankItem() {
         // Cần cho firebase đồng bộ dữ liệu
     }
 
-    public BankingItem(String name, String money, String rate, String date, String id) {
+    public BankItem(String name, String money, String rate, String date, String id) {
         this.name = name;
         this.money = money;
         this.rate = rate;
@@ -22,7 +25,7 @@ public class BankingItem {
         this.id = id;
     }
 
-    public BankingItem(String name, String money, String rate, String date) {
+    public BankItem(String name, String money, String rate, String date) {
         this.name = name;
         this.money = money;
         this.rate = rate;

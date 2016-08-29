@@ -2,6 +2,9 @@ package com.namtran.entity;
 
 /**
  * Created by namtr on 22/08/2016.
+ * Class lưu dữ liệu của một khoản thu hoặc chi
+ * Gồm có tiền, nhóm, ngày của giao dịch
+ * Dùng cho chức năng Đổi tiền tệ
  */
 public class ExchangeItem {
     private String cost;

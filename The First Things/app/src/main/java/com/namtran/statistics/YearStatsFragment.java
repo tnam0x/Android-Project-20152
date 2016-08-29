@@ -34,6 +34,7 @@ import com.namtran.main.R;
 
 /**
  * Created by namtr on 20/08/2016.
+ * Thống kê thu chi theo năm.
  */
 public class YearStatsFragment extends Fragment {
     private static TextView mYearTextView;

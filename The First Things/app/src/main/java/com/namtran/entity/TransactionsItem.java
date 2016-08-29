@@ -2,6 +2,9 @@ package com.namtran.entity;
 
 /**
  * Created by Legendary on 27/04/2016.
+ * Lưu thông tin giao dịch
+ * Gồm tiền, nhóm, ghi chú, ngày, id của giao dịch
+ * Dùng cho chức năng Sổ giao dịch
  */
 public class TransactionsItem {
     private String cost;

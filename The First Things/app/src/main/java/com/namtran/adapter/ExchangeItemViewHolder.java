@@ -9,6 +9,7 @@ import com.namtran.main.R;
 
 /**
  * Created by namtr on 22/08/2016.
+ * ViewHolder cho Adapter {@link ExchangeRecyclerAdapter}
  */
 public class ExchangeItemViewHolder extends RecyclerView.ViewHolder {
     TextView type, cost, date;

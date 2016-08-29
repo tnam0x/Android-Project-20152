@@ -2,6 +2,8 @@ package com.namtran.entity;
 
 /**
  * Created by namtr on 21/08/2016.
+ * Tách thời gian thành ngày, tháng năm hoặc ngày/tháng
+ * Dùng cho chức năng Thống kê
  */
 public class DateParser {
     public static String parseMonth(String date) {

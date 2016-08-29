@@ -7,7 +7,7 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.TextView;
 
-import com.namtran.entity.BankingItem;
+import com.namtran.entity.BankItem;
 import com.namtran.entity.CurrencyParser;
 import com.namtran.main.R;
 
@@ -15,13 +15,14 @@ import java.util.ArrayList;
 
 /**
  * Created by namtr on 23/08/2016.
+ * Adapter cho danh sách các tài khoản ngân hàng.
  */
-public class ListAccountAdapter extends ArrayAdapter<BankingItem> {
+public class AccountListAdapter extends ArrayAdapter<BankItem> {
     private LayoutInflater mInflater;
     private int mResId;
-    private ArrayList<BankingItem> mListAccount;
+    private ArrayList<BankItem> mListAccount;
 
-    public ListAccountAdapter(Context context, int resource, ArrayList<BankingItem> data) {
+    public AccountListAdapter(Context context, int resource, ArrayList<BankItem> data) {
         super(context, resource, data);
         this.mInflater = LayoutInflater.from(context);
         this.mResId = resource;
@@ -42,7 +43,7 @@ public class ListAccountAdapter extends ArrayAdapter<BankingItem> {
         } else {
             holder = (ViewHolder) convertView.getTag();
         }
-        BankingItem item = mListAccount.get(position);
+        BankItem item = mListAccount.get(position);
         holder.money.setText(holder.mParser.format(item.getMoney()));
         holder.name.setText(item.getName());
         holder.rate.setText(String.valueOf(item.getRate() + "%"));

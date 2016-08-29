@@ -18,7 +18,7 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Locale;
 
-import com.namtran.adapter.TodayStatsAdapter;
+import com.namtran.adapter.StatisticsListAdapter;
 import com.namtran.database.InDb;
 import com.namtran.database.OutDb;
 import com.namtran.entity.TransactionsItem;
@@ -28,13 +28,14 @@ import com.namtran.main.R;
 
 /**
  * Created by namtr on 20/08/2016.
+ * Danh sách thu chi thống kê theo ngày, tháng, năm.
  */
 public class TodayStatsFragment extends Fragment {
     private ProgressDialog mProDialog;
     private SQLiteDatabase mSQLiteIn, mSQLiteOut;
     private ArrayList<TransactionsItem> mListTransIn, mListTransOut;
     private ArrayList<StatsItem> mListStats;
-    private TodayStatsAdapter mAdapter;
+    private StatisticsListAdapter mAdapter;
 
     @Nullable
     @Override
@@ -42,7 +43,7 @@ public class TodayStatsFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_today, container, false);
         ListView listView = (ListView) view.findViewById(R.id.list_item_today);
         mListStats = new ArrayList<>();
-        mAdapter = new TodayStatsAdapter(getContext(), R.layout.custom_list_today, mListStats);
+        mAdapter = new StatisticsListAdapter(getContext(), R.layout.custom_list_today, mListStats);
         listView.setAdapter(mAdapter);
         InDb inDb = new InDb(getContext());
         OutDb outDb = new OutDb(getContext());

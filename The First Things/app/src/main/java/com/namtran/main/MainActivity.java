@@ -32,9 +32,9 @@ import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.namtran.banking.BankingAccountFragment;
+import com.namtran.banking.BankAccountFragment;
 import com.namtran.database.InDb;
-import com.namtran.database.InterestDb;
+import com.namtran.database.BankAccountDb;
 import com.namtran.database.OutDb;
 import com.namtran.entity.UserInfo;
 import com.namtran.exchange.ExchangeFragment;
@@ -64,7 +64,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         }
         InDb inDb = new InDb(this);
         OutDb outDb = new OutDb(this);
-        InterestDb interestDb = new InterestDb(this);
+        BankAccountDb interestDb = new BankAccountDb(this);
         mSQLiteIn = inDb.getWritableDatabase();
         mSQLiteOut = outDb.getWritableDatabase();
         mSQLiteRate = interestDb.getWritableDatabase();
@@ -233,7 +233,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 transaction.replace(R.id.contentPanel, exchange);
                 break;
             case 3:
-                BankingAccountFragment banking = new BankingAccountFragment();
+                BankAccountFragment banking = new BankAccountFragment();
                 transaction.replace(R.id.contentPanel, banking);
                 break;
         }
@@ -244,7 +244,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     private void removeAllInfoOfUser() {
         mSQLiteIn.execSQL("delete from " + InDb.TABLE_NAME);
         mSQLiteOut.execSQL("delete from " + OutDb.TABLE_NAME);
-        mSQLiteRate.execSQL("delete from " + InterestDb.TABLE_NAME);
+        mSQLiteRate.execSQL("delete from " + BankAccountDb.TABLE_NAME);
         SharedPreferences pref = getSharedPreferences(UserInfo.PREF_NAME, MODE_PRIVATE);
         SharedPreferences.Editor editor = pref.edit();
         editor.clear().apply();

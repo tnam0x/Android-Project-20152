@@ -9,7 +9,7 @@ import android.util.Log;
 import android.view.View;
 
 /**
- * Class này được dùng cho layout, không được sửa, xoá không sẽ gây lỗi khi biên dịch
+ * Class này được dùng cho FAB của layout, không được sửa, xoá không sẽ gây lỗi khi biên dịch
  */
 public class ScrollingFABBehavior extends FloatingActionButton.Behavior {
 

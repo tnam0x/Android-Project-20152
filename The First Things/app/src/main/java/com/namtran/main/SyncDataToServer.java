@@ -14,14 +14,15 @@ import android.view.View;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.namtran.database.InDb;
-import com.namtran.database.InterestDb;
+import com.namtran.database.BankAccountDb;
 import com.namtran.database.OutDb;
-import com.namtran.entity.BankingItem;
+import com.namtran.entity.BankItem;
 import com.namtran.entity.TransactionsItem;
 import com.namtran.entity.UserInfo;
 
 /**
  * Created by namtr on 19/08/2016.
+ * Đồng bộ dữ liệu lên server.
  */
 public class SyncDataToServer extends AsyncTask<Void, Void, Void> {
     private Context mContext;
@@ -38,7 +39,7 @@ public class SyncDataToServer extends AsyncTask<Void, Void, Void> {
         mUserRef = FirebaseDatabase.getInstance().getReference();
         InDb inDb = new InDb(context);
         OutDb outDb = new OutDb(context);
-        InterestDb interestDb = new InterestDb(context);
+        BankAccountDb interestDb = new BankAccountDb(context);
         mSQLiteIn = inDb.getWritableDatabase();
         mSQLiteOut = outDb.getWritableDatabase();
         mSQLiteRate = interestDb.getWritableDatabase();
@@ -109,7 +110,7 @@ public class SyncDataToServer extends AsyncTask<Void, Void, Void> {
         cursorOut.close();
 
         // Tài khoản ngân hàng
-        String queryInterest = "select * from " + InterestDb.TABLE_NAME;
+        String queryInterest = "select * from " + BankAccountDb.TABLE_NAME;
         Cursor cursorInts = mSQLiteRate.rawQuery(queryInterest, null);
         if (cursorInts.moveToFirst()) {
             do {
@@ -118,7 +119,7 @@ public class SyncDataToServer extends AsyncTask<Void, Void, Void> {
                 String money = cursorInts.getString(2);
                 String rate = cursorInts.getString(3);
                 String date = cursorInts.getString(4);
-                BankingItem bankItem = new BankingItem(name, money, rate, date, id);
+                BankItem bankItem = new BankItem(name, money, rate, date, id);
                 rateRef.child(id).setValue(bankItem);
             } while (cursorInts.moveToNext());
         }
