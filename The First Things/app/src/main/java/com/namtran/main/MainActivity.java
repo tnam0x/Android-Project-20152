@@ -121,7 +121,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         super.onConfigurationChanged(newConfig);
         // Forward the new configuration the drawer toggle component.
         mToggle.onConfigurationChanged(newConfig);
-        Log.d("onConfigurationChanged", "changed");
     }
 
     boolean doubleBackToExitPressedOnce = false;
@@ -181,7 +180,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 break;
             case R.id.nav_sync:
                 if (isInternetAvailable()) {
-                    Log.d("Sync", "begin");
                     SyncDataToServer sync = new SyncDataToServer(this, mView);
                     sync.execute();
                 } else {

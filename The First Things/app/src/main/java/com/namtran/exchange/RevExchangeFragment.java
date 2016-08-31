@@ -46,7 +46,6 @@ public class RevExchangeFragment extends Fragment {
 
 
     public static void update(ArrayList<ExchangeItem> data) {
-        Log.d("Update Exp", "doing");
         mListExchange.clear();
         mListExchange.addAll(data);
         mAdapter.notifyDataSetChanged();
@@ -64,14 +63,14 @@ public class RevExchangeFragment extends Fragment {
         @Override
         public void onClick(View view) {
             int position = mRecyclerView.getChildLayoutPosition(view);
-            TransactionsItem transactionsItem = mListTrans.get(position);
+            TransactionsItem item = mListTrans.get(position);
             AlertDialog.Builder dialog = new AlertDialog.Builder(getContext());
             dialog.setTitle("Thông Tin Khoản Thu").setCancelable(true);
             StringBuilder msg = new StringBuilder();
-            msg.append("Tiền: ").append(mParser.format(transactionsItem.getCost()));
-            msg.append("\nNhóm: ").append(transactionsItem.getType());
-            msg.append("\nNgày: ").append(transactionsItem.getDate());
-            msg.append("\nGhi Chú: ").append(transactionsItem.getNote().isEmpty() ? "Trống" : transactionsItem.getNote());
+            msg.append("Tiền: ").append(mParser.format(item.getCost()));
+            msg.append("\nNhóm: ").append(item.getType());
+            msg.append("\nNgày: ").append(item.getDate());
+            msg.append("\nGhi Chú: ").append(item.getNote().isEmpty() ? "Trống" : item.getNote());
             dialog.setMessage(msg);
             dialog.setNegativeButton("OK", null);
             dialog.show();

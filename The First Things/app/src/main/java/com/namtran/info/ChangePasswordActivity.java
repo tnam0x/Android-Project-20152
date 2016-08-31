@@ -14,7 +14,6 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
@@ -29,8 +28,8 @@ import com.google.firebase.auth.AuthCredential;
 import com.google.firebase.auth.EmailAuthProvider;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
-import com.namtran.database.InDb;
 import com.namtran.database.BankAccountDb;
+import com.namtran.database.InDb;
 import com.namtran.database.OutDb;
 import com.namtran.entity.UserInfo;
 import com.namtran.main.LoginActivity;
@@ -81,7 +80,6 @@ public class ChangePasswordActivity extends AppCompatActivity implements View.On
     }
 
     private void validate() {
-        Log.d("validate", "begin");
         String oldPassword = mOldPasswordField.getText().toString();
         String newPassword = mNewPasswordField.getText().toString();
         String reNewPassword = mRePasswordField.getText().toString();
@@ -108,7 +106,6 @@ public class ChangePasswordActivity extends AppCompatActivity implements View.On
         final FirebaseUser user = mAuth.getCurrentUser();
         AuthCredential credential = EmailAuthProvider.getCredential(mUserInfo.getEmail(), passwords[0]);
         if (user != null) {
-            Log.d("reAuth", "user not null");
             Task<Void> reAuthTask = user.reauthenticate(credential);
             reAuthTask.addOnSuccessListener(this, new OnSuccessListener<Void>() {
                 @Override
@@ -117,7 +114,6 @@ public class ChangePasswordActivity extends AppCompatActivity implements View.On
                     updateTask.addOnSuccessListener(ChangePasswordActivity.this, new OnSuccessListener<Void>() {
                         @Override
                         public void onSuccess(Void aVoid) {
-                            Log.d("validate", "signout");
                             mSQLiteIn.execSQL("delete from " + InDb.TABLE_NAME);
                             mSQLiteOut.execSQL("delete from " + OutDb.TABLE_NAME);
                             mSQLiteRate.execSQL("delete from " + BankAccountDb.TABLE_NAME);
@@ -163,7 +159,6 @@ public class ChangePasswordActivity extends AppCompatActivity implements View.On
     }
 
     private boolean validatePassword(String password) {
-        Log.d("validatePassword", "begin");
         if (password.isEmpty()) {
             Toast.makeText(this, "Bạn chưa nhập mật khẩu", Toast.LENGTH_SHORT).show();
             return false;

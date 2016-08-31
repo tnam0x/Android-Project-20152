@@ -8,13 +8,12 @@ import android.database.sqlite.SQLiteDatabase;
 import android.os.AsyncTask;
 import android.os.Handler;
 import android.support.design.widget.Snackbar;
-import android.util.Log;
 import android.view.View;
 
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-import com.namtran.database.InDb;
 import com.namtran.database.BankAccountDb;
+import com.namtran.database.InDb;
 import com.namtran.database.OutDb;
 import com.namtran.entity.BankItem;
 import com.namtran.entity.TransactionsItem;
@@ -67,7 +66,6 @@ public class SyncDataToServer extends AsyncTask<Void, Void, Void> {
 
     @Override
     protected Void doInBackground(Void... params) {
-        Log.d("Sync", "doing");
         TransactionsItem transItem;
         String id;
         DatabaseReference expenseRef = mUserRef.child("Expense");

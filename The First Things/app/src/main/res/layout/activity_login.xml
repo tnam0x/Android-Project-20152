@@ -20,7 +20,7 @@
             android:layout_gravity="center"
             android:layout_marginBottom="16dp"
             android:contentDescription="@string/desc_logo"
-            android:src="@drawable/app_logo" />
+            android:src="@drawable/logo_product" />
 
         <TextView
             android:layout_width="match_parent"
@@ -90,7 +90,7 @@
                     android:layout_marginRight="6dp"
                     android:layout_marginTop="16dp"
                     android:layout_weight="1"
-                    android:background="@drawable/btn_selector"
+                    android:background="@drawable/button_selector"
                     android:text="@string/btn_sign_up"
                     android:textColor="@android:color/white"
                     android:textStyle="bold" />
@@ -101,7 +101,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="16dp"
                     android:layout_weight="1"
-                    android:background="@drawable/btn_selector"
+                    android:background="@drawable/button_selector"
                     android:text="@string/btn_sign_in"
                     android:textColor="@android:color/white"
                     android:textStyle="bold" />

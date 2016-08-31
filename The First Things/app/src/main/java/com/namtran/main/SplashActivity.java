@@ -6,7 +6,6 @@ import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
-import android.util.Log;
 
 import com.namtran.entity.UserInfo;
 
@@ -43,7 +42,6 @@ public class SplashActivity extends Activity {
                 @Override
                 public void run() {
                     if (result) {
-                        Log.d("Splash", "Thành công");
                         Intent intent = new Intent(SplashActivity.this, MainActivity.class);
                         startActivity(intent);
                         overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);

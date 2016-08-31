@@ -4,11 +4,11 @@
     <group android:checkableBehavior="single">
         <item
             android:id="@+id/nav_home"
-            android:icon="@drawable/ic_home"
+            android:icon="@drawable/ic_transactions"
             android:title="@string/item_transaction" />
         <item
             android:id="@+id/nav_diagram"
-            android:icon="@drawable/ic_diagram"
+            android:icon="@drawable/ic_statistics"
             android:title="@string/item_statistics" />
         <item
             android:id="@+id/nav_exchange"
@@ -16,7 +16,7 @@
             android:title="@string/item_exchange" />
         <item
             android:id="@+id/nav_deposit"
-            android:icon="@drawable/ic_money_saving"
+            android:icon="@drawable/ic_account_balance"
             android:title="@string/item_saving_account" />
 
     </group>
@@ -25,11 +25,11 @@
         <menu>
             <item
                 android:id="@+id/nav_user_info"
-                android:icon="@drawable/ic_user_info"
+                android:icon="@drawable/ic_account_circle"
                 android:title="@string/item_information" />
             <item
                 android:id="@+id/nav_sync"
-                android:icon="@drawable/ic_sync"
+                android:icon="@drawable/ic_cloud_upload"
                 android:title="@string/item_sync" />
             <item
                 android:id="@+id/nav_logout"

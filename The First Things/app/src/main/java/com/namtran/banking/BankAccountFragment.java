@@ -48,6 +48,7 @@ public class BankAccountFragment extends Fragment implements View.OnClickListene
     private ArrayList<BankItem> mListAccount = new ArrayList<>();
     private Calendar mCalendar = Calendar.getInstance();
     private View view;
+    public static final String TAG = "BankAccountFragment";
     private ProgressDialog mProDialog;
     private static final String[] BANK_NAME = {"VietinBank", "CBBank", "OceanBank", "GPBank", "AgriBank", "ACBank", "TPBank", "DongABank",
             "SeABank", "ABBank", "TechcomBank", "VPBank", "SHBank", "VietABank", "PGBank", "VCBank", "BIDV", "HSBC", "CitiBank"};
@@ -147,7 +148,7 @@ public class BankAccountFragment extends Fragment implements View.OnClickListene
                 return true;
             }
         } catch (Exception e) {
-            Log.e("BankAccountFragment", e.getMessage());
+            Log.e(TAG, e.getMessage());
         }
         return false;
     }

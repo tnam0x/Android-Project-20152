@@ -13,7 +13,6 @@ import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;
 import android.support.v7.widget.AppCompatSpinner;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -137,7 +136,6 @@ public class ExchangeFragment extends Fragment {
     private AdapterView.OnItemSelectedListener spinnerListener = new AdapterView.OnItemSelectedListener() {
         @Override
         public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-            Log.d("Spinner", "clicked");
             loadChange(position);
         }
 
@@ -179,7 +177,6 @@ public class ExchangeFragment extends Fragment {
                     String date = cursorIn.getString(4);
                     item = new TransactionsItem(cost, type, note, date, id);
                     mListTransIn.add(item);
-                    Log.d("IN DATA - Exchange", item.toString());
                 } while (cursorIn.moveToNext());
             }
             cursorIn.close();
@@ -195,7 +192,6 @@ public class ExchangeFragment extends Fragment {
                     String date = cursorOut.getString(4);
                     item = new TransactionsItem(cost, type, note, date, id);
                     mListTransOut.add(item);
-                    Log.d("OUT DATA - Exchange", item.toString());
                 } while (cursorOut.moveToNext());
             }
             cursorOut.close();

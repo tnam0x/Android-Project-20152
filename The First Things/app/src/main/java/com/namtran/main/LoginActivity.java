@@ -6,7 +6,6 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.TextInputEditText;
-import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.WindowManager;
@@ -16,7 +15,6 @@ import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
-import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
@@ -63,7 +61,6 @@ public class LoginActivity extends Activity {
             public void onClick(View v) {
                 String email = mEmailField.getText().toString();
                 String password = mPasswordField.getText().toString();
-                Log.d("Login", "Button");
                 validateAndSignIn(email, password);
             }
         });
@@ -82,7 +79,6 @@ public class LoginActivity extends Activity {
                 if (event.getAction() == KeyEvent.ACTION_DOWN && keyCode == KeyEvent.KEYCODE_ENTER) {
                     String email = mEmailField.getText().toString();
                     String password = mPasswordField.getText().toString();
-                    Log.d("Login", "Enter");
                     validateAndSignIn(email, password);
                 }
                 return false;
@@ -150,7 +146,6 @@ public class LoginActivity extends Activity {
     }
 
     private void signIn(final String email, String password) {
-        Log.d("Login", "doing");
         Task<AuthResult> task = mAuth.signInWithEmailAndPassword(email, password);
         task.addOnSuccessListener(this, new OnSuccessListener<AuthResult>() {
             @Override
@@ -168,7 +163,6 @@ public class LoginActivity extends Activity {
                 editor.putString(UserInfo.KEY_UID, mUid);
                 editor.putString(UserInfo.KEY_AVATAR, null);
                 editor.apply();
-                Log.d("Login", "done " + user.getDisplayName());
                 Intent intent = new Intent(LoginActivity.this, MainActivity.class);
                 startActivity(intent);
                 overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);

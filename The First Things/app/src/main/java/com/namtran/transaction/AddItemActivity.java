@@ -7,7 +7,6 @@ import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.DatePicker;
@@ -16,13 +15,13 @@ import android.widget.ImageButton;
 import android.widget.Spinner;
 import android.widget.TextView;
 
-import java.text.SimpleDateFormat;
-import java.util.Calendar;
-import java.util.Locale;
-
 import com.namtran.database.InDb;
 import com.namtran.database.OutDb;
 import com.namtran.main.R;
+
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Locale;
 
 /**
  * Created by namtr on 18/08/2016.
@@ -114,10 +113,8 @@ public class AddItemActivity extends AppCompatActivity implements View.OnClickLi
             cv.put(OutDb.COL_DATE, mDateTextView.getText().toString());
             if (TransactionsFragment.mCurrentPage == 0) {
                 mSQLiteIn.insert(InDb.TABLE_NAME, null, cv);
-                Log.d("Insert In", cv.toString());
             } else if (TransactionsFragment.mCurrentPage == 1) {
                 mSQLiteOut.insert(OutDb.TABLE_NAME, null, cv);
-                Log.d("Insert Out", cv.toString());
             }
             costField.setText("");
             noteField.setText("");

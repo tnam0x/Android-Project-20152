@@ -13,7 +13,6 @@ import android.support.v4.app.Fragment;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -154,7 +153,6 @@ public class ExpenditureFragment extends Fragment {
                     String date = cursorOut.getString(4);
                     item = new TransactionsItem(cost, type, note, date, id);
                     mListItem.add(item);
-                    Log.d("OUT DATA - Local", item.toString());
                 } while (cursorOut.moveToNext());
             }
             cursorOut.close();
@@ -184,7 +182,6 @@ public class ExpenditureFragment extends Fragment {
 
         @Override
         protected Void doInBackground(Void... params) {
-            Log.d("Get From Server - Exp", "doing");
             // Tiền chi
             DatabaseReference refExpense = mFirebase.child(mUserInfo.getUid()).child("Expense");
             final Query outQuery = refExpense.orderByValue();
@@ -201,7 +198,6 @@ public class ExpenditureFragment extends Fragment {
                         cv.put(OutDb.COL_DATE, item.getDate());
                         mSQLiteOut.insert(OutDb.TABLE_NAME, null, cv);
                         mListItem.add(item);
-                        Log.d("OUT DATA - Server", item.toString());
                     }
                     // Nếu UI is dead thì không làm gì cả
                     if (getActivity() == null) {
@@ -211,7 +207,6 @@ public class ExpenditureFragment extends Fragment {
                     outQuery.removeEventListener(this);
                     mAdapter.notifyDataSetChanged();
                     mProDialog.dismiss();
-                    Log.d("Get out data - Exp", "Done");
                 }
 
                 @Override

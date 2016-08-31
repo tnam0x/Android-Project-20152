@@ -66,33 +66,26 @@ public class SignUpActivity extends AppCompatActivity {
     }
 
     private void validateAndSignUp(String name, String email, String password, String rePassword) {
-        Log.d("validateAndSignUp", "begin");
         hideKeyboard();
         if (validateName(name) && validateEmail(email) && validatePassword(password, rePassword)) {
             hideControl();
             signUp(name, email, password);
         }
-        Log.d("validateAndSignUp", "done");
     }
 
     private void signUp(final String name, String email, String password) {
-        Log.d("signUp", "begin");
         Task<AuthResult> signUpTask = mAuth.createUserWithEmailAndPassword(email, password);
-        Log.d("signUp", "begin task");
         signUpTask.addOnSuccessListener(this, new OnSuccessListener<AuthResult>() {
             @Override
             public void onSuccess(AuthResult authResult) {
-                Log.d("signUp", "created");
                 FirebaseUser user = authResult.getUser();
                 UserProfileChangeRequest profile = new UserProfileChangeRequest.Builder()
                         .setDisplayName(name)
                         .build();
                 Task<Void> updateTask = user.updateProfile(profile);
-                Log.d("signUp", "update profile");
                 updateTask.addOnSuccessListener(SignUpActivity.this, new OnSuccessListener<Void>() {
                     @Override
                     public void onSuccess(Void aVoid) {
-                        Log.d("update profile", "done");
                         AlertDialog.Builder dialog = new AlertDialog.Builder(SignUpActivity.this);
                         dialog.setMessage("Đăng kí thành công");
                         dialog.setCancelable(false);
@@ -108,7 +101,6 @@ public class SignUpActivity extends AppCompatActivity {
                 updateTask.addOnFailureListener(SignUpActivity.this, new OnFailureListener() {
                     @Override
                     public void onFailure(@NonNull Exception e) {
-                        Log.d("update profile", "failed");
                         showControl();
                         Toast.makeText(SignUpActivity.this, e.getMessage(), Toast.LENGTH_SHORT).show();
                     }
@@ -118,7 +110,6 @@ public class SignUpActivity extends AppCompatActivity {
         signUpTask.addOnFailureListener(this, new OnFailureListener() {
             @Override
             public void onFailure(@NonNull Exception e) {
-                Log.d("signUp", "failed");
                 showControl();
                 Toast.makeText(SignUpActivity.this, e.getMessage(), Toast.LENGTH_SHORT).show();
             }

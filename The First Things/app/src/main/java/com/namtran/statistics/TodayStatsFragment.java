@@ -7,24 +7,23 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ListView;
 
+import com.namtran.adapter.StatisticsListAdapter;
+import com.namtran.database.InDb;
+import com.namtran.database.OutDb;
+import com.namtran.entity.DateParser;
+import com.namtran.entity.StatsItem;
+import com.namtran.entity.TransactionsItem;
+import com.namtran.main.R;
+
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Locale;
-
-import com.namtran.adapter.StatisticsListAdapter;
-import com.namtran.database.InDb;
-import com.namtran.database.OutDb;
-import com.namtran.entity.TransactionsItem;
-import com.namtran.entity.DateParser;
-import com.namtran.entity.StatsItem;
-import com.namtran.main.R;
 
 /**
  * Created by namtr on 20/08/2016.
@@ -69,14 +68,14 @@ public class TodayStatsFragment extends Fragment {
     private void getItemNow() {
         String date = today();
         int costIn = 0, costOut = 0;
-        for (TransactionsItem transactionsItem : mListTransIn) {
-            if (transactionsItem.getDate().equals(date)) {
-                costIn += Integer.parseInt(transactionsItem.getCost());
+        for (TransactionsItem item : mListTransIn) {
+            if (item.getDate().equals(date)) {
+                costIn += Integer.parseInt(item.getCost());
             }
         }
-        for (TransactionsItem transactionsItem : mListTransOut) {
-            if (transactionsItem.getDate().equals(date)) {
-                costOut += Integer.parseInt(transactionsItem.getCost());
+        for (TransactionsItem item : mListTransOut) {
+            if (item.getDate().equals(date)) {
+                costOut += Integer.parseInt(item.getCost());
             }
         }
         StatsItem statsItem = new StatsItem(date, String.valueOf(costIn), String.valueOf(costOut));
@@ -86,14 +85,14 @@ public class TodayStatsFragment extends Fragment {
     private void getItemMonth() {
         String date = DateParser.parseMonth(today());
         int costIn = 0, costOut = 0;
-        for (TransactionsItem transactionsItem : mListTransIn) {
-            if (date.equals(DateParser.parseMonth(transactionsItem.getDate()))) {
-                costIn += Integer.parseInt(transactionsItem.getCost());
+        for (TransactionsItem item : mListTransIn) {
+            if (date.equals(DateParser.parseMonth(item.getDate()))) {
+                costIn += Integer.parseInt(item.getCost());
             }
         }
-        for (TransactionsItem transactionsItem : mListTransOut) {
-            if (date.equals(DateParser.parseMonth(transactionsItem.getDate()))) {
-                costOut += Integer.parseInt(transactionsItem.getCost());
+        for (TransactionsItem item : mListTransOut) {
+            if (date.equals(DateParser.parseMonth(item.getDate()))) {
+                costOut += Integer.parseInt(item.getCost());
             }
         }
         StatsItem statsItem = new StatsItem(date, String.valueOf(costIn), String.valueOf(costOut));
@@ -103,14 +102,14 @@ public class TodayStatsFragment extends Fragment {
     private void getItemYear() {
         String date = DateParser.parseYear(today());
         int costIn = 0, costOut = 0;
-        for (TransactionsItem transactionsItem : mListTransIn) {
-            if (date.equals(DateParser.parseYear(transactionsItem.getDate()))) {
-                costIn += Integer.parseInt(transactionsItem.getCost());
+        for (TransactionsItem item : mListTransIn) {
+            if (date.equals(DateParser.parseYear(item.getDate()))) {
+                costIn += Integer.parseInt(item.getCost());
             }
         }
-        for (TransactionsItem transactionsItem : mListTransOut) {
-            if (date.equals(DateParser.parseYear(transactionsItem.getDate()))) {
-                costOut += Integer.parseInt(transactionsItem.getCost());
+        for (TransactionsItem item : mListTransOut) {
+            if (date.equals(DateParser.parseYear(item.getDate()))) {
+                costOut += Integer.parseInt(item.getCost());
             }
         }
         StatsItem statsItem = new StatsItem(date, String.valueOf(costIn), String.valueOf(costOut));

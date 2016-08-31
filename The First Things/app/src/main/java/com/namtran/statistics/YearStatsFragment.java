@@ -120,13 +120,10 @@ public class YearStatsFragment extends Fragment {
 
     private void hideDateAndMonthFields(DatePicker datePicker) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            Log.d(">LOLLIPOP", "yes");
             int daySpinnerId = Resources.getSystem().getIdentifier("day", "id", "android");
-            Log.d(">LOLLIPOP", daySpinnerId + "");
             if (daySpinnerId != 0) {
                 View daySpinner = datePicker.findViewById(daySpinnerId);
                 if (daySpinner != null) {
-                    Log.d(">LOLLIPOP", "day");
                     daySpinner.setVisibility(View.GONE);
                 }
             }
@@ -135,18 +132,15 @@ public class YearStatsFragment extends Fragment {
             if (monthSpinnerId != 0) {
                 View monthSpinner = datePicker.findViewById(monthSpinnerId);
                 if (monthSpinner != null) {
-                    Log.d(">LOLLIPOP", "month");
                     monthSpinner.setVisibility(View.GONE);
                 }
             }
         } else { // Older SDK versions
             Field f[] = datePicker.getClass().getDeclaredFields();
             for (Field field : f) {
-                Log.d("Older SDK versions", field.getName());
                 if (field.getName().equals("mDayPicker") || field.getName().equals("mDaySpinner")) {
                     field.setAccessible(true);
                     try {
-                        Log.d("mDaySpinner", "yeah");
                         Object dayPicker = field.get(datePicker);
                         ((View) dayPicker).setVisibility(View.GONE);
                     } catch (IllegalAccessException e) {
@@ -157,7 +151,6 @@ public class YearStatsFragment extends Fragment {
                 if (field.getName().equals("mMonthPicker") || field.getName().equals("mMonthSpinner")) {
                     field.setAccessible(true);
                     try {
-                        Log.d("mMonthSpinner", "yeah");
                         Object monthPicker = field.get(datePicker);
                         ((View) monthPicker).setVisibility(View.GONE);
                     } catch (IllegalAccessException e) {
