@@ -5,7 +5,6 @@ import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.view.ViewCompat;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.view.View;
 
 /**
@@ -15,7 +14,6 @@ public class ScrollingFABBehavior extends FloatingActionButton.Behavior {
 
     public ScrollingFABBehavior(Context context, AttributeSet attrs) {
         super(context, attrs);
-        Log.d("FAB", "constructor");
     }
 
     @Override

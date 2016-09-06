@@ -27,7 +27,7 @@ import com.namtran.database.InDb;
 import com.namtran.database.OutDb;
 import com.namtran.entity.ExchangeItem;
 import com.namtran.entity.ForeignCurrencyItem;
-import com.namtran.entity.HTMLParser;
+import com.namtran.entity.CurrencyPullParser;
 import com.namtran.entity.TransactionsItem;
 import com.namtran.main.R;
 
@@ -163,7 +163,7 @@ public class ExchangeFragment extends Fragment {
 
         @Override
         protected Void doInBackground(Void... params) {
-            mFCurrency = HTMLParser.parseHTML();
+            mFCurrency = CurrencyPullParser.parseHTML();
             TransactionsItem item;
             String id;
             String queryIn = "select * from " + InDb.TABLE_NAME;

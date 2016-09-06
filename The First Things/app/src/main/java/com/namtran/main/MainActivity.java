@@ -25,7 +25,6 @@ import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -33,8 +32,8 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.namtran.banking.BankAccountFragment;
-import com.namtran.database.InDb;
 import com.namtran.database.BankAccountDb;
+import com.namtran.database.InDb;
 import com.namtran.database.OutDb;
 import com.namtran.entity.UserInfo;
 import com.namtran.exchange.ExchangeFragment;
@@ -136,7 +135,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             return;
         }
         this.doubleBackToExitPressedOnce = true;
-        Toast.makeText(this, "Nhấn back lần nữa để thoát", Toast.LENGTH_SHORT).show();
+        Toast.makeText(MainActivity.this, "Nhấn back lần nữa để thoát", Toast.LENGTH_SHORT).show();
         new Handler().postDelayed(new Runnable() {
 
             @Override
@@ -146,21 +145,18 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         }, 2000);
     }
 
-    int id;
-
     @Override
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
         AppBarLayout.LayoutParams params = (AppBarLayout.LayoutParams) mToolbar.getLayoutParams();
         params.setScrollFlags(AppBarLayout.LayoutParams.SCROLL_FLAG_SCROLL | AppBarLayout.LayoutParams.SCROLL_FLAG_ENTER_ALWAYS);
         mFAB.setVisibility(View.INVISIBLE);
         mDrawerLayout.closeDrawer(GravityCompat.START);
-        id = item.getItemId();
         switch (item.getItemId()) {
             case R.id.nav_home:
                 mActionBar.setTitle(item.getTitle());
                 item.setChecked(true);
-                setFragment(0);
                 mFAB.setVisibility(View.VISIBLE);
+                setFragment(0);
                 break;
             case R.id.nav_diagram:
                 mActionBar.setTitle(item.getTitle());

@@ -14,7 +14,7 @@ import java.util.ArrayList;
  * Parse dữ liệu tiền tệ từ link thành 3 trường: kí hiệu, tên, tỉ giá
  * Dùng cho chức năng Đổi tiền tệ
  * */
-public class HTMLParser {
+public class CurrencyPullParser {
     private static ForeignCurrencyItem change(Element e1, Element e2, Element e3) {
         float b;
         try {
@@ -38,7 +38,7 @@ public class HTMLParser {
                 Log.d("Currency", item.symbol + item.toString());
             }
         } catch (IOException e) {
-            Log.e("HTMLParser", e.getMessage());
+            Log.e("CurrencyPullParser", e.getMessage());
         } finally {
             mCurrency.add(new ForeignCurrencyItem("VND", "VietNam Dong", 1));
         }
