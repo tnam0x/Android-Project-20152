@@ -14,6 +14,8 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_marginEnd="2sp"
+                android:layout_marginRight="2sp"
                 android:text="@string/tv_email"
                 android:textAppearance="?android:attr/textAppearanceMedium"
                 android:textStyle="bold" />
@@ -32,6 +34,8 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_marginEnd="2sp"
+                android:layout_marginRight="2sp"
                 android:text="@string/tv_name"
                 android:textAppearance="?android:attr/textAppearanceMedium"
                 android:textStyle="bold" />
@@ -63,6 +67,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
         android:text="@string/checktv_forgot_password"
-        android:textColor="@color/link" />
+        android:textColor="@color/link"
+        android:textSize="15sp" />
 
 </LinearLayout>
