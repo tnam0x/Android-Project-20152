@@ -4,23 +4,22 @@ import android.content.Context;
 import android.graphics.Color;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import java.util.ArrayList;
-
 import com.namtran.entity.TransactionsItem;
 import com.namtran.main.R;
+
+import java.util.ArrayList;
 
 /**
  * Created by namtr on 20/08/2016.
  */
 public class TransactionsRecyclerAdapter extends RecyclerView.Adapter<TransactionsViewHolder> {
+    private final View.OnClickListener mOnClickListener;
     private ArrayList<TransactionsItem> mListTrans;
     private boolean isReveneus;
-    private final View.OnClickListener mOnClickListener;
 
     public TransactionsRecyclerAdapter(ArrayList<TransactionsItem> data, boolean isReveneus, View.OnClickListener mOnClickListener) {
         this.mListTrans = data;
@@ -42,7 +41,7 @@ public class TransactionsRecyclerAdapter extends RecyclerView.Adapter<Transactio
         setItemText(transactionsItem, holder);
     }
 
-    public void setItemText(TransactionsItem item, TransactionsViewHolder holder) {
+    private void setItemText(TransactionsItem item, TransactionsViewHolder holder) {
         String money;
         if (isReveneus) {
             money = "+" + holder.mParser.format(item.getCost());

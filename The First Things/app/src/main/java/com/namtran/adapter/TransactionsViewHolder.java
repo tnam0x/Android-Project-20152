@@ -7,11 +7,11 @@ import android.widget.TextView;
 import com.namtran.entity.CurrencyParser;
 import com.namtran.main.R;
 
-public class TransactionsViewHolder extends RecyclerView.ViewHolder {
+class TransactionsViewHolder extends RecyclerView.ViewHolder {
     TextView type, cost, note;
     CurrencyParser mParser;
 
-    public TransactionsViewHolder(View parent) {
+    TransactionsViewHolder(View parent) {
         super(parent);
         type = (TextView) parent.findViewById(R.id.tv_type);
         cost = (TextView) parent.findViewById(R.id.tv_cost);

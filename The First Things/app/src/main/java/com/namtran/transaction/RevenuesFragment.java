@@ -111,7 +111,7 @@ public class RevenuesFragment extends Fragment {
         private RecyclerView mRecyclerView;
         private CurrencyParser mParser;
 
-        public RecyclerListener(RecyclerView recyclerView) {
+        RecyclerListener(RecyclerView recyclerView) {
             this.mRecyclerView = recyclerView;
             mParser = new CurrencyParser();
         }

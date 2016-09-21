@@ -1,6 +1,7 @@
 package com.namtran.adapter;
 
 import android.content.Context;
+import android.support.annotation.NonNull;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -29,8 +30,9 @@ public class AccountListAdapter extends ArrayAdapter<BankItem> {
         this.mListAccount = data;
     }
 
+    @NonNull
     @Override
-    public View getView(int position, View convertView, ViewGroup parent) {
+    public View getView(int position, View convertView, @NonNull ViewGroup parent) {
         ViewHolder holder;
         if (convertView == null) {
             convertView = mInflater.inflate(mResId, parent, false);
@@ -51,11 +53,11 @@ public class AccountListAdapter extends ArrayAdapter<BankItem> {
         return convertView;
     }
 
-    static class ViewHolder {
+    private static class ViewHolder {
         CurrencyParser mParser;
         TextView name, money, rate, date;
 
-        public ViewHolder() {
+        ViewHolder() {
             mParser = new CurrencyParser();
         }
     }

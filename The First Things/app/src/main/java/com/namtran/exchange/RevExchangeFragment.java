@@ -6,18 +6,17 @@ import android.support.v4.app.Fragment;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-
-import java.util.ArrayList;
 
 import com.namtran.adapter.ExchangeRecyclerAdapter;
 import com.namtran.entity.CurrencyParser;
 import com.namtran.entity.ExchangeItem;
 import com.namtran.entity.TransactionsItem;
 import com.namtran.main.R;
+
+import java.util.ArrayList;
 
 /**
  * Created by namtr on 22/08/2016.
@@ -27,6 +26,12 @@ public class RevExchangeFragment extends Fragment {
     private static ArrayList<ExchangeItem> mListExchange;
     private static ExchangeRecyclerAdapter mAdapter;
     private ArrayList<TransactionsItem> mListTrans;
+
+    public static void update(ArrayList<ExchangeItem> data) {
+        mListExchange.clear();
+        mListExchange.addAll(data);
+        mAdapter.notifyDataSetChanged();
+    }
 
     @Nullable
     @Override
@@ -44,18 +49,11 @@ public class RevExchangeFragment extends Fragment {
         recyclerView.setAdapter(mAdapter);
     }
 
-
-    public static void update(ArrayList<ExchangeItem> data) {
-        mListExchange.clear();
-        mListExchange.addAll(data);
-        mAdapter.notifyDataSetChanged();
-    }
-
     private class RecyclerListener implements View.OnClickListener {
         private RecyclerView mRecyclerView;
         private CurrencyParser mParser;
 
-        public RecyclerListener(RecyclerView recyclerView) {
+        RecyclerListener(RecyclerView recyclerView) {
             this.mRecyclerView = recyclerView;
             mParser = new CurrencyParser();
         }

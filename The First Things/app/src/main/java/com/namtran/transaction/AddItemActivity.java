@@ -28,15 +28,35 @@ import java.util.Locale;
  * Thêm khoản thu hoặc chi.
  */
 public class AddItemActivity extends AppCompatActivity implements View.OnClickListener {
+    private static final String[] ARRAY_TYPE_IN = {"Tiền Lương", "Đòi Nợ", "Bán Đồ", "Đi Vay", "Được Tặng", "Tiền Thưởng", "Khác"};
+    private static final String[] ARRAY_TYPE_OUT = {"Ăn Uống", "Mua Sắm", "Sinh Hoạt", "Di Chuyển", "Sức Khoẻ", "Giáo Dục", "Giải Trí", "Du Lịch", "Cho vay", "Trả Nợ", "Khác"};
     private EditText costField, noteField;
     private TextView mDateTextView, mTitleTextView;
     private Spinner mTypeSpinner;
-    private static final String[] ARRAY_TYPE_IN = {"Tiền Lương", "Đòi Nợ", "Bán Đồ", "Đi Vay", "Được Tặng", "Tiền Thưởng", "Khác"};
-    private static final String[] ARRAY_TYPE_OUT = {"Ăn Uống", "Mua Sắm", "Sinh Hoạt", "Di Chuyển", "Sức Khoẻ", "Giáo Dục", "Giải Trí", "Du Lịch", "Cho vay", "Trả Nợ", "Khác"};
     private SQLiteDatabase mSQLiteIn;
     private SQLiteDatabase mSQLiteOut;
     private View mView;
     private Calendar mCalendar = Calendar.getInstance();
+    private DatePickerDialog.OnDateSetListener callback = new DatePickerDialog.OnDateSetListener() {
+        @Override
+        public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
+            mCalendar.set(year, monthOfYear, dayOfMonth);
+            monthOfYear = monthOfYear + 1;
+            String date, day, month;
+            if (dayOfMonth < 10) {
+                day = "0" + dayOfMonth;
+            } else {
+                day = dayOfMonth + "";
+            }
+            if (monthOfYear < 10) {
+                month = "0" + monthOfYear;
+            } else {
+                month = monthOfYear + "";
+            }
+            date = day + "/" + month + "/" + year;
+            mDateTextView.setText(date);
+        }
+    };
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -150,30 +170,9 @@ public class AddItemActivity extends AppCompatActivity implements View.OnClickLi
         pickerFragment.show();
     }
 
-    private DatePickerDialog.OnDateSetListener callback = new DatePickerDialog.OnDateSetListener() {
-        @Override
-        public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
-            mCalendar.set(year, monthOfYear, dayOfMonth);
-            monthOfYear = monthOfYear + 1;
-            String date, day, month;
-            if (dayOfMonth < 10) {
-                day = "0" + dayOfMonth;
-            } else {
-                day = dayOfMonth + "";
-            }
-            if (monthOfYear < 10) {
-                month = "0" + monthOfYear;
-            } else {
-                month = monthOfYear + "";
-            }
-            date = day + "/" + month + "/" + year;
-            mDateTextView.setText(date);
-        }
-    };
-
     private class DatePickerFragment extends DatePickerDialog {
 
-        public DatePickerFragment(Context context, OnDateSetListener callBack, int year, int monthOfYear, int dayOfMonth) {
+        DatePickerFragment(Context context, OnDateSetListener callBack, int year, int monthOfYear, int dayOfMonth) {
             super(context, callBack, year, monthOfYear, dayOfMonth);
         }
 

@@ -6,7 +6,6 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
@@ -30,8 +29,8 @@ import java.util.regex.Pattern;
  * Created by namtr on 15/08/2016.
  */
 public class SignUpActivity extends AppCompatActivity {
-    private EditText mUserNameField, mEmailField, mPasswordField, mRePasswordField;
     private static final String EMAIL_PATTERN = "^[a-zA-Z0-9#_~!$&'()*+,;=:.\"<>@\\[\\]\\\\]+@[a-zA-Z0-9-]+(\\.[a-zA-Z0-9-]+)*$";
+    private EditText mUserNameField, mEmailField, mPasswordField, mRePasswordField;
     private Pattern mPattern = Pattern.compile(EMAIL_PATTERN);
     private LinearLayout mSignUpForm;
     private ProgressBar mProBar;

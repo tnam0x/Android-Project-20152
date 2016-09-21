@@ -11,13 +11,13 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import java.util.ArrayList;
-
 import com.namtran.adapter.ExchangeRecyclerAdapter;
 import com.namtran.entity.CurrencyParser;
 import com.namtran.entity.ExchangeItem;
 import com.namtran.entity.TransactionsItem;
 import com.namtran.main.R;
+
+import java.util.ArrayList;
 
 /**
  * Created by namtr on 22/08/2016.
@@ -27,6 +27,13 @@ public class ExpExchangeFragment extends Fragment {
     private static ArrayList<ExchangeItem> mListExchange;
     private static ExchangeRecyclerAdapter mAdapter;
     private ArrayList<TransactionsItem> mListTrans;
+
+    public static void update(ArrayList<ExchangeItem> data) {
+        Log.d("Update Exp", "doing");
+        mListExchange.clear();
+        mListExchange.addAll(data);
+        mAdapter.notifyDataSetChanged();
+    }
 
     @Nullable
     @Override
@@ -44,18 +51,11 @@ public class ExpExchangeFragment extends Fragment {
         recyclerView.setAdapter(mAdapter);
     }
 
-    public static void update(ArrayList<ExchangeItem> data) {
-        Log.d("Update Exp", "doing");
-        mListExchange.clear();
-        mListExchange.addAll(data);
-        mAdapter.notifyDataSetChanged();
-    }
-
     private class RecyclerListener implements View.OnClickListener {
         private RecyclerView recyclerView;
         private CurrencyParser mParser;
 
-        public RecyclerListener(RecyclerView recyclerView) {
+        RecyclerListener(RecyclerView recyclerView) {
             this.recyclerView = recyclerView;
             mParser = new CurrencyParser();
         }

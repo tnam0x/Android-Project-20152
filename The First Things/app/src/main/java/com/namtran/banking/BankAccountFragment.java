@@ -40,6 +40,9 @@ import java.util.Locale;
  * Created by namtr on 23/08/2016.
  */
 public class BankAccountFragment extends Fragment implements View.OnClickListener, AdapterView.OnItemLongClickListener {
+    public static final String TAG = "BankAccountFragment";
+    private static final String[] BANK_NAME = {"VietinBank", "CBBank", "OceanBank", "GPBank", "AgriBank", "ACBank", "TPBank", "DongABank",
+            "SeABank", "ABBank", "TechcomBank", "VPBank", "SHBank", "VietABank", "PGBank", "VCBank", "BIDV", "HSBC", "CitiBank"};
     private Spinner mSpinner;
     private EditText mMoneyField, mRateField;
     private TextView mDateTextView;
@@ -48,10 +51,27 @@ public class BankAccountFragment extends Fragment implements View.OnClickListene
     private ArrayList<BankItem> mListAccount = new ArrayList<>();
     private Calendar mCalendar = Calendar.getInstance();
     private View view;
-    public static final String TAG = "BankAccountFragment";
     private ProgressDialog mProDialog;
-    private static final String[] BANK_NAME = {"VietinBank", "CBBank", "OceanBank", "GPBank", "AgriBank", "ACBank", "TPBank", "DongABank",
-            "SeABank", "ABBank", "TechcomBank", "VPBank", "SHBank", "VietABank", "PGBank", "VCBank", "BIDV", "HSBC", "CitiBank"};
+    private DatePickerDialog.OnDateSetListener callback = new DatePickerDialog.OnDateSetListener() {
+        @Override
+        public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
+            mCalendar.set(year, monthOfYear, dayOfMonth);
+            monthOfYear = monthOfYear + 1;
+            String date, day, month;
+            if (dayOfMonth < 10) {
+                day = "0" + dayOfMonth;
+            } else {
+                day = dayOfMonth + "";
+            }
+            if (monthOfYear < 10) {
+                month = "0" + monthOfYear;
+            } else {
+                month = monthOfYear + "";
+            }
+            date = day + "/" + month + "/" + year;
+            mDateTextView.setText(date);
+        }
+    };
 
     @Nullable
     @Override
@@ -176,31 +196,9 @@ public class BankAccountFragment extends Fragment implements View.OnClickListene
         pickerFragment.show();
     }
 
-
-    private DatePickerDialog.OnDateSetListener callback = new DatePickerDialog.OnDateSetListener() {
-        @Override
-        public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
-            mCalendar.set(year, monthOfYear, dayOfMonth);
-            monthOfYear = monthOfYear + 1;
-            String date, day, month;
-            if (dayOfMonth < 10) {
-                day = "0" + dayOfMonth;
-            } else {
-                day = dayOfMonth + "";
-            }
-            if (monthOfYear < 10) {
-                month = "0" + monthOfYear;
-            } else {
-                month = monthOfYear + "";
-            }
-            date = day + "/" + month + "/" + year;
-            mDateTextView.setText(date);
-        }
-    };
-
     private class DatePickerFragment extends DatePickerDialog {
 
-        public DatePickerFragment(Context context, OnDateSetListener callBack, int year, int monthOfYear, int dayOfMonth) {
+        DatePickerFragment(Context context, OnDateSetListener callBack, int year, int monthOfYear, int dayOfMonth) {
             super(context, callBack, year, monthOfYear, dayOfMonth);
         }
 

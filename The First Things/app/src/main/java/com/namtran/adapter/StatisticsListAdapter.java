@@ -1,18 +1,19 @@
 package com.namtran.adapter;
 
 import android.content.Context;
+import android.support.annotation.NonNull;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.TextView;
 
-import java.util.ArrayList;
-
-import com.namtran.exchange.ExchangeFragment;
 import com.namtran.entity.CurrencyParser;
 import com.namtran.entity.StatsItem;
+import com.namtran.exchange.ExchangeFragment;
 import com.namtran.main.R;
+
+import java.util.ArrayList;
 
 /**
  * Created by namtr on 20/08/2016.
@@ -31,8 +32,9 @@ public class StatisticsListAdapter extends ArrayAdapter<StatsItem> {
         this.mListStats = data;
     }
 
+    @NonNull
     @Override
-    public View getView(int position, View convertView, ViewGroup parent) {
+    public View getView(int position, View convertView, @NonNull ViewGroup parent) {
         ViewHolder holder;
         if (convertView == null) {
             holder = new ViewHolder();
@@ -68,11 +70,11 @@ public class StatisticsListAdapter extends ArrayAdapter<StatsItem> {
         return convertView;
     }
 
-    static class ViewHolder {
+    private static class ViewHolder {
         TextView date, costIn, costOut;
         CurrencyParser mParser;
 
-        public ViewHolder() {
+        ViewHolder() {
             mParser = new CurrencyParser();
         }
     }

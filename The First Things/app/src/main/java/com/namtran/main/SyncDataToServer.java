@@ -23,7 +23,7 @@ import com.namtran.entity.UserInfo;
  * Created by namtr on 19/08/2016.
  * Đồng bộ dữ liệu lên server.
  */
-public class SyncDataToServer extends AsyncTask<Void, Void, Void> {
+class SyncDataToServer extends AsyncTask<Void, Void, Void> {
     private Context mContext;
     private ProgressDialog mProDialog;
     private SQLiteDatabase mSQLiteIn, mSQLiteOut, mSQLiteRate;
@@ -31,7 +31,7 @@ public class SyncDataToServer extends AsyncTask<Void, Void, Void> {
     private UserInfo mUserInfo;
     private View mView;
 
-    public SyncDataToServer(Context context, View view) {
+    SyncDataToServer(Context context, View view) {
         this.mContext = context;
         this.mView = view;
         getUserInfo();

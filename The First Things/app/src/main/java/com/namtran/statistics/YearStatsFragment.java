@@ -19,12 +19,6 @@ import android.widget.DatePicker;
 import android.widget.ImageButton;
 import android.widget.TextView;
 
-import java.lang.reflect.Field;
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Locale;
-
 import com.namtran.database.InDb;
 import com.namtran.database.OutDb;
 import com.namtran.entity.CurrencyParser;
@@ -32,20 +26,33 @@ import com.namtran.entity.DateParser;
 import com.namtran.entity.TransactionsItem;
 import com.namtran.main.R;
 
+import java.lang.reflect.Field;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Locale;
+
 /**
  * Created by namtr on 20/08/2016.
  * Thống kê thu chi theo năm.
  */
 public class YearStatsFragment extends Fragment {
-    private static TextView mYearTextView;
-    private static TextView mRevTextView;
-    private static TextView mExpTextView;
-    private ProgressDialog mProDialog;
-    private SQLiteDatabase mSQLiteIn, mSQLiteOut;
     private static ArrayList<TransactionsItem> mListTransIn;
     private static ArrayList<TransactionsItem> mListTransOut;
     private static CurrencyParser mParser;
+    private TextView mYearTextView;
+    private TextView mRevTextView;
+    private TextView mExpTextView;
+    private ProgressDialog mProDialog;
+    private SQLiteDatabase mSQLiteIn, mSQLiteOut;
     private Calendar mCalendar = Calendar.getInstance();
+    private DatePickerDialog.OnDateSetListener callback = new DatePickerDialog.OnDateSetListener() {
+        @Override
+        public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
+            mCalendar.set(year, monthOfYear, dayOfMonth);
+            getItemYear(String.valueOf(year));
+        }
+    };
 
     @Nullable
     @Override
@@ -79,7 +86,7 @@ public class YearStatsFragment extends Fragment {
     }
 
     // Lấy thu chi theo năm đã chọn, mặc định là năm hiện tại
-    private static void getItemYear(String date) {
+    private void getItemYear(String date) {
         String year = date;
         if (date.length() != 4) {
             year = DateParser.parseYear(date);
@@ -162,17 +169,9 @@ public class YearStatsFragment extends Fragment {
         }
     }
 
-    private DatePickerDialog.OnDateSetListener callback = new DatePickerDialog.OnDateSetListener() {
-        @Override
-        public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
-            mCalendar.set(year, monthOfYear, dayOfMonth);
-            getItemYear(String.valueOf(year));
-        }
-    };
-
     private class YearPickerFragment extends DatePickerDialog {
 
-        public YearPickerFragment(Context context, OnDateSetListener callBack, int year, int monthOfYear, int dayOfMonth) {
+        YearPickerFragment(Context context, OnDateSetListener callBack, int year, int monthOfYear, int dayOfMonth) {
             super(context, callBack, year, monthOfYear, dayOfMonth);
         }
 
